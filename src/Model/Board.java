@@ -1,4 +1,4 @@
-package prog;
+package Model;
 
 public class Board {
 }
