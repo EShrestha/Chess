@@ -28,15 +28,20 @@ public class Board {
         for(Tile[] row : board){
 
             for(Tile tile : row){
+                if(tile.getLocation().getFile() == File.A){
+                    System.out.print(tile.getLocation().getRank());
+                }
+                System.out.print("|");
                 if(tile.isHasPiece()){
                     // this is where you would print the piece name, EX: | R | N | B | K | Q |...
                     System.out.println("X");
                 }else{
-                    System.out.println("-");
+                    System.out.print(" - ");
                 }
-                System.out.println(); // Just a line separater
-            }
 
+            }
+            System.out.println("|"); // Just a line separater
         }
+        System.out.println("   A   B   C   D   E   F   G   H");
     }
 }
