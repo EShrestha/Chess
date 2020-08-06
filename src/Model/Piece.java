@@ -8,5 +8,4 @@ public class Piece {
         this.y = row;
     }
 
-
 }
