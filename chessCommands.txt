@@ -1,0 +1,23 @@
+Pld4
+Pdd5
+Plc4
+Pdb6
+Nlc3
+Pdc6
+Ple3
+Pde6
+Bld3
+Bdb4
+Nle2
+Ndf6
+# White castles king side
+Klg1
+Rlf1
+Pdh6
+# pawn captures
+c4 d5
+c6 d5
+# Light queen gives check
+Qla4
+# Dark resigns here but to test an illegal move the bottom move should be illegal since the dark king is in check
+h6 h5
