@@ -55,14 +55,14 @@ public class CommandReader {
                    Tile[][] board = new Tile[8][8]; // Bored dimensions
 
                         //Checks for type of piece
-                       if( m.group(2).equals("P")) { // POND
+                       if( m.group(2).equals("P")) { // PAWN
                            //Check for light or dark
                            if (m.group(3).equals("l")) {
                                // getting the y and x
-                               //int y = m.group(6);//turned into a number ASCII('A') = 65 -64
+                               //int y = m.group(6);//turned into a number) = 65 ASCII('A' -64
                                int y = Integer.parseInt(m.group(6));
                                int x = Integer.parseInt(m.group(7));
-                               board[y][x].setPieceType(new Pawn());
+                               board[y][x].setCurrentPiece(new Pawn(PieceColor.DARK));
                                board[y][x].setHasPiece(true);
                            }
 
@@ -71,15 +71,16 @@ public class CommandReader {
                            if (m.group(3).equals("l")) {
                                int x = Integer.parseInt(m.group(7));
                                int y = Integer.parseInt(m.group(7));
-                               board[y][x].setPieceType(new Queen());
+                              // board[y][x].setPieceType(new Queen());
                                board[y][x].setHasPiece(true);
+
                            }
                        }else if(m.group(2).equals("R")){ //ROOK
 
                            if (m.group(3).equals("l")) {
                                int x = Integer.parseInt(m.group(7));
                                int y = Integer.parseInt(m.group(7));
-                               board[y][x].setPieceType(new Rook());
+                              // board[y][x].setPieceType(new Rook());
                                board[y][x].setHasPiece(true);
                            }
                        }else if(m.group(2).equals("B")){ //BISHOP
@@ -87,7 +88,7 @@ public class CommandReader {
                            if (m.group(3).equals("l")) {
                                int x = Integer.parseInt(m.group(7));
                                int y = Integer.parseInt(m.group(7));
-                               board[y][x].setPieceType(new Bishop());
+                              // board[y][x].setPieceType(new Bishop());
                                board[y][x].setHasPiece(true);
                            }
                        }else if(m.group(2).equals("N")){ //KNIGHT
@@ -95,7 +96,7 @@ public class CommandReader {
                            if (m.group(3).equals("l")) {
                                int x = Integer.parseInt(m.group(7));
                                int y = Integer.parseInt(m.group(7));
-                               board[y][x].setPieceType(new Knight());
+                               //board[y][x].setPieceType(new Knight());
                                board[y][x].setHasPiece(true);
                            }
                        }else if(m.group(2).equals("Q")){ //QUEEN
@@ -103,7 +104,7 @@ public class CommandReader {
                            if (m.group(3).equals("l")) {
                                int x = Integer.parseInt(m.group(7));
                                int y = Integer.parseInt(m.group(7));
-                               board[y][x].setPieceType(new Queen());
+                               //board[y][x].setPieceType(new Queen());
                                board[y][x].setHasPiece(true);
                            }
                        }else if(m.group(2).equals("K")){ //KING
@@ -111,12 +112,12 @@ public class CommandReader {
                            if (m.group(3).equals("l")) {
                                int x = Integer.parseInt(m.group(7));
                                int y = Integer.parseInt(m.group(7));
-                               board[y][x].setPieceType(new King());
+                              // board[y][x].setPieceType(new King());
                                board[y][x].setHasPiece(true);
                            }
                        }
 
-                    board[0][0].setPieceType(new Rook());
+                   // board[0][0].setPieceType(new Rook());
                     board[0][0].setHasPiece(true);
             }
             }catch(NullPointerException e){

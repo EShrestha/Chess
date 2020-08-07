@@ -5,8 +5,8 @@ import Model.Piece;
 public class Tile {
     private final TileColor tileColor;
     private final Location location;
-    private Piece pieceType = null;
     private boolean hasPiece;
+    private Piece currentPiece;
 
     public Tile(TileColor tileColor, Location location) {
         this.tileColor = tileColor;
@@ -16,6 +16,7 @@ public class Tile {
 
     public void resetTile(){
         this.hasPiece = false;
+        this.currentPiece = null;
     }
 
     public TileColor getTileColor() {
@@ -34,12 +35,12 @@ public class Tile {
         this.hasPiece = hasPiece;
     }
 
-    public Piece getPieceType() {
-        return pieceType;
+    public Piece getCurrentPiece() {
+        return currentPiece;
     }
 
-    public void setPieceType(Piece pieceType) {
-        this.pieceType = pieceType;
+    public void setCurrentPiece(Piece currentPiece) {
+        this.currentPiece = currentPiece;
     }
 
     @Override

@@ -6,23 +6,26 @@ import Model.Knight;
 import Model.Piece;
 import Model.Rook;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Board {
     private static final Integer DIMENSION = 8;
     Tile[][] board = new Tile[DIMENSION][DIMENSION];
+    private final Map<Location, Tile> locationTileMap;
 
-    // If a file is passed in, setup board using this
-    public Board(String file){
-        new CommandReader().readCommandFromFile(file);
-    }
+
 
     // If no files are passed in, setup board using this
     public Board(){
+        locationTileMap = new HashMap<>();
 
         for(int i = 0; i < board.length; i++){
             int col = 0;
             TileColor currentColor = (i % 2 == 0) ? TileColor.LIGHT : TileColor.DARK;
             for(File file : File.values()){
                 Tile newTile = new Tile(currentColor, new Location(file, DIMENSION-i));
+                locationTileMap.put(newTile.getLocation(), newTile);
                 board[i][col] = newTile;
                 currentColor = (currentColor == TileColor.DARK) ? TileColor.LIGHT : TileColor.DARK;
                 col++;
@@ -30,6 +33,17 @@ public class Board {
         }
 
     }
+
+    // If a file is passed in, setup board using this
+    public Board(String file){
+        locationTileMap = new HashMap<>();
+        new CommandReader().readCommandFromFile(file);
+    }
+
+    public Map<Location, Tile> getLocationTileMap(){
+        return locationTileMap;
+    }
+
 
     public void printBoard(){
         System.out.println("   +-----+-----+-----+-----+-----+-----+-----+-----+");
