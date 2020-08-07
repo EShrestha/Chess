@@ -12,7 +12,7 @@ public class AppControl {
     Board activeBoard;
 
     public void run(){
-        System.out.println("Welcom to chess");
+        System.out.println("Welcome to chess");
         menuControl();
         //new CommandReader().readCommandFromFile("chessCommands"); // .txt extension is implied
         //new Board().printBoard();

@@ -37,7 +37,7 @@ public class Board {
     // If a file is passed in, setup board using this
     public Board(String file){
         locationTileMap = new HashMap<>();
-        new CommandReader().readCommandFromFile(file);
+        board = new CommandReader().readCommandFromFile(file);
     }
 
     public Map<Location, Tile> getLocationTileMap(){
@@ -56,7 +56,7 @@ public class Board {
                 System.out.print("|");
                 if(tile.isHasPiece()){
                     // this is where you would print the piece name, EX: | R | N | B | K | Q |...
-                    System.out.println("X");
+                    System.out.print("  " + tile.getCurrentPiece().getShortName() + "  ");
                 }else{
                     System.out.print("  -  ");
                 }
