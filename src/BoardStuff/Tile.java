@@ -41,6 +41,7 @@ public class Tile {
 
     public void setCurrentPiece(Piece currentPiece) {
         this.currentPiece = currentPiece;
+        this.setHasPiece(true);
     }
 
     @Override

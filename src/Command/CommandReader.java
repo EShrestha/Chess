@@ -14,6 +14,7 @@ public class CommandReader {
     ArrayList<Integer> fileNum = new ArrayList<>();
     ArrayList<Integer> rankNum = new ArrayList<>();
     ArrayList<String> allCommands = new ArrayList<>();
+    Tile[][] board = new Tile[8][8]; // Bored dimensions
 
     public void readCommandFromFile(String fileName) {
         allCommands.clear();
@@ -40,89 +41,66 @@ public class CommandReader {
 
     //Describe the commands in the file to console
     public void describeCommands(){
-        Pattern p = Pattern.compile("^((P|R|N|B|Q|K)?(l|d)?(?:([a-h])([1-8]))?\\s?([a-h])([1-8]))$");
-        String color;
+        Pattern p = Pattern.compile("^((P|R|B|N|Q|K)?(l|d)?(?:([a-h])([1-8]))?\\s?([a-h])([1-8]))$");
+        String colorStr;
         for(String command : allCommands){
             //Group 2,3,6,7 for ?l?? or ?d??    EX: Pld4 or Qdh8
             //Group 4,5,6,7 for ?? ??           EX: c3 c4
             Matcher m = p.matcher(command);
             m.find();
+            Enum file = Enum.valueOf(BoardStuff.File.class,m.group(6).toUpperCase());
+            PieceColor color = m.group(3) == "l" ? PieceColor.LIGHT : PieceColor.DARK;
+            Integer x = file.ordinal(); // 0-7
+            Integer y = Integer.parseInt(m.group(7))-1; // 0-7
+
             try {
+                // if xlxx type of command was passed in
                 if ((!m.group(2).isEmpty()) || (m.group(2) != null)) {
-                    color = m.group(3).equals("l") ? "Light" : "Dark";
-                    System.out.println(color + " colored " + m.group(2) + " placed on " + m.group(6).toUpperCase() + "" + m.group(7));
-                    // Would call a new method here to actually place that piece
-                   Tile[][] board = new Tile[8][8]; // Bored dimensions
+                    // Sets color based on if l or d was in the command
+                    colorStr = m.group(3).equals("l") ? "Light" : "Dark";
+                   // Prints to console what the command did
+                    System.out.println(colorStr + " colored " + m.group(2) + " placed on " + m.group(6).toUpperCase() + "" + m.group(7));
+
+                    Piece piece;
+
 
                         //Checks for type of piece
                        if( m.group(2).equals("P")) { // PAWN
-                           //Check for light or dark
-                           if (m.group(3).equals("l")) {
-                               // getting the y and x
-                               //int y = m.group(6);//turned into a number) = 65 ASCII('A' -64
-                               int y = Integer.parseInt(m.group(6));
-                               int x = Integer.parseInt(m.group(7));
-                               board[y][x].setCurrentPiece(new Pawn(PieceColor.DARK));
-                               board[y][x].setHasPiece(true);
-                           }
+                           piece = new Pawn(color);
+                           piece.setCurrentTile(board[x][y]);
+                           board[x][y].setCurrentPiece(piece);
 
-                       }else if(m.group(2).equals("Q")){ //QUEEN
+                       }else if( m.group(2).equals("R")) { // Rook
+                           piece = new Pawn(color);
+                           piece.setCurrentTile(board[x][y]);
+                           board[x][y].setCurrentPiece(piece);
 
-                           if (m.group(3).equals("l")) {
-                               int x = Integer.parseInt(m.group(7));
-                               int y = Integer.parseInt(m.group(7));
-                              // board[y][x].setPieceType(new Queen());
-                               board[y][x].setHasPiece(true);
+                       }else if( m.group(2).equals("B")) { // Bishop
+                           piece = new Pawn(color);
+                           piece.setCurrentTile(board[x][y]);
+                           board[x][y].setCurrentPiece(piece);
 
-                           }
-                       }else if(m.group(2).equals("R")){ //ROOK
+                       }else if( m.group(2).equals("N")) { // Knight
+                           piece = new Pawn(color);
+                           piece.setCurrentTile(board[x][y]);
+                           board[x][y].setCurrentPiece(piece);
 
-                           if (m.group(3).equals("l")) {
-                               int x = Integer.parseInt(m.group(7));
-                               int y = Integer.parseInt(m.group(7));
-                              // board[y][x].setPieceType(new Rook());
-                               board[y][x].setHasPiece(true);
-                           }
-                       }else if(m.group(2).equals("B")){ //BISHOP
+                       }else if( m.group(2).equals("Q")) { // Queen
+                           piece = new Pawn(color);
+                           piece.setCurrentTile(board[x][y]);
+                           board[x][y].setCurrentPiece(piece);
 
-                           if (m.group(3).equals("l")) {
-                               int x = Integer.parseInt(m.group(7));
-                               int y = Integer.parseInt(m.group(7));
-                              // board[y][x].setPieceType(new Bishop());
-                               board[y][x].setHasPiece(true);
-                           }
-                       }else if(m.group(2).equals("N")){ //KNIGHT
+                       }else if( m.group(2).equals("K")) { // King
+                           piece = new Pawn(color);
+                           piece.setCurrentTile(board[x][y]);
+                           board[x][y].setCurrentPiece(piece);
 
-                           if (m.group(3).equals("l")) {
-                               int x = Integer.parseInt(m.group(7));
-                               int y = Integer.parseInt(m.group(7));
-                               //board[y][x].setPieceType(new Knight());
-                               board[y][x].setHasPiece(true);
-                           }
-                       }else if(m.group(2).equals("Q")){ //QUEEN
-
-                           if (m.group(3).equals("l")) {
-                               int x = Integer.parseInt(m.group(7));
-                               int y = Integer.parseInt(m.group(7));
-                               //board[y][x].setPieceType(new Queen());
-                               board[y][x].setHasPiece(true);
-                           }
-                       }else if(m.group(2).equals("K")){ //KING
-
-                           if (m.group(3).equals("l")) {
-                               int x = Integer.parseInt(m.group(7));
-                               int y = Integer.parseInt(m.group(7));
-                              // board[y][x].setPieceType(new King());
-                               board[y][x].setHasPiece(true);
-                           }
                        }
-
-                   // board[0][0].setPieceType(new Rook());
-                    board[0][0].setHasPiece(true);
             }
             }catch(NullPointerException e){
+                // Prints to console what each piece did
                 System.out.println("Piece at "+m.group(4).toUpperCase()+""+m.group(5)+" moved to "+m.group(6).toUpperCase()+""+m.group(7));
-                // Would call a new method here to validate the move and check for checks
+
             }
 
         }
