@@ -1,13 +1,12 @@
 package BoardStuff;
 
+import Model.Piece;
+
 public class Board {
     private static final Integer DIMENSION = 8;
     Tile[][] board = new Tile[DIMENSION][DIMENSION];
 
     // If a file is passed in, setup board using this
-    public Board(String chessCommandFiles){
-
-    }
 
     // If no files are passed in, setup board using this
     public Board(){
