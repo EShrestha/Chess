@@ -1,5 +1,10 @@
 package Command;
 
+import BoardStuff.Board;
+import BoardStuff.Tile;
+import Model.Pawn;
+import Model.Rook;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -48,7 +53,26 @@ public class CommandReader {
                     color = m.group(3).equals("l") ? "Light" : "Dark";
                     System.out.println(color + " colored " + m.group(2) + " placed on " + m.group(6).toUpperCase() + "" + m.group(7));
                     // Would call a new method here to actually place that piece
-                }
+                   Tile[][] board = new Tile[8][8];
+
+                        //Checks for type of piece
+                       if( m.group(2).equals("P")) {
+                           //Check for light or dark
+                           if (m.group(3).equals("l")) {
+                               // getting the x and y
+                               //int y = m.group(6);//turned into a number ASCII('A') = 65 -64
+                               int x = Integer.parseInt(m.group(7));
+                               //board[y][x].setPieceType(new Pawn());
+                               //board[y][x].setHasPiece(true);
+                           }
+
+                       }else if(m.group(2).equals("Q")){
+                        System.out.println("");
+                        }
+
+                    board[0][0].setPieceType(new Rook());
+                    board[0][0].setHasPiece(true);
+            }
             }catch(NullPointerException e){
                 System.out.println("Piece at "+m.group(4).toUpperCase()+""+m.group(5)+" moved to "+m.group(6).toUpperCase()+""+m.group(7));
                 // Would call a new method here to validate the move and check for checks

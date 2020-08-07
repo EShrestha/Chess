@@ -1,5 +1,6 @@
 package BoardStuff;
 
+import Command.CommandReader;
 import Model.Bishop;
 import Model.Knight;
 import Model.Piece;
@@ -11,7 +12,7 @@ public class Board {
 
     // If a file is passed in, setup board using this
     public Board(String file){
-
+        new CommandReader().readCommandFromFile(file);
     }
 
     // If no files are passed in, setup board using this
