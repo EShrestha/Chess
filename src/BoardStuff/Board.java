@@ -44,7 +44,7 @@ public class Board {
                     // this is where you would print the piece name, EX: | R | N | B | K | Q |...
                     System.out.println("X");
                 }else{
-                    System.out.print("  X  ");
+                    System.out.print("  -  ");
                 }
 
 
