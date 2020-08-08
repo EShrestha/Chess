@@ -8,6 +8,7 @@ import Model.*;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,8 +16,21 @@ public class CommandReader {
 
     ArrayList<Integer> fileNum = new ArrayList<>();
     ArrayList<Integer> rankNum = new ArrayList<>();
+    HashMap<Integer, Integer> rankToRank = new HashMap<>();
+
     ArrayList<String> allCommands = new ArrayList<>();
     Tile[][] board = new Tile[8][8];
+
+    public CommandReader(){
+        rankToRank.put(0,7);
+        rankToRank.put(1,6);
+        rankToRank.put(2,5);
+        rankToRank.put(3,4);
+        rankToRank.put(4,3);
+        rankToRank.put(5,2);
+        rankToRank.put(6,1);
+        rankToRank.put(7,0);
+    }
 
     public Tile[][] readCommandFromFile(String fileName) {
         allCommands.clear();
@@ -55,8 +69,9 @@ public class CommandReader {
             m.find();
             Enum file = Enum.valueOf(BoardStuff.File.class,m.group(6).toUpperCase());
             Integer y = file.ordinal(); // 0-7
-            Integer x = Integer.parseInt(m.group(7))-1; // 0-7
+            Integer x = rankToRank.get(Integer.parseInt(m.group(7))- 1); // 0-7
             System.out.println(m.group());
+
 
             try {
                 // if xlxx type of command was passed in

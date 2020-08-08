@@ -1,10 +1,7 @@
 package BoardStuff;
 
 import Command.CommandReader;
-import Model.Bishop;
-import Model.Knight;
-import Model.Piece;
-import Model.Rook;
+import Model.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +16,7 @@ public class Board {
     // If no files are passed in, setup board using this
     public Board(){
         locationTileMap = new HashMap<>();
+
 
         for(int i = 0; i < board.length; i++){
             int col = 0;
@@ -59,13 +57,14 @@ public class Board {
                     System.out.print("  " + tile.getCurrentPiece().getShortName() + "  ");
                 }else{
                     System.out.print("  -  ");
+                    // DEBUG - Below line is for debuging
+                    //System.out.print(" "+tile.getLocation().getFile()+","+tile.getLocation().getRank()+" ");
                 }
-
-
             }
             System.out.println("|"); // Just a line separater
             System.out.println("   +-----+-----+-----+-----+-----+-----+-----+-----+");
         }
         System.out.println("      A     B     C     D     E     F     G     H");
+
     }
 }
