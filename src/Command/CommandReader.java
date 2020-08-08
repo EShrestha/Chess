@@ -14,9 +14,7 @@ import java.util.regex.Pattern;
 
 public class CommandReader {
 
-    ArrayList<Integer> fileNum = new ArrayList<>();
-    ArrayList<Integer> rankNum = new ArrayList<>();
-    HashMap<Integer, Integer> rankToRank = new HashMap<>();
+    HashMap<Integer, Integer> rankToRank = new HashMap<>(); // user input a1 get turned into rank 0,6 because [][] start 0,0 at the top left corner
 
     ArrayList<String> allCommands = new ArrayList<>();
     Tile[][] board = new Tile[8][8];
@@ -119,12 +117,30 @@ public class CommandReader {
                        }
             }
             }catch(NullPointerException e){
-                // Prints to console what each piece did
+                //Group 2,3,6,7 for ?l?? or ?d??    EX: Pld4 or Qdh8
+                //Group 4,5,6,7 for ?? ??           EX: c3 c4
+
+                Integer currentFile = Enum.valueOf(BoardStuff.File.class,m.group(4).toUpperCase()).ordinal(); // 0-7
+                Integer currentRank = rankToRank.get(Integer.parseInt(m.group(5))- 1); // 0-7
+
+                Integer moveToFile = Enum.valueOf(BoardStuff.File.class,m.group(6).toUpperCase()).ordinal(); // 0-7
+                Integer moveToRank = rankToRank.get(Integer.parseInt(m.group(7))- 1);
+                // if move to File and Rank are amongst the list of valid moves the do the following
+                Piece tempPiece = board[currentRank][currentFile].getCurrentPiece();
+                board[currentRank][currentFile].resetTile();
+                board[moveToRank][moveToFile].resetTile();
+                board[moveToRank][moveToFile].setCurrentPiece(tempPiece);
                 System.out.println("Piece at "+m.group(4).toUpperCase()+""+m.group(5)+" moved to "+m.group(6).toUpperCase()+""+m.group(7));
+                //System.out.println(board[7][0].getCurrentPiece().getName());
 
             }
 
         }
+//        System.out.println(board[7][0].getCurrentPiece().getName());
+//        Piece temp = board[7][0].getCurrentPiece();
+//        board[7][0].resetTile();
+//        board[7][1].setCurrentPiece(temp);
+//        System.out.println(board[7][1].getCurrentPiece().getName());
     }
 
     public void makeBlankBoard(int DIMENSION){
