@@ -2,12 +2,17 @@ package Controller;
 
 import BoardStuff.Board;
 import Command.CommandReader;
+import Model.*;
+import lib.ConsoleIO;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AppControl {
+
 
     Board activeBoard;
 
@@ -25,12 +30,12 @@ public class AppControl {
         do {
             switch (promptMainmenu()) {
                 case 1:
-                    activeBoard = new Board(promptForString("Enter file name (no extensions): "));
-                    play(activeBoard);
+                    activeBoard = new Board(ConsoleIO.promptForString("Enter file name (no extensions): "));
+                    new Game().playGame(activeBoard);
                     break;
                 case 2:
-                    activeBoard = new Board();
-                    play(activeBoard);
+                    activeBoard = new Board(true);
+                    new Game().playGame(activeBoard);
                     break;
                 case 3:
 
@@ -62,54 +67,7 @@ public class AppControl {
                 .append("\t4) BLANK\n")
                 .append("\n\t0) Exit \n\n")
                 .append("Enter the selection number: ");
-        selection = promptForInt(sb.toString(), min, max);
+        selection = ConsoleIO.promptForInt(sb.toString(), min, max);
         return selection;
-    }
-
-    //Starts the game with the given board
-    private void play(Board board){
-        board.printBoard();
-
-        // Probably make a player instance or something the prompt for moves idk
-
-    }
-
-
-
-    private int promptForInt(String prompt, int min, int max) {
-        int num = 0;
-        boolean isInvalid = true;
-        do {
-            String input = promptForString(prompt);
-            try {
-                num = Integer.parseInt(input);
-                isInvalid = num < min || num > max;
-            } catch (NumberFormatException nfe) {
-            }
-            if (isInvalid) {
-                System.out.println("--INPUT MUST BE VALID--\n");
-            }
-        } while (isInvalid);
-        return num;
-    }
-
-    private static String promptForString(String prompt) {
-        BufferedReader buffy = new BufferedReader(new InputStreamReader(System.in));
-        String input = null;
-        boolean isInvalid;
-        do {
-            System.out.print(prompt);
-            try {
-                input = buffy.readLine();
-            } catch (IOException ioe) {
-                System.out.println("--Woah, there was a technical issue, let's try again.--");
-            }
-            isInvalid = input == null || input.isEmpty() || input.trim().equals("");
-            if (isInvalid) {
-                System.out.println("--INPUT MUST BE VALID--\n");
-            }
-
-        } while (isInvalid);
-        return input;
     }
 }

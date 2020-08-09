@@ -8,13 +8,13 @@ import java.util.Map;
 
 public class Board {
     private static final Integer DIMENSION = 8;
-    Tile[][] board = new Tile[DIMENSION][DIMENSION];
+    public Tile[][] board = new Tile[DIMENSION][DIMENSION];
     private final Map<Location, Tile> locationTileMap;
 
 
 
     // If no files are passed in, setup board using this
-    public Board(){
+    public Board(boolean setUpNewGame){
         locationTileMap = new HashMap<>();
 
         for(int i = 0; i < board.length; i++){
@@ -29,9 +29,7 @@ public class Board {
             }
         }
         //Setus up the new game with all pieces in the right tiles
-        setUpNewGame();
-
-
+        if(setUpNewGame){setUpNewGame();}
     }
 
     // If a file is passed in, setup board using this
