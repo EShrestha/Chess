@@ -8,10 +8,11 @@ import java.util.List;
 
 public class Rook extends Piece implements Movable{
 
-    public Rook(PieceColor pieceColor) {
+    public Rook(PieceColor pieceColor, Tile tile) {
         super(pieceColor);
         this.name = "Rook";
         this.shortName = this.pieceColor == PieceColor.LIGHT ? 'R' : 'r';
+        this.currentTile = tile;
     }
 
     @Override

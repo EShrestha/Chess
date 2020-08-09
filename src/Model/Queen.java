@@ -12,10 +12,11 @@ public class Queen extends Piece implements Movable {
     private Movable bishop;
     private Movable rook;
 
-    public Queen(PieceColor pieceColor) {
+    public Queen(PieceColor pieceColor, Tile tile) {
         super(pieceColor);
         this.name = "Queen";
         this.shortName = this.pieceColor == PieceColor.LIGHT ? 'Q' : 'q';
+        this.currentTile = tile;
     }
 
     public Queen(PieceColor pieceColor, Movable bishop, Movable rook){

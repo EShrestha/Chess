@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 public class AppControl {
 
 
-    Board activeBoard;
+    //Board activeBoard;
 
     public void run(){
         System.out.println("Welcome to chess");
@@ -30,12 +30,13 @@ public class AppControl {
         do {
             switch (promptMainmenu()) {
                 case 1:
-                    activeBoard = new Board(ConsoleIO.promptForString("Enter file name (no extensions): "));
-                    new Game().playGame(activeBoard);
+                    Board activeFileBoard = new Board(ConsoleIO.promptForString("Enter file name (no extensions): "));
+                    new Game().playGame(activeFileBoard);
                     break;
                 case 2:
-                    activeBoard = new Board(true);
-                    new Game().playGame(activeBoard);
+                    Board activeBlankBoard = new Board(true);
+                    System.out.println(activeBlankBoard.board[0][0].getCurrentPiece());
+                    new Game().playGame(activeBlankBoard);
                     break;
                 case 3:
 

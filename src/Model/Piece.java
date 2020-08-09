@@ -1,12 +1,17 @@
 package Model;
 
+import BoardStuff.Board;
+import BoardStuff.Location;
 import BoardStuff.Tile;
+
+import java.util.List;
 
 public abstract class Piece {
     protected String name;
     protected char shortName;
     protected PieceColor pieceColor;
     protected Tile currentTile;
+    protected char shortColor;
 
     public Piece(PieceColor pieceColor){
         this.pieceColor = pieceColor;
@@ -20,6 +25,10 @@ public abstract class Piece {
         return shortName;
     }
 
+    public char getShortColor(){
+        return pieceColor == PieceColor.LIGHT ? 'l' : 'd';
+    }
+
     public PieceColor getPieceColor() {
         return pieceColor;
     }
@@ -31,6 +40,9 @@ public abstract class Piece {
     public void setCurrentTile(Tile currentTile) {
         this.currentTile = currentTile;
     }
+
+    public abstract List<Location> getValidMoves(Board board);
+
 
     @Override
     public String toString() {

@@ -7,10 +7,11 @@ import BoardStuff.Tile;
 import java.util.List;
 
 public class Knight extends Piece implements Movable {
-    public Knight(PieceColor pieceColor) {
+    public Knight(PieceColor pieceColor, Tile tile) {
         super(pieceColor);
         this.name = "Knight";
         this.shortName = this.pieceColor == PieceColor.LIGHT ? 'N' : 'n';
+        this.currentTile = tile;
     }
 
     @Override

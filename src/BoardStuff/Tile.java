@@ -4,7 +4,7 @@ import Model.Piece;
 
 public class Tile {
     private final TileColor tileColor;
-    private final Location location;
+    private Location location;
     private boolean hasPiece;
     private Piece currentPiece;
 
