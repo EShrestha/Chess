@@ -58,11 +58,11 @@ public class Board {
 
                 }else{
                     System.out.print("  -  ");
-                    // DEBUG - Below line is for debuging
+                    // DEBUG - Below line is for debugging
                     //System.out.print(" "+tile.getLocation().getFile()+","+tile.getLocation().getRank()+" ");
                 }
             }
-            System.out.println("|"); // Just a line separater
+            System.out.println("|");
             System.out.println("   +-----+-----+-----+-----+-----+-----+-----+-----+");
         }
         System.out.println("      A     B     C     D     E     F     G     H");
@@ -72,12 +72,12 @@ public class Board {
     public void setUpNewGame(){
         // All pieces(DARK) of the 8th Rank
         board[0][0].setCurrentPiece(new Rook(PieceColor.DARK, board[0][0]));
-        board[0][1].setCurrentPiece(new Bishop(PieceColor.DARK, board[0][1]));
-        board[0][2].setCurrentPiece(new Knight(PieceColor.DARK, board[0][2]));
+        board[0][1].setCurrentPiece(new Knight(PieceColor.DARK, board[0][1]));
+        board[0][2].setCurrentPiece(new Bishop(PieceColor.DARK, board[0][2]));
         board[0][3].setCurrentPiece(new Queen(PieceColor.DARK, board[0][3]));
         board[0][4].setCurrentPiece(new King(PieceColor.DARK, board[0][4]));
-        board[0][5].setCurrentPiece(new Knight(PieceColor.DARK, board[0][5]));
-        board[0][6].setCurrentPiece(new Bishop(PieceColor.DARK, board[0][6]));
+        board[0][5].setCurrentPiece(new Bishop(PieceColor.DARK, board[0][5]));
+        board[0][6].setCurrentPiece(new Knight(PieceColor.DARK, board[0][6]));
         board[0][7].setCurrentPiece(new Rook(PieceColor.DARK, board[0][7]));
         // All pieces(DARK) of the 7th Rank (Pawns only)
         board[1][0].setCurrentPiece(new Pawn(PieceColor.DARK, board[1][0]));
@@ -92,12 +92,12 @@ public class Board {
 
         // All pieces(LIGHT) of the 8th Rank
         board[7][0].setCurrentPiece(new Rook(PieceColor.LIGHT, board[7][0]));
-        board[7][1].setCurrentPiece(new Bishop(PieceColor.LIGHT, board[7][1]));
-        board[7][2].setCurrentPiece(new Knight(PieceColor.LIGHT, board[7][2]));
+        board[7][1].setCurrentPiece(new Knight(PieceColor.LIGHT, board[7][1]));
+        board[7][2].setCurrentPiece(new Bishop(PieceColor.LIGHT, board[7][2]));
         board[7][3].setCurrentPiece(new Queen(PieceColor.LIGHT, board[7][3]));
         board[7][4].setCurrentPiece(new King(PieceColor.LIGHT, board[7][4]));
-        board[7][5].setCurrentPiece(new Knight(PieceColor.LIGHT, board[7][5]));
-        board[7][6].setCurrentPiece(new Bishop(PieceColor.LIGHT, board[7][6]));
+        board[7][5].setCurrentPiece(new Bishop(PieceColor.LIGHT, board[7][5]));
+        board[7][6].setCurrentPiece(new Knight(PieceColor.LIGHT, board[7][6]));
         board[7][7].setCurrentPiece(new Rook(PieceColor.LIGHT, board[7][7]));
         // All pieces(LIGHT) of the 7th Rank (Pawns only)
         board[6][0].setCurrentPiece(new Pawn(PieceColor.LIGHT, board[6][0]));

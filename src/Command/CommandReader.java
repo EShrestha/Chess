@@ -2,12 +2,10 @@ package Command;
 
 import BoardStuff.*;
 import Model.*;
-import lib.ConsoleIO;
 
 import java.io.*;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,7 +29,6 @@ public class CommandReader {
             File file = new File(fileName+".txt");    //creates a new file instance
             FileReader fileReader = new FileReader(file);   //reads the file
             BufferedReader br = new BufferedReader(fileReader);  //creates a buffering character input stream
-            StringBuffer sb = new StringBuffer();    //constructs a string buffer with no characters
             String line;
             while ((line = br.readLine()) != null) {
                 if (!line.startsWith("#")){
@@ -49,7 +46,8 @@ public class CommandReader {
 
     //Describe the commands in the file to console
     public void executeCommands(String command, Board b){
-        Pattern p = Pattern.compile("^((P|R|B|N|Q|K)?(l|d)?(?:([a-h])([1-8]))?\\s?([a-h])([1-8]))$");
+        //Pattern p = Pattern.compile("^((P|R|B|N|Q|K)?(l|d)?(?:([a-h])([1-8]))?\\s?([a-h])([1-8]))$");
+        Pattern p = Pattern.compile("^(([PRBNQK])?([ld])?(?:([a-h])([1-8]))?\\s?([a-h])([1-8]))$");
         String colorStr;
         PieceColor color;
 
@@ -58,8 +56,8 @@ public class CommandReader {
             Matcher m = p.matcher(command);
             m.find();
             Enum file = Enum.valueOf(BoardStuff.File.class,m.group(6).toUpperCase());
-            Integer y = file.ordinal(); // 0-7
-            Integer x = rankToRank.getRank(Integer.parseInt(m.group(7))- 1); // 0-7
+            int y = file.ordinal(); // 0-7
+            int x = rankToRank.getRank(Integer.parseInt(m.group(7))- 1); // 0-7
 
             try {
                 // if xlxx type of command was passed in
@@ -74,6 +72,7 @@ public class CommandReader {
 
 
                     //Setting the pieces current tile that it is on
+                    assert piece != null;
                     piece.setCurrentTile(b.board[x][y]);
                     //Setting the piece
                     b.board[x][y].setCurrentPiece(piece);
