@@ -6,9 +6,7 @@ public class LocationGenerator {
     private static final File[] files = File.values();
     public static Location build(Location current, Integer fileOffset, Integer rankOffset){
         Integer currentFile = current.getFile().ordinal();
-        if ( tempBoard.board[currentFile + fileOffset][current.getRank() + rankOffset] != null ) {
-            return new Location(files[currentFile + fileOffset], current.getRank() + rankOffset);
-        }else {return null;}
+        return new Location(files[currentFile + fileOffset], current.getRank() + rankOffset);
 
     }
 }

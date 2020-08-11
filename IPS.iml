@@ -10,7 +10,16 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/IdeaProjects/Projects IntelliJ/OOP/ConsoleIOTester/ConsoleIO.jar!/" />
+          <root url="jar://$MODULE_DIR$/../Projects IntelliJ/OOP/ConsoleIOTester/ConsoleIO.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/OneDrive - Neumont College of Computer Science/Desktop/ConsoleIO.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

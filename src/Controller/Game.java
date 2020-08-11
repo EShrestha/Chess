@@ -88,9 +88,6 @@ public class Game {
 
                     Piece tempPiece = playingBoard.board[yCurrent][xCurrent].getCurrentPiece();
                     playingBoard.board[yCurrent][xCurrent].resetTile();
-                    if (playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece().getShortColor() == 'l') {
-                        light.setCapturedPiece(playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece());
-                    }else {dark.setCapturedPiece(playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece());}
 
                     playingBoard.board[yMoveTo][xMoveTo].setCurrentPiece(tempPiece);
                     playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setCurrentTile(playingBoard.board[yMoveTo][xMoveTo]);
