@@ -45,7 +45,7 @@ public class WindowChess {
         startButtonPanel = new JPanel();
         startButtonPanel.setBounds(300, 400, 200,80);
         startButtonPanel.setBackground(Color.white);
-        startButton = new JButton("New Game");
+        startButton = new JButton("New Game ");
         startButton.setBackground(Color.white);
         startButton.setForeground(Color.black);
         startButton.setFont(normalFont);
@@ -65,7 +65,7 @@ public class WindowChess {
         quitGamePanel = new JPanel();
         quitGamePanel.setBounds(300, 560, 200,80);
         quitGamePanel.setBackground(Color.white);
-        quitButton = new JButton("Quit");
+        quitButton = new JButton("  Quit   ");
         quitButton.setBackground(Color.white);
         quitButton.setForeground(Color.black);
         quitButton.setFont(normalFont);

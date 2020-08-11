@@ -27,18 +27,21 @@ public class Pawn extends Piece implements Movable{
     public List<Location> getValidMoves(Board board) {
         List<Location> possibleMoveTiles = new LinkedList<>();
         Location currentLocation = this.getCurrentTile().getLocation();
-        possibleMoveTiles.add(LocationGenerator.build(currentLocation, 0, 1)); // 0= same file, 2 = can move up 2 rank from current location
+        Integer rankOffset = this.pieceColor == PieceColor.LIGHT ? 1 : -1;
+        possibleMoveTiles.add(LocationGenerator.build(currentLocation, 0, rankOffset)); // 0= same file, 2 = can move up 2 rank from current location
+
         // If it's the first move
         if(isFirstMove){
-            possibleMoveTiles.add(LocationGenerator.build(currentLocation, 0, 2)); // 0 = same file, 1 = can move up 1 rank from current location
+            possibleMoveTiles.add(LocationGenerator.build(currentLocation, 0, 2*rankOffset)); // 0 = same file, 1 = can move up 1 rank from current location
             return possibleMoveTiles;
         }
 
-        possibleMoveTiles.add(LocationGenerator.build(currentLocation, 1, 1)); // right one up 1 from currentLocation
-        possibleMoveTiles.add(LocationGenerator.build(currentLocation, -1, 1)); // left one up 1 from currentLocation
+        possibleMoveTiles.add(LocationGenerator.build(currentLocation, 1, rankOffset)); // right one up/down 1 from currentLocation
+        possibleMoveTiles.add(LocationGenerator.build(currentLocation, -1, rankOffset)); // left one up/down 1 from currentLocation
+
         Map<Location, Tile> tileMap = board.getLocationTileMap();
 
-        // No clue what this does but it works
+        // Filters out the tiles from the possibleMoveTiles that are not a valid tile
         List<Location> validMoves = possibleMoveTiles.stream()
                 .filter(tileMap::containsKey)
                 .collect(Collectors.toList());

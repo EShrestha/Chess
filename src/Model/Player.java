@@ -6,8 +6,8 @@ public class Player {
     // l = white, d = Black
     char color;
     // Array list of pieces the player has left and what they have captured
-    ArrayList<Piece> capturedPieces = new ArrayList<>();
-    ArrayList<Piece> currentPieces = new ArrayList<>();
+    private ArrayList<Piece> capturedPieces = new ArrayList<>();
+    private ArrayList<Piece> currentPieces = new ArrayList<>();
 
     //Constructor
     public Player(char color ){
@@ -19,6 +19,27 @@ public class Player {
         currentPieces.clear();
     }
 
+    public char getColor() {
+        return color;
+    }
 
+    public void setColor(char color) {
+        this.color = color;
+    }
 
+    public ArrayList<Piece> getCapturedPieces() {
+        return capturedPieces;
+    }
+
+    public void setCapturedPiece(Piece capturedPiece) {
+        this.capturedPieces.add(capturedPiece);
+    }
+
+    public ArrayList<Piece> getCurrentPieces() {
+        return currentPieces;
+    }
+
+    public void setCurrentPieces(Piece currentPiece) {
+        this.currentPieces.add(currentPiece);
+    }
 }

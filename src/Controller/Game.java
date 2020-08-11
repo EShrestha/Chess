@@ -79,13 +79,22 @@ public class Game {
 
 
             if (playingBoard.board[yCurrent][xCurrent].isHasPiece()) {
+                //
                 List<Location> validLocations = playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getValidMoves(playingBoard);
+                System.out.println(validLocations);
 
                 if (color == playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getShortColor()
                         && validLocations.contains(playingBoard.board[yMoveTo][xMoveTo].getLocation())) {
+
                     Piece tempPiece = playingBoard.board[yCurrent][xCurrent].getCurrentPiece();
                     playingBoard.board[yCurrent][xCurrent].resetTile();
+                    if (playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece().getShortColor() == 'l') {
+                        light.setCapturedPiece(playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece());
+                    }else {dark.setCapturedPiece(playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece());}
+
                     playingBoard.board[yMoveTo][xMoveTo].setCurrentPiece(tempPiece);
+                    playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setCurrentTile(playingBoard.board[yMoveTo][xMoveTo]);
+
                     validMoveMade = true;
                     move = "X";
                 } else {
