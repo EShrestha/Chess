@@ -50,7 +50,9 @@ public class Game {
                 movesMade++;
 
             }
+            System.out.println(darkPlayer.getCapturedPieces());
             playingBoard.printBoard();
+            System.out.println(lightPlayer.getCapturedPieces());
 
         }while (notGameOver);
 
@@ -81,7 +83,7 @@ public class Game {
             if (playingBoard.board[yCurrent][xCurrent].isHasPiece()) {
                 // Getting a list of valid locations for the current piece
                 List<Location> validLocations = playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getValidMoves(playingBoard);
-                System.out.println(validLocations);
+                System.out.println("VALID MOVES: " + validLocations);
 
                 // Checking if the piece color user wants to move is actually the players color (l/d) and the move they want to make is in the valid locations list
                 if (color == playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getShortColor()
@@ -99,11 +101,11 @@ public class Game {
                         Piece tempMoveToPiece = playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece();
                         if(color == 'l'){ lightPlayer.addCapturedPiece(tempMoveToPiece);
                         }else { darkPlayer.addCapturedPiece(tempMoveToPiece); }
-                    }else {
-                        playingBoard.board[yMoveTo][xMoveTo].setCurrentPiece(tempCurrentPiece);
+
                     }
 
-                    //Setting what tile the piece if on for the piece that just moved
+                    playingBoard.board[yMoveTo][xMoveTo].setCurrentPiece(tempCurrentPiece);
+                    //Setting what tile the piece is on for the piece that just moved
                     playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setCurrentTile(playingBoard.board[yMoveTo][xMoveTo]);
 
 
@@ -111,16 +113,15 @@ public class Game {
                     move = "X";
                 } else {
                     System.out.println("***INVALID MOVE***");
-                    m = p.matcher("");
                     System.out.print(color == 'l' ? "LIGHT -> " : "DARK -> ");
                 }
 
             }else {
                 System.out.println("***INVALID MOVE***");
-                m = p.matcher("");
                 System.out.print(color == 'l' ? "LIGHT -> " : "DARK -> ");
             }
-
+            // Clearing user input so user can input again
+            m = p.matcher("");
         }while (!validMoveMade) ;
 
 

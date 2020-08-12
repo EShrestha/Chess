@@ -36,27 +36,19 @@ public class Knight extends Piece implements Movable {
         possibleMoveTiles.add(LocationGenerator.build(currentLocation, -2, 1));
         possibleMoveTiles.add(LocationGenerator.build(currentLocation, -2, -1));
 
-        System.out.println("TOTAL POSSIBLE MOVES: " + possibleMoveTiles);
 
         Map<Location, Tile> tileMap = board.getLocationTileMap();
 
         List<Location> validMoves = new LinkedList<>();
 
         for(Location l : possibleMoveTiles){
-            if(l != null && (board.board[l.getFile().ordinal()][(l.rankToRank.getRank(l.getRank()))].isHasPiece())){
-                if(this.pieceColor != board.board[l.getFile().ordinal()][(l.rankToRank.getRank(l.getRank())+1)].getCurrentPiece().getPieceColor()){
-                    System.out.println("This color: " + this.pieceColor);
-                    System.out.println("That color: " + board.board[l.getFile().ordinal()][(l.rankToRank.getRank(l.getRank())+1)].getCurrentPiece().getPieceColor());
+            if(l != null && tileMap.get(l).isHasPiece()){
+                if(tileMap.get(l).getCurrentPiece().getPieceColor() != this.getPieceColor()){
                     validMoves.add(l);
-                    System.out.println("ADDED: " +  board.board[l.getFile().ordinal()][(l.rankToRank.getRank(l.getRank())+1)]);
                 }
-
-            }else if (l != null && !(board.board[l.getFile().ordinal()][(l.rankToRank.getRank(l.getRank()))].isHasPiece())) {
-
-                validMoves.add(l);
-                System.out.println("ADDED2: " +  board.board[l.getFile().ordinal()][(l.rankToRank.getRank(l.getRank()))]);
+            }else if(l != null && !tileMap.get(l).isHasPiece()){
+                    validMoves.add(l);
             }
-
         }
         return validMoves;
     }

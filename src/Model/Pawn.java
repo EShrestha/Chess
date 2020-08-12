@@ -43,17 +43,16 @@ public class Pawn extends Piece implements Movable{
 
         for(Location l : possibleMoveTiles){
             if(l != null && tileMap.get(l).isHasPiece()){
-                if(tileMap.get(l).getCurrentPiece().getPieceColor() != this.getPieceColor()){
+                if(tileMap.get(l).getCurrentPiece().getPieceColor() != this.getPieceColor()
+                && tileMap.get(l).getLocation().getFile() != this.getCurrentTile().getLocation().getFile()){
                     validMoves.add(l);
                 }
             }else if(l != null && !tileMap.get(l).isHasPiece()){
                 if(tileMap.get(l).getLocation().getFile() == this.getCurrentTile().getLocation().getFile()){
                     validMoves.add(l);
                 }
-
             }
         }
-        System.out.println("This pawns valid moves: " + validMoves);
         return validMoves;
     }
 
