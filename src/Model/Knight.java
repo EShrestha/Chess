@@ -5,6 +5,7 @@ import BoardStuff.Location;
 import BoardStuff.LocationGenerator;
 import BoardStuff.Tile;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -22,29 +23,42 @@ public class Knight extends Piece implements Movable {
     public List<Location> getValidMoves(Board board) {
         List<Location> possibleMoveTiles = new LinkedList<>();
         Location currentLocation = this.getCurrentTile().getLocation();
-       // possibleMoveTiles.add(LocationGenerator.build(currentLocation, -1, 2));
-        possibleMoveTiles.add(LocationGenerator.build(currentLocation, 1, 2));
-       // possibleMoveTiles.add(LocationGenerator.build(currentLocation, -1, -2));
-       // possibleMoveTiles.add(LocationGenerator.build(currentLocation, 1, -2));
-        //possibleMoveTiles.add(LocationGenerator.build(currentLocation, -2, 1));
-      //  possibleMoveTiles.add(LocationGenerator.build(currentLocation, 2, 1));
-       // possibleMoveTiles.add(LocationGenerator.build(currentLocation, -2, -1));
-      //  possibleMoveTiles.add(LocationGenerator.build(currentLocation, 2, -1));
+
+        possibleMoveTiles.add(LocationGenerator.build(currentLocation, 1, 2)); // right one up/down 1 from currentLocation
+        possibleMoveTiles.add(LocationGenerator.build(currentLocation, -1, 2)); // left one up/down 1 from currentLocation
+
+        possibleMoveTiles.add(LocationGenerator.build(currentLocation, 1, -2));
+        possibleMoveTiles.add(LocationGenerator.build(currentLocation, -1, -2));
+
+        possibleMoveTiles.add(LocationGenerator.build(currentLocation, 2, 1));
+        possibleMoveTiles.add(LocationGenerator.build(currentLocation, 2, -1));
+
+        possibleMoveTiles.add(LocationGenerator.build(currentLocation, -2, 1));
+        possibleMoveTiles.add(LocationGenerator.build(currentLocation, -2, -1));
+
+        System.out.println("TOTAL POSSIBLE MOVES: " + possibleMoveTiles);
+
         Map<Location, Tile> tileMap = board.getLocationTileMap();
 
-        // No clue what this does but it works
-        List<Location> validMoves = possibleMoveTiles.stream()
-                .filter(tileMap::containsKey)
-                .collect(Collectors.toList());
+        List<Location> validMoves = new LinkedList<>();
 
-        return validMoves.stream().filter((candidate) -> {
-            if(candidate.getFile().equals(this.getCurrentTile().getLocation().getFile()) && tileMap.get(candidate).isHasPiece()){
-                return false;
+        for(Location l : possibleMoveTiles){
+            if(l != null && (board.board[l.getFile().ordinal()][(l.rankToRank.getRank(l.getRank())+1)].isHasPiece())){
+                if(this.pieceColor != board.board[l.getFile().ordinal()][(l.rankToRank.getRank(l.getRank())+1)].getCurrentPiece().getPieceColor()){
+                    System.out.println("This color: " + this.pieceColor);
+                    System.out.println("That color: " + board.board[l.getFile().ordinal()][(l.rankToRank.getRank(l.getRank())+1)].getCurrentPiece().getPieceColor());
+                    validMoves.add(l);
+                    System.out.println("ADDED: " +  board.board[l.getFile().ordinal()][(l.rankToRank.getRank(l.getRank())+1)]);
+                }
+
+            }else if (l != null && !(board.board[l.getFile().ordinal()][(l.rankToRank.getRank(l.getRank())+1)].isHasPiece())) {
+
+                validMoves.add(l);
+                System.out.println("ADDED2: " +  board.board[l.getFile().ordinal()][(l.rankToRank.getRank(l.getRank())+1)]);
             }
 
-            return !tileMap.get(candidate).getCurrentPiece().pieceColor.equals(this.getPieceColor()); // if the canidate tile does not have same piece color add it to the list
-        }).collect(Collectors.toList());
-
+        }
+        return validMoves;
     }
 
     @Override

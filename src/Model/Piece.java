@@ -2,6 +2,7 @@ package Model;
 
 import BoardStuff.Board;
 import BoardStuff.Location;
+import BoardStuff.RankToRank;
 import BoardStuff.Tile;
 
 import java.util.List;
@@ -12,6 +13,7 @@ public abstract class Piece {
     protected PieceColor pieceColor;
     protected Tile currentTile;
     protected char shortColor;
+    RankToRank rankToRank = new RankToRank();
 
     public Piece(PieceColor pieceColor){
         this.pieceColor = pieceColor;

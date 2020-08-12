@@ -28,7 +28,7 @@ public class Board {
                 col++;
             }
         }
-        //Setus up the new game with all pieces in the right tiles
+        //Sets up the new game with all pieces in the right tiles
         if(setUpNewGame){setUpNewGame();}
     }
 

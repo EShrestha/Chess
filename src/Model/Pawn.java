@@ -51,7 +51,7 @@ public class Pawn extends Piece implements Movable{
                 return false;
             }
 
-            return !tileMap.get(candidate).getCurrentPiece().pieceColor.equals(this.getPieceColor()); // if the canidate tile does not have same piece color add it to the list
+            return !tileMap.get(candidate).getCurrentPiece().pieceColor.equals(this.getPieceColor()); // if the candidate tile does not have same piece color add it to the list
         }).collect(Collectors.toList());
 
     }
