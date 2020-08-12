@@ -43,7 +43,7 @@ public class Knight extends Piece implements Movable {
         List<Location> validMoves = new LinkedList<>();
 
         for(Location l : possibleMoveTiles){
-            if(l != null && (board.board[l.getFile().ordinal()][(l.rankToRank.getRank(l.getRank())+1)].isHasPiece())){
+            if(l != null && (board.board[l.getFile().ordinal()][(l.rankToRank.getRank(l.getRank()))].isHasPiece())){
                 if(this.pieceColor != board.board[l.getFile().ordinal()][(l.rankToRank.getRank(l.getRank())+1)].getCurrentPiece().getPieceColor()){
                     System.out.println("This color: " + this.pieceColor);
                     System.out.println("That color: " + board.board[l.getFile().ordinal()][(l.rankToRank.getRank(l.getRank())+1)].getCurrentPiece().getPieceColor());
@@ -51,10 +51,10 @@ public class Knight extends Piece implements Movable {
                     System.out.println("ADDED: " +  board.board[l.getFile().ordinal()][(l.rankToRank.getRank(l.getRank())+1)]);
                 }
 
-            }else if (l != null && !(board.board[l.getFile().ordinal()][(l.rankToRank.getRank(l.getRank())+1)].isHasPiece())) {
+            }else if (l != null && !(board.board[l.getFile().ordinal()][(l.rankToRank.getRank(l.getRank()))].isHasPiece())) {
 
                 validMoves.add(l);
-                System.out.println("ADDED2: " +  board.board[l.getFile().ordinal()][(l.rankToRank.getRank(l.getRank())+1)]);
+                System.out.println("ADDED2: " +  board.board[l.getFile().ordinal()][(l.rankToRank.getRank(l.getRank()))]);
             }
 
         }

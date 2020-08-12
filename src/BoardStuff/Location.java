@@ -2,14 +2,17 @@ package BoardStuff;
 
 import java.util.Objects;
 
+
 public class Location {
     private final File file;
+    private final Integer intFile;
     private final Integer rank;
     public RankToRank rankToRank = new RankToRank();
 
     public Location(File file, Integer rank){
         this.file = file;
         this.rank = rank;
+        this.intFile = file.ordinal();
     }
 
     public File getFile() {
