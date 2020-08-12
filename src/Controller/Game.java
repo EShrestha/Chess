@@ -17,8 +17,8 @@ import java.util.regex.Pattern;
 public class Game {
 
     RankToRank rankToRank = new RankToRank();
-    Player light = new Player('l');
-    Player dark = new Player('d');
+    Player lightPlayer = new Player('l');
+    Player darkPlayer = new Player('d');
     int movesMade = 0;
     boolean lightResign = false;
     boolean darkResign = false;
@@ -79,18 +79,33 @@ public class Game {
 
 
             if (playingBoard.board[yCurrent][xCurrent].isHasPiece()) {
-                //
+                // Getting a list of valid locations for the current piece
                 List<Location> validLocations = playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getValidMoves(playingBoard);
                 System.out.println(validLocations);
 
+                // Checking if the piece color user wants to move is actually the players color (l/d) and the move they want to make is in the valid locations list
                 if (color == playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getShortColor()
                         && validLocations.contains(playingBoard.board[yMoveTo][xMoveTo].getLocation())) {
 
-                    Piece tempPiece = playingBoard.board[yCurrent][xCurrent].getCurrentPiece();
+                    // Marking the piece as already moved once
+                    playingBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
+
+                    // Making a copy of the piece user wants to move then resetting that tile the piece was on
+                    Piece tempCurrentPiece = playingBoard.board[yCurrent][xCurrent].getCurrentPiece();
                     playingBoard.board[yCurrent][xCurrent].resetTile();
 
-                    playingBoard.board[yMoveTo][xMoveTo].setCurrentPiece(tempPiece);
+                    // Adding what piece was captured if there was a piece to be captured
+                    if(playingBoard.board[yMoveTo][xMoveTo].isHasPiece()) {
+                        Piece tempMoveToPiece = playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece();
+                        if(color == 'l'){ lightPlayer.addCapturedPiece(tempMoveToPiece);
+                        }else { darkPlayer.addCapturedPiece(tempMoveToPiece); }
+                    }else {
+                        playingBoard.board[yMoveTo][xMoveTo].setCurrentPiece(tempCurrentPiece);
+                    }
+
+                    //Setting what tile the piece if on for the piece that just moved
                     playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setCurrentTile(playingBoard.board[yMoveTo][xMoveTo]);
+
 
                     validMoveMade = true;
                     move = "X";

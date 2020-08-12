@@ -31,7 +31,7 @@ public class Player {
         return capturedPieces;
     }
 
-    public void setCapturedPiece(Piece capturedPiece) {
+    public void addCapturedPiece(Piece capturedPiece) {
         this.capturedPieces.add(capturedPiece);
     }
 

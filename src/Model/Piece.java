@@ -12,6 +12,7 @@ public abstract class Piece {
     protected char shortName;
     protected PieceColor pieceColor;
     protected Tile currentTile;
+    protected boolean isFirstMove = true;
     protected char shortColor;
     RankToRank rankToRank = new RankToRank();
 
@@ -45,6 +46,13 @@ public abstract class Piece {
 
     public abstract List<Location> getValidMoves(Board board);
 
+    public boolean isFirstMove() {
+        return isFirstMove;
+    }
+
+    public void setFirstMove(boolean firstMove) {
+        isFirstMove = firstMove;
+    }
 
     @Override
     public String toString() {

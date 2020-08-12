@@ -65,7 +65,7 @@ public class WindowChess {
         quitGamePanel = new JPanel();
         quitGamePanel.setBounds(300, 560, 200,80);
         quitGamePanel.setBackground(Color.white);
-        quitButton = new JButton("  Quit   ");
+        quitButton = new JButton("Quit Game");
         quitButton.setBackground(Color.white);
         quitButton.setForeground(Color.black);
         quitButton.setFont(normalFont);

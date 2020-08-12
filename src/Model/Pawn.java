@@ -13,8 +13,6 @@ import java.util.stream.Collectors;
 
 public class Pawn extends Piece implements Movable{
 
-    private boolean isFirstMove = true;
-
     public Pawn(PieceColor pieceColor, Tile tile) {
         super(pieceColor);
         this.name = "Pawn";
@@ -31,9 +29,8 @@ public class Pawn extends Piece implements Movable{
         possibleMoveTiles.add(LocationGenerator.build(currentLocation, 0, rankOffset)); // 0= same file, 2 = can move up 2 rank from current location
 
         // If it's the first move
-        if(isFirstMove){
+        if(this.isFirstMove()){
             possibleMoveTiles.add(LocationGenerator.build(currentLocation, 0, 2*rankOffset)); // 0 = same file, 1 = can move up 1 rank from current location
-            return possibleMoveTiles;
         }
 
         possibleMoveTiles.add(LocationGenerator.build(currentLocation, 1, rankOffset)); // right one up/down 1 from currentLocation
@@ -42,18 +39,22 @@ public class Pawn extends Piece implements Movable{
         Map<Location, Tile> tileMap = board.getLocationTileMap();
 
         // Filters out the tiles from the possibleMoveTiles that are not a valid tile
-        List<Location> validMoves = possibleMoveTiles.stream()
-                .filter(tileMap::containsKey)
-                .collect(Collectors.toList());
+        List<Location> validMoves = new LinkedList<>();
 
-        return validMoves.stream().filter((candidate) -> {
-            if(candidate.getFile().equals(this.getCurrentTile().getLocation().getFile()) && tileMap.get(candidate).isHasPiece()){
-                return false;
+        for(Location l : possibleMoveTiles){
+            if(l != null && tileMap.get(l).isHasPiece()){
+                if(tileMap.get(l).getCurrentPiece().getPieceColor() != this.getPieceColor()){
+                    validMoves.add(l);
+                }
+            }else if(l != null && !tileMap.get(l).isHasPiece()){
+                if(tileMap.get(l).getLocation().getFile() == this.getCurrentTile().getLocation().getFile()){
+                    validMoves.add(l);
+                }
+
             }
-
-            return !tileMap.get(candidate).getCurrentPiece().pieceColor.equals(this.getPieceColor()); // if the candidate tile does not have same piece color add it to the list
-        }).collect(Collectors.toList());
-
+        }
+        System.out.println("This pawns valid moves: " + validMoves);
+        return validMoves;
     }
 
     @Override
