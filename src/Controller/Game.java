@@ -50,9 +50,19 @@ public class Game {
                 movesMade++;
 
             }
-            System.out.println(darkPlayer.getCapturedPieces());
+
+
+            System.out.print("CAPTURED PIECES: ");
+            for(Piece dP : darkPlayer.getCapturedPieces()){
+                System.out.print(dP.getShortName() + ", ");
+            }
+            System.out.println("\n");
             playingBoard.printBoard();
-            System.out.println(lightPlayer.getCapturedPieces());
+            System.out.print("CAPTURED PIECES: ");
+            for(Piece lP : lightPlayer.getCapturedPieces()){
+                System.out.print(lP.getShortName() + " ");
+            }
+            System.out.println("\n");
 
         }while (notGameOver);
 
@@ -83,7 +93,7 @@ public class Game {
             if (playingBoard.board[yCurrent][xCurrent].isHasPiece()) {
                 // Getting a list of valid locations for the current piece
                 List<Location> validLocations = playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getValidMoves(playingBoard);
-                System.out.println("VALID MOVES: " + validLocations);
+                //// DBUG System.out.println("VALID MOVES: " + validLocations);
 
                 // Checking if the piece color user wants to move is actually the players color (l/d) and the move they want to make is in the valid locations list
                 if (color == playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getShortColor()

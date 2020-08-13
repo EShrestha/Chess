@@ -35,7 +35,6 @@ public class AppControl {
                     break;
                 case 2:
                     Board activeBlankBoard = new Board(true);
-                    System.out.println(activeBlankBoard.board[0][0].getCurrentPiece());
                     new Game().playGame(activeBlankBoard);
                     break;
                 case 3:

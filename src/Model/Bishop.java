@@ -25,65 +25,13 @@ public class Bishop extends Piece implements Movable{
         List<Location> validMoves = new LinkedList<>();
 
         // Top left diagonal
-        for(int i = 1; i < 8 ; i++) {
-            if(LocationGenerator.build(currentLocation, -i, i) != null) {
-                if(tileMap.get(LocationGenerator.build(currentLocation, -i, i)).isHasPiece()) {
-                    if (tileMap.get(LocationGenerator.build(currentLocation, -i, i)).getCurrentPiece().getPieceColor().equals(this.pieceColor)) {
-                        break;
-                    } else if (tileMap.get(LocationGenerator.build(currentLocation, -i, i)).getCurrentPiece().getPieceColor() != this.pieceColor) {
-                        validMoves.add(LocationGenerator.build(currentLocation, -i, i));
-                        break;
-                    }
-                }else {
-                    validMoves.add(LocationGenerator.build(currentLocation, -i, i));
-                }
-            }
-        }
+        validMoves.addAll(optimizedValidMoveGetter(board,-1,1));
         // Top right diagonal
-        for(int i = 1; i < 8 ; i++) {
-            if(LocationGenerator.build(currentLocation, i, i) != null) {
-                if(tileMap.get(LocationGenerator.build(currentLocation, i, i)).isHasPiece()) {
-                    if (tileMap.get(LocationGenerator.build(currentLocation, i, i)).getCurrentPiece().getPieceColor().equals(this.pieceColor)) {
-                        break;
-                    } else if (tileMap.get(LocationGenerator.build(currentLocation, i, i)).getCurrentPiece().getPieceColor() != this.pieceColor) {
-                        validMoves.add(LocationGenerator.build(currentLocation, i, i));
-                        break;
-                    }
-                }else {
-                    validMoves.add(LocationGenerator.build(currentLocation, i, i));
-                }
-            }
-        }
+        validMoves.addAll(optimizedValidMoveGetter(board,1,1));
         // Bottom left diagonal
-        for(int i = 1; i < 8 ; i++) {
-            if(LocationGenerator.build(currentLocation, -i, -i) != null) {
-                if(tileMap.get(LocationGenerator.build(currentLocation, -i, -i)).isHasPiece()) {
-                    if (tileMap.get(LocationGenerator.build(currentLocation, -i, -i)).getCurrentPiece().getPieceColor().equals(this.pieceColor)) {
-                        break;
-                    } else if (tileMap.get(LocationGenerator.build(currentLocation, -i, -i)).getCurrentPiece().getPieceColor() != this.pieceColor) {
-                        validMoves.add(LocationGenerator.build(currentLocation, -i, -i));
-                        break;
-                    }
-                }else {
-                    validMoves.add(LocationGenerator.build(currentLocation, -i, -i));
-                }
-            }
-        }
+        validMoves.addAll(optimizedValidMoveGetter(board,-1,-1));
         // Bottom right diagonal
-        for(int i = 1; i < 8 ; i++) {
-            if(LocationGenerator.build(currentLocation, i, -i) != null) {
-                if(tileMap.get(LocationGenerator.build(currentLocation, i, -i)).isHasPiece()) {
-                    if (tileMap.get(LocationGenerator.build(currentLocation, i, -i)).getCurrentPiece().getPieceColor().equals(this.pieceColor)) {
-                        break;
-                    } else if (tileMap.get(LocationGenerator.build(currentLocation, i, -i)).getCurrentPiece().getPieceColor() != this.pieceColor) {
-                        validMoves.add(LocationGenerator.build(currentLocation, i, -i));
-                        break;
-                    }
-                }else {
-                    validMoves.add(LocationGenerator.build(currentLocation, i, -i));
-                }
-            }
-        }
+        validMoves.addAll(optimizedValidMoveGetter(board,1,-1));
 
         return validMoves;
     }
@@ -91,6 +39,29 @@ public class Bishop extends Piece implements Movable{
     @Override
     public List<Location> getValidMoves(Board board, Tile tile) {
         return null;
+    }
+
+    public List<Location> optimizedValidMoveGetter(Board board, Integer fileMultiplier, Integer rankMultiplier){
+        Location currentLocation = this.getCurrentTile().getLocation();
+        Map<Location, Tile> tileMap = board.getLocationTileMap();
+        List<Location> validMoves = new LinkedList<>();
+
+        for(int i = 1; i < 9 ; i++) {
+            if(LocationGenerator.build(currentLocation, fileMultiplier*i, rankMultiplier*i) != null) {
+                System.out.println("CONSIDERING: " + LocationGenerator.build(currentLocation, fileMultiplier*i, rankMultiplier*i));
+                if(tileMap.get(LocationGenerator.build(currentLocation, fileMultiplier*i, rankMultiplier*i)).isHasPiece()) {
+                    if (tileMap.get(LocationGenerator.build(currentLocation, fileMultiplier*i, rankMultiplier*i)).getCurrentPiece().getPieceColor().equals(this.pieceColor)) {
+                        break;
+                    } else if (tileMap.get(LocationGenerator.build(currentLocation, fileMultiplier*i, rankMultiplier*i)).getCurrentPiece().getPieceColor() != this.pieceColor) {
+                        validMoves.add(LocationGenerator.build(currentLocation, fileMultiplier*i, rankMultiplier*i));
+                        break;
+                    }
+                }else {
+                    validMoves.add(LocationGenerator.build(currentLocation, fileMultiplier*i, rankMultiplier*i));
+                }
+            }
+        }
+        return validMoves;
     }
 
     @Override

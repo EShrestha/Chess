@@ -9,7 +9,7 @@ public class LocationGenerator {
 
         //DBUG System.out.println("File: " + (currentFile + fileOffset) + " Rank: " + (current.getRank() + rankOffset));
 
-        if(((currentFile + fileOffset) < 8 && (current.getRank() + rankOffset) < 8) &&
+        if(((currentFile + fileOffset) < 8 && (current.getRank() + rankOffset) <= 8 ) &&
                 ((currentFile + fileOffset) > -1 && (current.getRank() + rankOffset) > 0 )) {
             return new Location(files[currentFile + fileOffset], current.getRank() + rankOffset);
         }else{

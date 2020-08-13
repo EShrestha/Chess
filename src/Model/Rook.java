@@ -23,6 +23,23 @@ public class Rook extends Piece implements Movable{
     public List<Location> getValidMoves(Board board) {
         List<Location> possibleMoveTiles = new LinkedList<>();
         Location currentLocation = this.getCurrentTile().getLocation();
+        Map<Location, Tile> tileMap = board.getLocationTileMap();
+        List<Location> validMoves = new LinkedList<>();
+
+        for(int i = 1; i < 8 ; i++) {
+            if(LocationGenerator.build(currentLocation, 0, i) != null) {
+                if(tileMap.get(LocationGenerator.build(currentLocation, -i, i)).isHasPiece()) {
+                    if (tileMap.get(LocationGenerator.build(currentLocation, -i, i)).getCurrentPiece().getPieceColor().equals(this.pieceColor)) {
+                        break;
+                    } else if (tileMap.get(LocationGenerator.build(currentLocation, -i, i)).getCurrentPiece().getPieceColor() != this.pieceColor) {
+                        validMoves.add(LocationGenerator.build(currentLocation, -i, i));
+                        break;
+                    }
+                }else {
+                    validMoves.add(LocationGenerator.build(currentLocation, -i, i));
+                }
+            }
+        }
 
         for (int p = 1; p < 8; p++) { // Lets Rook move up and to the right
             possibleMoveTiles.add(LocationGenerator.build(currentLocation, 0, p));
@@ -34,9 +51,9 @@ public class Rook extends Piece implements Movable{
             }
         }
 
-        Map<Location, Tile> tileMap = board.getLocationTileMap();
 
-        List<Location> validMoves = new LinkedList<>();
+
+
 
         for(Location l : possibleMoveTiles) {
             if (l != null && tileMap.get(l).isHasPiece()) {
