@@ -23,9 +23,9 @@ public class King extends Piece implements Movable{
         Location currentLocation = this.getCurrentTile().getLocation();
 
         // If it's the first move
-        if(this.isFirstMove()){
+        //if(this.isFirstMove()){
             //maybe implement castling here
-        }
+        //}
 
         possibleMoveTiles.add(LocationGenerator.build(currentLocation, 1, 0)); // right one up/down 1 from currentLocation
         possibleMoveTiles.add(LocationGenerator.build(currentLocation, -1, 0)); // left one up/down 1 from currentLocation
@@ -65,4 +65,6 @@ public class King extends Piece implements Movable{
     public void makeMove(Tile tile) {
         System.out.println("This method 'makeMove' needs to be implemented for the " + this.getName() + " class.");
     }
+
+
 }
