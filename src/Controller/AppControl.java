@@ -1,15 +1,7 @@
 package Controller;
 
 import BoardStuff.Board;
-import Command.CommandReader;
-import Model.*;
 import lib.ConsoleIO;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class AppControl {
 
@@ -55,19 +47,18 @@ public class AppControl {
 
     //Prompts the user with a menu
     private int promptMainmenu() {
-        int selection = -1;
+        int selection;
         int min = 0;
         int max = 4;
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("\n").append("Choose one of the following options:\n")
-                .append("\t1) Read from a file\n")
-                .append("\t2) New Game\n")
-                .append("\t3) BLANK\n")
-                .append("\t4) BLANK\n")
-                .append("\n\t0) Exit \n\n")
-                .append("Enter the selection number: ");
-        selection = ConsoleIO.promptForInt(sb.toString(), min, max);
+        String sb = "\n" + "Choose one of the following options:\n" +
+                "\t1) Read from a file\n" +
+                "\t2) New Game\n" +
+                "\t3) BLANK\n" +
+                "\t4) BLANK\n" +
+                "\n\t0) Exit \n\n" +
+                "Enter the selection number: ";
+        selection = ConsoleIO.promptForInt(sb, min, max);
         return selection;
     }
 }

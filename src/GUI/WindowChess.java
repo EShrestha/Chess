@@ -1,21 +1,14 @@
 package GUI;
 
-import BoardStuff.Board;
-import BoardStuff.Tile;
-import BoardStuff.TileColor;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class WindowChess {
 
     JFrame window;
-    Board colorBoard = new Board(true);
 
     private final static Dimension OUTER_FRAME_DIMENSION = new Dimension(800,800);
 

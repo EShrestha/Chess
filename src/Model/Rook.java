@@ -4,11 +4,10 @@ import BoardStuff.Board;
 import BoardStuff.Location;
 import BoardStuff.LocationGenerator;
 import BoardStuff.Tile;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
 
 public class Rook extends Piece implements Movable{
 
@@ -21,9 +20,6 @@ public class Rook extends Piece implements Movable{
 
     @Override
     public List<Location> getValidMoves(Board board) {
-        List<Location> possibleMoveTiles = new LinkedList<>();
-        Location currentLocation = this.getCurrentTile().getLocation();
-        Map<Location, Tile> tileMap = board.getLocationTileMap();
         List<Location> validMoves = new LinkedList<>();
 
         // Up vertical

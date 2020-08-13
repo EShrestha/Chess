@@ -19,9 +19,6 @@ public class Bishop extends Piece implements Movable{
 
     @Override
     public List<Location> getValidMoves(Board board) {
-        List<Location> possibleMoveTiles = new LinkedList<>();
-        Location currentLocation = this.getCurrentTile().getLocation();
-        Map<Location, Tile> tileMap = board.getLocationTileMap();
         List<Location> validMoves = new LinkedList<>();
 
         // Top left diagonal

@@ -3,13 +3,9 @@ package Controller;
 import BoardStuff.Board;
 import BoardStuff.Location;
 import BoardStuff.RankToRank;
-import Model.Pawn;
 import Model.Piece;
 import Model.Player;
 import lib.ConsoleIO;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,6 +18,7 @@ public class Game {
     int movesMade = 0;
     boolean lightResign = false;
     boolean darkResign = false;
+    boolean notGameOver = true;
     Board playingBoard;
 
 
@@ -30,7 +27,6 @@ public class Game {
 
     public void playGame(Board activeBoard){
         playingBoard = activeBoard;
-        boolean notGameOver = true;
         playingBoard.printBoard();
 
         do{
@@ -42,7 +38,7 @@ public class Game {
 
                 movesMade++;
 
-            }else if(movesMade % 2 == 1) { // Darks turn
+            }else if(movesMade % 2 == 1) { // Dark turn
 
                 System.out.print("DARK -> ");
                 makeValidMove('d');
@@ -51,6 +47,7 @@ public class Game {
 
             }
 
+            System.out.println();
             refreshBoard();
 
         }while (notGameOver);
@@ -61,10 +58,10 @@ public class Game {
         // Group 1 2 3 4 ----> a 1  a 2
         Pattern p = Pattern.compile("^([a-h])(\\d)\\s([a-h])(\\d)$");
         Matcher m = p.matcher("");
-        Boolean validMoveMade = false;
+        boolean validMoveMade = false;
 
         do {
-            String move;
+
             while (!m.matches()) {
                 m = p.matcher(ConsoleIO.promptForString("Enter piece coordinate and move to coordinate (a1 a2): "));
                 if (!m.matches()) {
@@ -73,16 +70,16 @@ public class Game {
             }
 
             // Getting x and y of the piece user wants ot move and the x and y of where user want to move piece to
-            Integer xCurrent = Enum.valueOf(BoardStuff.File.class, m.group(1).toUpperCase()).ordinal();
-            Integer yCurrent = rankToRank.getRank(Integer.parseInt(m.group(2)) - 1);
-            Integer xMoveTo = Enum.valueOf(BoardStuff.File.class, m.group(3).toUpperCase()).ordinal();
-            Integer yMoveTo = rankToRank.getRank(Integer.parseInt(m.group(4)) - 1);
+            int xCurrent = Enum.valueOf(BoardStuff.File.class, m.group(1).toUpperCase()).ordinal();
+            int yCurrent = rankToRank.getRank(Integer.parseInt(m.group(2)) - 1);
+            int xMoveTo = Enum.valueOf(BoardStuff.File.class, m.group(3).toUpperCase()).ordinal();
+            int yMoveTo = rankToRank.getRank(Integer.parseInt(m.group(4)) - 1);
 
 
             if (playingBoard.board[yCurrent][xCurrent].isHasPiece()) {
                 // Getting a list of valid locations for the current piece
                 List<Location> validLocations = playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getValidMoves(playingBoard);
-                //// DBUG System.out.println("VALID MOVES: " + validLocations);
+                ////DEBUG System.out.println("VALID MOVES: " + validLocations);
 
                 // Checking if the piece color user wants to move is actually the players color (l/d) and the move they want to make is in the valid locations list
                 if (color == playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getShortColor()
@@ -109,7 +106,6 @@ public class Game {
 
 
                     validMoveMade = true;
-                    move = "X";
                 } else {
                     System.out.println("***INVALID MOVE***");
                     System.out.print(color == 'l' ? "LIGHT -> " : "DARK -> ");

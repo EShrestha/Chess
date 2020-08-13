@@ -4,12 +4,9 @@ import BoardStuff.Board;
 import BoardStuff.Location;
 import BoardStuff.LocationGenerator;
 import BoardStuff.Tile;
-
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class Pawn extends Piece implements Movable{
 
