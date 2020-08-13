@@ -27,39 +27,64 @@ public class Bishop extends Piece implements Movable{
         // Top left diagonal
         for(int i = 1; i < 8 ; i++) {
             if(LocationGenerator.build(currentLocation, -i, i) != null) {
-                possibleMoveTiles.add(LocationGenerator.build(currentLocation, -i, i)); // right one up/down 1 from currentLocation
+                if(tileMap.get(LocationGenerator.build(currentLocation, -i, i)).isHasPiece()) {
+                    if (tileMap.get(LocationGenerator.build(currentLocation, -i, i)).getCurrentPiece().getPieceColor().equals(this.pieceColor)) {
+                        break;
+                    } else if (tileMap.get(LocationGenerator.build(currentLocation, -i, i)).getCurrentPiece().getPieceColor() != this.pieceColor) {
+                        validMoves.add(LocationGenerator.build(currentLocation, -i, i));
+                        break;
+                    }
+                }else {
+                    validMoves.add(LocationGenerator.build(currentLocation, -i, i));
+                }
             }
         }
         // Top right diagonal
         for(int i = 1; i < 8 ; i++) {
-            possibleMoveTiles.add(LocationGenerator.build(currentLocation, i, i)); // right one up/down 1 from currentLocation
-        }
-        // Bottom left diagonal
-        for(int i = 1; i < 8 ; i++) {
-            possibleMoveTiles.add(LocationGenerator.build(currentLocation, -i, -i)); // right one up/down 1 from currentLocation
-        }
-        for(int i = 1; i < 8 ; i++) {
-            possibleMoveTiles.add(LocationGenerator.build(currentLocation, i, -i)); // right one up/down 1 from currentLocation
-        }
-
-
-
-
-        // Filters out the tiles from the possibleMoveTiles that are not a valid tile
-
-
-        for(Location l : possibleMoveTiles){
-            if(l != null && tileMap.get(l).isHasPiece()){
-                if(tileMap.get(l).getCurrentPiece().getPieceColor() != this.getPieceColor()
-                        && tileMap.get(l).getLocation().getFile() != this.getCurrentTile().getLocation().getFile()){
-                    validMoves.add(l);
-                }
-            }else if(l != null && !tileMap.get(l).isHasPiece()){
-                if(tileMap.get(l).getLocation().getFile() == this.getCurrentTile().getLocation().getFile()){
-                    validMoves.add(l);
+            if(LocationGenerator.build(currentLocation, i, i) != null) {
+                if(tileMap.get(LocationGenerator.build(currentLocation, i, i)).isHasPiece()) {
+                    if (tileMap.get(LocationGenerator.build(currentLocation, i, i)).getCurrentPiece().getPieceColor().equals(this.pieceColor)) {
+                        break;
+                    } else if (tileMap.get(LocationGenerator.build(currentLocation, i, i)).getCurrentPiece().getPieceColor() != this.pieceColor) {
+                        validMoves.add(LocationGenerator.build(currentLocation, i, i));
+                        break;
+                    }
+                }else {
+                    validMoves.add(LocationGenerator.build(currentLocation, i, i));
                 }
             }
         }
+        // Bottom left diagonal
+        for(int i = 1; i < 8 ; i++) {
+            if(LocationGenerator.build(currentLocation, -i, -i) != null) {
+                if(tileMap.get(LocationGenerator.build(currentLocation, -i, -i)).isHasPiece()) {
+                    if (tileMap.get(LocationGenerator.build(currentLocation, -i, -i)).getCurrentPiece().getPieceColor().equals(this.pieceColor)) {
+                        break;
+                    } else if (tileMap.get(LocationGenerator.build(currentLocation, -i, -i)).getCurrentPiece().getPieceColor() != this.pieceColor) {
+                        validMoves.add(LocationGenerator.build(currentLocation, -i, -i));
+                        break;
+                    }
+                }else {
+                    validMoves.add(LocationGenerator.build(currentLocation, -i, -i));
+                }
+            }
+        }
+        // Bottom right diagonal
+        for(int i = 1; i < 8 ; i++) {
+            if(LocationGenerator.build(currentLocation, i, -i) != null) {
+                if(tileMap.get(LocationGenerator.build(currentLocation, i, -i)).isHasPiece()) {
+                    if (tileMap.get(LocationGenerator.build(currentLocation, i, -i)).getCurrentPiece().getPieceColor().equals(this.pieceColor)) {
+                        break;
+                    } else if (tileMap.get(LocationGenerator.build(currentLocation, i, -i)).getCurrentPiece().getPieceColor() != this.pieceColor) {
+                        validMoves.add(LocationGenerator.build(currentLocation, i, -i));
+                        break;
+                    }
+                }else {
+                    validMoves.add(LocationGenerator.build(currentLocation, i, -i));
+                }
+            }
+        }
+
         return validMoves;
     }
 
