@@ -79,7 +79,7 @@ public class Game {
             if (playingBoard.board[yCurrent][xCurrent].isHasPiece()) {
                 // Getting a list of valid locations for the current piece
                 List<Location> validLocations = playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getValidMoves(playingBoard);
-                ////DEBUG System.out.println("VALID MOVES: " + validLocations);
+                System.out.println("ACTUAL VALID MOVES: " + validLocations);
 
                 // Checking if the piece color user wants to move is actually the players color (l/d) and the move they want to make is in the valid locations list
                 if (color == playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getShortColor()

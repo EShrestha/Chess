@@ -22,18 +22,20 @@ public class Pawn extends Piece implements Movable{
     public List<Location> getValidMoves(Board board) {
         List<Location> possibleMoveTiles = new LinkedList<>();
         Location currentLocation = this.getCurrentTile().getLocation();
+        Map<Location, Tile> tileMap = board.getLocationTileMap();
+
         Integer rankOffset = this.pieceColor == PieceColor.LIGHT ? 1 : -1;
         possibleMoveTiles.add(LocationGenerator.build(currentLocation, 0, rankOffset)); // 0= same file, 2 = can move up 2 rank from current location
 
         // If it's the first move
-        if(this.isFirstMove()){
-            possibleMoveTiles.add(LocationGenerator.build(currentLocation, 0, 2*rankOffset)); // 0 = same file, 1 = can move up 1 rank from current location
+        if(this.isFirstMove() && !tileMap.get(LocationGenerator.build(currentLocation, 0, rankOffset)).isHasPiece()){
+                possibleMoveTiles.add(LocationGenerator.build(currentLocation, 0, 2 * rankOffset)); // 0 = same file, 1 = can move up 1 rank from current location
         }
 
         possibleMoveTiles.add(LocationGenerator.build(currentLocation, 1, rankOffset)); // right one up/down 1 from currentLocation
         possibleMoveTiles.add(LocationGenerator.build(currentLocation, -1, rankOffset)); // left one up/down 1 from currentLocation
 
-        Map<Location, Tile> tileMap = board.getLocationTileMap();
+
 
         // Filters out the tiles from the possibleMoveTiles that are not a valid tile
         List<Location> validMoves = new LinkedList<>();
