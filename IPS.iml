@@ -10,10 +10,11 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/IdeaProjects/Projects IntelliJ/OOP/ConsoleIOTester/ConsoleIO.jar!/" />
+          <root url="file://$MODULE_DIR$/../ConsoleIOJarFolder" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
+        <jarDirectory url="file://$MODULE_DIR$/../ConsoleIOJarFolder" recursive="false" />
       </library>
     </orderEntry>
   </component>
