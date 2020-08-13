@@ -20,26 +20,36 @@ public class Rook extends Piece implements Movable{
 
     @Override
     public List<Location> getValidMoves(Board board) {
+        Location currentLocation = this.getCurrentTile().getLocation();
         List<Location> validMoves = new LinkedList<>();
 
         // Up vertical
-        validMoves.addAll(optimizedValidMoveGetter(board,0, 1));
+        validMoves.addAll(optimizedValidMoveGetter(board, currentLocation,0, 1));
         // Down vertical
-        validMoves.addAll(optimizedValidMoveGetter(board,0, -1));
+        validMoves.addAll(optimizedValidMoveGetter(board, currentLocation,0, -1));
         // Left horizontal
-        validMoves.addAll(optimizedValidMoveGetter(board,-1, 0));
+        validMoves.addAll(optimizedValidMoveGetter(board, currentLocation,-1, 0));
         // Right horizontal
-        validMoves.addAll(optimizedValidMoveGetter(board,1, 0));
+        validMoves.addAll(optimizedValidMoveGetter(board, currentLocation,1, 0));
         return validMoves;
     }
 
     @Override
     public List<Location> getValidMoves(Board board, Tile tile) {
-        return null;
+        List<Location> validMoves = new LinkedList<>();
+        Location currentLocation = tile.getLocation();
+        // Up vertical
+        validMoves.addAll(optimizedValidMoveGetter(board, currentLocation,0, 1));
+        // Down vertical
+        validMoves.addAll(optimizedValidMoveGetter(board, currentLocation,0, -1));
+        // Left horizontal
+        validMoves.addAll(optimizedValidMoveGetter(board, currentLocation,-1, 0));
+        // Right horizontal
+        validMoves.addAll(optimizedValidMoveGetter(board, currentLocation,1, 0));
+        return validMoves;
     }
 
-    public List<Location> optimizedValidMoveGetter(Board board, Integer fileMultiplier, Integer rankMultiplier){
-        Location currentLocation = this.getCurrentTile().getLocation();
+    public List<Location> optimizedValidMoveGetter(Board board, Location currentLocation, Integer fileMultiplier, Integer rankMultiplier){
         Map<Location, Tile> tileMap = board.getLocationTileMap();
         List<Location> validMoves = new LinkedList<>();
 
@@ -59,11 +69,6 @@ public class Rook extends Piece implements Movable{
             }
         }
         return validMoves;
-    }
-
-    @Override
-    public void makeMove(Tile tile) {
-        System.out.println("This method 'makeMove' needs to be implemented for the " + this.getName() + " class.");
     }
 
 }

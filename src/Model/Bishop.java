@@ -19,27 +19,38 @@ public class Bishop extends Piece implements Movable{
 
     @Override
     public List<Location> getValidMoves(Board board) {
+        Location currentLocation = this.getCurrentTile().getLocation();
         List<Location> validMoves = new LinkedList<>();
 
         // Top left diagonal
-        validMoves.addAll(optimizedValidMoveGetter(board,-1,1));
+        validMoves.addAll(optimizedValidMoveGetter(board, currentLocation,-1,1));
         // Top right diagonal
-        validMoves.addAll(optimizedValidMoveGetter(board,1,1));
+        validMoves.addAll(optimizedValidMoveGetter(board, currentLocation,1,1));
         // Bottom left diagonal
-        validMoves.addAll(optimizedValidMoveGetter(board,-1,-1));
+        validMoves.addAll(optimizedValidMoveGetter(board, currentLocation,-1,-1));
         // Bottom right diagonal
-        validMoves.addAll(optimizedValidMoveGetter(board,1,-1));
+        validMoves.addAll(optimizedValidMoveGetter(board, currentLocation,1,-1));
 
         return validMoves;
     }
 
     @Override
     public List<Location> getValidMoves(Board board, Tile tile) {
-        return null;
+        List<Location> validMoves = new LinkedList<>();
+        Location currentLocation = tile.getLocation();
+        // Top left diagonal
+        validMoves.addAll(optimizedValidMoveGetter(board, currentLocation,-1,1));
+        // Top right diagonal
+        validMoves.addAll(optimizedValidMoveGetter(board, currentLocation,1,1));
+        // Bottom left diagonal
+        validMoves.addAll(optimizedValidMoveGetter(board, currentLocation,-1,-1));
+        // Bottom right diagonal
+        validMoves.addAll(optimizedValidMoveGetter(board, currentLocation,1,-1));
+
+        return validMoves;
     }
 
-    public List<Location> optimizedValidMoveGetter(Board board, Integer fileMultiplier, Integer rankMultiplier){
-        Location currentLocation = this.getCurrentTile().getLocation();
+    public List<Location> optimizedValidMoveGetter(Board board, Location currentLocation, Integer fileMultiplier, Integer rankMultiplier){
         Map<Location, Tile> tileMap = board.getLocationTileMap();
         List<Location> validMoves = new LinkedList<>();
 
@@ -61,8 +72,5 @@ public class Bishop extends Piece implements Movable{
         return validMoves;
     }
 
-    @Override
-    public void makeMove(Tile tile) {
-        System.out.println("This method 'makeMove' needs to be implemented for the " + this.getName() + " class.");
-    }
+
 }

@@ -10,5 +10,4 @@ public interface Movable {
 
     List<Location> getValidMoves(Board board);
     List<Location> getValidMoves(Board board, Tile tile);
-    void makeMove(Tile tile);
 }

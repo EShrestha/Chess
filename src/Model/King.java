@@ -61,10 +61,6 @@ public class King extends Piece implements Movable{
         return null;
     }
 
-    @Override
-    public void makeMove(Tile tile) {
-        System.out.println("This method 'makeMove' needs to be implemented for the " + this.getName() + " class.");
-    }
 
 
 }
