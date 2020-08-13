@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Board {
-    private static final Integer DIMENSION = 8;
+    public static final Integer DIMENSION = 8;
     public Tile[][] board = new Tile[DIMENSION][DIMENSION];
     private final Map<Location, Tile> locationTileMap;
 
@@ -17,16 +17,19 @@ public class Board {
     public Board(boolean setUpNewGame){
         locationTileMap = new HashMap<>();
 
+        int tileID = 0;
         for(int i = 0; i < board.length; i++){
             int col = 0;
             TileColor currentColor = (i % 2 == 0) ? TileColor.LIGHT : TileColor.DARK;
             for(File file : File.values()){
-                Tile newTile = new Tile(currentColor, new Location(file, DIMENSION-i));
+                Tile newTile = new Tile(currentColor, new Location(file, DIMENSION-i), tileID);
                 locationTileMap.put(newTile.getLocation(), newTile);
                 board[i][col] = newTile;
                 currentColor = (currentColor == TileColor.DARK) ? TileColor.LIGHT : TileColor.DARK;
                 col++;
+                tileID++;
             }
+
         }
         //Sets up the new game with all pieces in the right tiles
         if(setUpNewGame){setUpNewGame();}

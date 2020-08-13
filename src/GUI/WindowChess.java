@@ -1,20 +1,35 @@
 package GUI;
 
-import javax.imageio.ImageIO;
+import BoardStuff.Board;
+import BoardStuff.Tile;
+import BoardStuff.TileColor;
+
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class WindowChess {
 
     JFrame window;
+    Board colorBoard = new Board(true);
+
+    private final static Dimension OUTER_FRAME_DIMENSION = new Dimension(800,800);
+
     Container container;
-    JPanel titleNamePanel, startButtonPanel, loadGamePanel, quitGamePanel;
+    JPanel titleNamePanel, startButtonPanel, loadGamePanel, quitGamePanel, gamePanel;
     JLabel titleNameLabel;
     Font titleFont = new Font("Helvetica", Font.BOLD, 200);
     Font normalFont = new Font("Helvetica", Font.BOLD, 36);
     JButton startButton, loadButton, quitButton;
+
+    NewGameHandler onClickNewGame = new NewGameHandler();
+    LoadGameHandler onClickLoadGame = new LoadGameHandler();
+    QuitGameHandler onClickQuitGame = new QuitGameHandler();
+
 
 
     public static void main(String[] args) {
@@ -24,8 +39,10 @@ public class WindowChess {
     public WindowChess(){
 
         window = new JFrame("EL CHESS"); // Assigning a new JFrame
+        window.setLayout(new BorderLayout());
         window.setResizable(false);
-        window.setSize(800,800); // The dimensions of the window
+        window.setSize(OUTER_FRAME_DIMENSION); // The dimensions of the window
+
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // When you click the x button at the top right the window closes
         window.getContentPane().setBackground(Color.white); // setting background color of the window as black
         window.setLayout(null); // so we can use our own custom layout
@@ -49,6 +66,7 @@ public class WindowChess {
         startButton.setBackground(Color.white);
         startButton.setForeground(Color.black);
         startButton.setFont(normalFont);
+        startButton.addActionListener(onClickNewGame);
         startButtonPanel.add(startButton);
 
         // Adding a Load Game button
@@ -59,6 +77,7 @@ public class WindowChess {
         loadButton.setBackground(Color.white);
         loadButton.setForeground(Color.black);
         loadButton.setFont(normalFont);
+        loadButton.addActionListener(onClickLoadGame);
         loadGamePanel.add(loadButton);
 
         // Adding a Quit button
@@ -69,6 +88,7 @@ public class WindowChess {
         quitButton.setBackground(Color.white);
         quitButton.setForeground(Color.black);
         quitButton.setFont(normalFont);
+        quitButton.addActionListener(onClickQuitGame);
         quitGamePanel.add(quitButton);
 
 
@@ -77,6 +97,82 @@ public class WindowChess {
         container.add(startButtonPanel);
         container.add(loadGamePanel);
         container.add(quitGamePanel);
+        window.setVisible(true);
+
+    }
+
+    private JMenuBar createMenuBar(){
+        final JMenuBar menuBar = new JMenuBar();
+        menuBar.add(createFinalMenu());
+        return  menuBar;
+    }
+
+    private JMenu createFinalMenu(){
+        final JMenu fileMenu = new JMenu("File");
+
+        final JMenuItem titleScreen = new JMenuItem("Title Screen");
+        titleScreen.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gamePanel.setVisible(false);
+
+                titleNamePanel.setVisible(true);
+                startButtonPanel.setVisible(true);
+                loadGamePanel.setVisible(true);
+                quitGamePanel.setVisible(true);
+
+                window.setVisible(true);
+            }
+        });
+
+
+
+        fileMenu.add(titleScreen);
+        return fileMenu;
+    }
+
+    // New Game Screen
+    public void createGameScreen(){
+        titleNamePanel.setVisible(false);
+        startButtonPanel.setVisible(false);
+        loadGamePanel.setVisible(false);
+        quitGamePanel.setVisible(false);
+
+        // Menu Bar
+        final JMenuBar menuBar = createMenuBar();
+        this.window.setJMenuBar(menuBar);
+
+        gamePanel = new JPanel();
+        gamePanel.setBounds(0, 0, 800, 800);
+        gamePanel.setBackground(Color.BLUE);
+        container.add(gamePanel);
+        gamePanel.setVisible(true);
+        window.setVisible(true);
+    }
+
+
+
+    public class NewGameHandler implements ActionListener{
+
+        public void actionPerformed(ActionEvent e) {
+            createGameScreen();
+        }
+
+    }
+
+    public class LoadGameHandler implements ActionListener{
+
+        public void actionPerformed(ActionEvent e) {
+
+        }
+
+    }
+
+    public class QuitGameHandler implements ActionListener{
+
+        public void actionPerformed(ActionEvent e) {
+            System.exit(0);
+        }
 
     }
 

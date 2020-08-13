@@ -7,11 +7,13 @@ public class Tile {
     private Location location;
     private boolean hasPiece;
     private Piece currentPiece;
+    public Integer tileID;
 
-    public Tile(TileColor tileColor, Location location) {
+    public Tile(TileColor tileColor, Location location, Integer tileID) {
         this.tileColor = tileColor;
         this.location = location;
         this.hasPiece = false;
+        this.tileID = tileID;
     }
 
     public void resetTile(){
