@@ -51,18 +51,7 @@ public class Game {
 
             }
 
-
-            System.out.print("CAPTURED PIECES: ");
-            for(Piece dP : darkPlayer.getCapturedPieces()){
-                System.out.print(dP.getShortName() + ", ");
-            }
-            System.out.println("\n");
-            playingBoard.printBoard();
-            System.out.print("CAPTURED PIECES: ");
-            for(Piece lP : lightPlayer.getCapturedPieces()){
-                System.out.print(lP.getShortName() + " ");
-            }
-            System.out.println("\n");
+            refreshBoard();
 
         }while (notGameOver);
 
@@ -134,6 +123,21 @@ public class Game {
             m = p.matcher("");
         }while (!validMoveMade) ;
 
-
     }
+
+    public void refreshBoard(){
+        System.out.print("CAPTURED PIECES: ");
+        for(Piece dP : darkPlayer.getCapturedPieces()){
+            System.out.print(dP.getShortName() + " ");
+        }
+        System.out.println("\n");
+        playingBoard.printBoard();
+        System.out.print("CAPTURED PIECES: ");
+        for(Piece lP : lightPlayer.getCapturedPieces()){
+            System.out.print(lP.getShortName() + " ");
+        }
+        System.out.println("\n");
+    }
+
+
 }

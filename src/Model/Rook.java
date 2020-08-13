@@ -26,47 +26,14 @@ public class Rook extends Piece implements Movable{
         Map<Location, Tile> tileMap = board.getLocationTileMap();
         List<Location> validMoves = new LinkedList<>();
 
-        for(int i = 1; i < 8 ; i++) {
-            if(LocationGenerator.build(currentLocation, 0, i) != null) {
-                if(tileMap.get(LocationGenerator.build(currentLocation, -i, i)).isHasPiece()) {
-                    if (tileMap.get(LocationGenerator.build(currentLocation, -i, i)).getCurrentPiece().getPieceColor().equals(this.pieceColor)) {
-                        break;
-                    } else if (tileMap.get(LocationGenerator.build(currentLocation, -i, i)).getCurrentPiece().getPieceColor() != this.pieceColor) {
-                        validMoves.add(LocationGenerator.build(currentLocation, -i, i));
-                        break;
-                    }
-                }else {
-                    validMoves.add(LocationGenerator.build(currentLocation, -i, i));
-                }
-            }
-        }
-
-        for (int p = 1; p < 8; p++) { // Lets Rook move up and to the right
-            possibleMoveTiles.add(LocationGenerator.build(currentLocation, 0, p));
-            possibleMoveTiles.add(LocationGenerator.build(currentLocation, p, 0));
-
-            for (int n = -1; n > -8; n--) { // Lets rook move down and left
-                possibleMoveTiles.add(LocationGenerator.build(currentLocation, 0, n));
-                possibleMoveTiles.add(LocationGenerator.build(currentLocation, n, 0));
-            }
-        }
-
-
-
-
-
-        for(Location l : possibleMoveTiles) {
-            if (l != null && tileMap.get(l).isHasPiece()) {
-                if (tileMap.get(l).getCurrentPiece().getPieceColor() != this.getPieceColor()
-                        && tileMap.get(l).getLocation().getFile() != this.getCurrentTile().getLocation().getFile()) {
-                    validMoves.add(l);
-                }
-            } else if (l != null && !tileMap.get(l).isHasPiece()) {
-                if (tileMap.get(l).getLocation().getFile() == this.getCurrentTile().getLocation().getFile()) {
-                    validMoves.add(l);
-                }
-            }
-        }
+        // Up vertical
+        validMoves.addAll(optimizedValidMoveGetter(board,0, 1));
+        // Down vertical
+        validMoves.addAll(optimizedValidMoveGetter(board,0, -1));
+        // Left horizontal
+        validMoves.addAll(optimizedValidMoveGetter(board,-1, 0));
+        // Right horizontal
+        validMoves.addAll(optimizedValidMoveGetter(board,1, 0));
         return validMoves;
     }
 
@@ -75,10 +42,32 @@ public class Rook extends Piece implements Movable{
         return null;
     }
 
+    public List<Location> optimizedValidMoveGetter(Board board, Integer fileMultiplier, Integer rankMultiplier){
+        Location currentLocation = this.getCurrentTile().getLocation();
+        Map<Location, Tile> tileMap = board.getLocationTileMap();
+        List<Location> validMoves = new LinkedList<>();
+
+        for(int i = 1; i < 9 ; i++) {
+            if(LocationGenerator.build(currentLocation, fileMultiplier*i, rankMultiplier*i) != null) {
+                System.out.println("CONSIDERING: " + LocationGenerator.build(currentLocation, fileMultiplier*i, rankMultiplier*i));
+                if(tileMap.get(LocationGenerator.build(currentLocation, fileMultiplier*i, rankMultiplier*i)).isHasPiece()) {
+                    if (tileMap.get(LocationGenerator.build(currentLocation, fileMultiplier*i, rankMultiplier*i)).getCurrentPiece().getPieceColor().equals(this.pieceColor)) {
+                        break;
+                    } else if (tileMap.get(LocationGenerator.build(currentLocation, fileMultiplier*i, rankMultiplier*i)).getCurrentPiece().getPieceColor() != this.pieceColor) {
+                        validMoves.add(LocationGenerator.build(currentLocation, fileMultiplier*i, rankMultiplier*i));
+                        break;
+                    }
+                }else {
+                    validMoves.add(LocationGenerator.build(currentLocation, fileMultiplier*i, rankMultiplier*i));
+                }
+            }
+        }
+        return validMoves;
+    }
+
     @Override
     public void makeMove(Tile tile) {
         System.out.println("This method 'makeMove' needs to be implemented for the " + this.getName() + " class.");
     }
 
-    //
 }
