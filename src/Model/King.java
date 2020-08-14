@@ -4,6 +4,7 @@ import BoardStuff.Board;
 import BoardStuff.Location;
 import BoardStuff.LocationGenerator;
 import BoardStuff.Tile;
+import Controller.Game;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -70,6 +71,12 @@ public class King extends Piece implements Movable{
     @Override
     public List<Location> getValidMoves(Board board, Tile tile) {
         return null;
+    }
+
+    public boolean checkCheck(Board board, Tile tile)
+    {
+       // int color = Game.getMovesMade()
+        return true;
     }
 
 

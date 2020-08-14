@@ -7,14 +7,22 @@
     </content>
     <orderEntry type="jdk" jdkName="14" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library" exported="">
+    <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="file://$MODULE_DIR$/../ConsoleIOJarFolder" />
+          <root url="jar://$MODULE_DIR$/../Projects IntelliJ/OOP/ConsoleIOTester/ConsoleIO.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/../ConsoleIOJarFolder" recursive="false" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/OneDrive - Neumont College of Computer Science/Desktop/Schoolwork/ConsoleIO.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
       </library>
     </orderEntry>
   </component>
