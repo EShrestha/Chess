@@ -24,6 +24,10 @@ public class Game {
 
     public Game(){
     }
+    public int getMovesMade()
+    {
+        return movesMade;
+    }
 
     public void playGame(Board activeBoard){
         playingBoard = activeBoard;
