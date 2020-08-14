@@ -3,10 +3,13 @@ package Controller;
 import BoardStuff.Board;
 import BoardStuff.Location;
 import BoardStuff.RankToRank;
+import BoardStuff.Tile;
+import Model.King;
 import Model.Piece;
 import Model.Player;
 import lib.ConsoleIO;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,6 +21,8 @@ public class Game {
     int movesMade = 0;
     boolean lightResign = false;
     boolean darkResign = false;
+    Tile darkKingTile;
+    Tile lightKingTile;
     boolean notGameOver = true;
     Board playingBoard;
 
@@ -60,6 +65,7 @@ public class Game {
         Matcher m = p.matcher("");
         boolean validMoveMade = false;
 
+
         do {
 
             while (!m.matches()) {
@@ -85,6 +91,8 @@ public class Game {
                 if (color == playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getShortColor()
                         && validLocations.contains(playingBoard.board[yMoveTo][xMoveTo].getLocation())) {
 
+                    // Probably check for check/checkmate here
+
                     // Marking the piece as already moved once
                     playingBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
 
@@ -104,8 +112,9 @@ public class Game {
                     //Setting what tile the piece is on for the piece that just moved
                     playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setCurrentTile(playingBoard.board[yMoveTo][xMoveTo]);
 
-
                     validMoveMade = true;
+
+
                 } else {
                     System.out.println("***INVALID MOVE***");
                     System.out.print(color == 'l' ? "LIGHT -> " : "DARK -> ");
@@ -120,6 +129,7 @@ public class Game {
         }while (!validMoveMade) ;
 
     }
+
 
     public void refreshBoard(){
         System.out.print("CAPTURED PIECES: ");

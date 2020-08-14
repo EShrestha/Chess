@@ -148,7 +148,8 @@ public class WindowChess {
     public class NewGameHandler implements ActionListener{
 
         public void actionPerformed(ActionEvent e) {
-            createGameScreen();
+            new Window();
+            //createGameScreen();
         }
 
     }

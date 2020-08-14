@@ -56,6 +56,17 @@ public class King extends Piece implements Movable{
         return validMoves;
     }
 
+    public Boolean[] inCheckOrCheckmate(){
+        Boolean[] bools = new Boolean[3];
+        // [0] = check?  [1] = checkmate?  [3] = neither?
+
+        bools[0] = true;
+        bools[1] = false;
+        bools[3] = false;
+
+        return bools;
+    }
+
     @Override
     public List<Location> getValidMoves(Board board, Tile tile) {
         return null;
