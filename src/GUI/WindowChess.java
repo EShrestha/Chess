@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 
 public class WindowChess {
@@ -148,7 +149,8 @@ public class WindowChess {
     public class NewGameHandler implements ActionListener{
 
         public void actionPerformed(ActionEvent e) {
-            new Window();
+
+            new Window("", false);
             //createGameScreen();
         }
 
@@ -157,10 +159,16 @@ public class WindowChess {
     public class LoadGameHandler implements ActionListener{
 
         public void actionPerformed(ActionEvent e) {
-            Object[] options = {"Load", "Never mind"};
             String loadFileName = JOptionPane.showInputDialog(window,"Enter file name.", "File Name", -1);
-            if(loadFileName != null && !loadFileName.trim().equals("")){
-                System.out.println("IMPLEMENT LOADING FILE!");
+            File tmpDir = new File(loadFileName+".txt");
+            if(loadFileName != null && !loadFileName.trim().equals("") && tmpDir.exists()){
+                new Window(loadFileName, true);
+            }else {
+                if(loadFileName != null && !loadFileName.trim().equals("") ) {
+                    JOptionPane.showMessageDialog(window, "We looked, couldn't find " + "\"" + loadFileName + "\".", "Maybe turn it off and on?", 2);
+                }else{
+                    JOptionPane.showMessageDialog(window, "Come on, really?", "Huh!", 2);
+                }
             }
         }
 

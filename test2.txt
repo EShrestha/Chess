@@ -1,3 +1,4 @@
+# Dark initial setup
 Rda8
 Pda7
 Ndb8
@@ -14,4 +15,23 @@ Ndg8
 Pdg7
 Rdh8
 Pdh7
+# Light initial setup
+Rla1
+Pla2
+Nlb1
+Plb2
+Blc1
+Plc2
+Qld1
+Pld2
+Kle1
+Ple2
+Blf1
+Plf2
+Nlg1
+Plg2
+Rlh1
+Rlh2
+# Move commands here
+
 

@@ -1,18 +1,21 @@
 package GUI;
 
-import BoardStuff.Board;
-import BoardStuff.File;
-import BoardStuff.Location;
-import BoardStuff.RankToRank;
+import BoardStuff.*;
+import Command.CommandReader;
 import Controller.Game;
-import Model.Piece;
-import Model.Player;
+import Model.*;
 import lib.ConsoleIO;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,12 +29,15 @@ public class Window extends JFrame
     private int commandLeftFile = -1;
     private String commandRight = "";
     private RankToRank rankToRank = new RankToRank();
+    public ArrayList<String> allCommands = new ArrayList<>();
     private static final File[] files = File.values();
 
-    private Board playingBoard = new Board(true);
+    private Board playingBoard;
     Player lightPlayer = new Player('l');
     Player darkPlayer = new Player('d');
     public int movesMade = 0;
+    public static ArrayList<String> saveGame = new ArrayList<>();
+    boolean usingFile = false;
 
     //Components:
     private JButton[][] tiles = new JButton[8][8];
@@ -60,11 +66,42 @@ public class Window extends JFrame
 
 
 
-    public Window(){
-        super("El Chess");
+    public Window(String fileName, boolean useFile){
 
+        super("El Chess");
+        playingBoard = new Board(true);
         contents = getContentPane();
         contents.setLayout(new GridLayout(8,8));
+
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent we)
+            {
+                String ObjButtons[] = {"Close/Resign", "Cancel"};
+                int PromptResult = JOptionPane.showOptionDialog(null,"What would you like to do?","Leaving so soon?", JOptionPane.DEFAULT_OPTION,JOptionPane.WARNING_MESSAGE,null,ObjButtons,ObjButtons[1]);
+                if(PromptResult==JOptionPane.YES_OPTION)
+                {
+                    String saveBtns[] = {"Yes", "No"};
+                    int saveOrNot =  JOptionPane.showOptionDialog(null,"Would you like to save game?","Before you go...", JOptionPane.DEFAULT_OPTION,JOptionPane.WARNING_MESSAGE,null,saveBtns,saveBtns[1]);
+                    if(saveOrNot == JOptionPane.YES_OPTION){
+                        if(movesMade > 0) {
+                            if (saveGame()) {
+                                dispose();
+                            }
+                        }else {
+                            JOptionPane.showMessageDialog(null, "To low of moves to save.", "You trying to waste storage?", 2);
+                            dispose();
+                        }
+                    }else if(saveOrNot == JOptionPane.NO_OPTION) {
+                        dispose();
+                    }
+                }else if(PromptResult==JOptionPane.NO_OPTION){
+                    // Cancel button, exits prompt only
+                }
+            }
+        });
+
 
         //Create event handlers:
         ButtonHandler buttonHandler = new ButtonHandler();
@@ -122,12 +159,46 @@ public class Window extends JFrame
         setResizable(false);
         setLocationRelativeTo(null); // Centers window
         setVisible(true);
+
+        if(useFile){
+            usingFile = true;
+            readCommandFromFile(fileName);
+        }
     }
 
 
-    private boolean isValidMove(int i, int j){
-        return false;
+
+    private boolean saveGame(){
+        String fileName = "Chess_" + java.time.LocalDate.now()+".txt";
+        try {
+
+            java.io.File myObj = new java.io.File(fileName);
+            if (myObj.createNewFile()) {
+                System.out.println("File created: " + myObj.getName());
+            } else {
+                JOptionPane.showMessageDialog(this, "Try again.", "File seems to already exist.", 2);
+                return false;
+            }
+        } catch (IOException e) {
+            // Can alert that an error occurred here
+            return false;
+        }
+
+        try {
+            FileWriter myWriter = new FileWriter(fileName);
+            for(String c : saveGame) {
+                myWriter.write(c+"\n");
+            }
+            myWriter.close();
+            // Can alert that the game saved here
+        } catch (IOException e) {
+            // Can alert that an error occurred here
+            return false;
+        }
+
+        return true;
     }
+
 
     private void processClick(String command, int imoveTo, int jMoveTo){
 
@@ -155,26 +226,28 @@ public class Window extends JFrame
                         int j1 = j;
 
 
+                            if(playingBoard.board[i][j].isHasPiece() || !commandLeft.trim().equals("")) {
+                                if (commandLeft.trim().equals("")) {
+                                    commandLeft = (files[j].toString().toLowerCase() + "" + (Integer.parseInt(rankToRank.getRank(i).toString()) + 1));
+                                    commandLeftRank = i;
+                                    commandLeftFile = j;
 
-                            if (commandLeft.trim().equals("")) {
-                                commandLeft = (files[j].toString().toLowerCase()+""+(Integer.parseInt(rankToRank.getRank(i).toString()) + 1));
-                                commandLeftRank = i;
-                                commandLeftFile = j;
+                                } else if (commandRight.trim().equals("")) {
+                                    if (!(files[j].toString().toLowerCase() + "" + (Integer.parseInt(rankToRank.getRank(i).toString()) + 1)).equals(commandLeft)) {
 
-                            }else if(commandRight.trim().equals("")) {
-                                if (!(files[j].toString().toLowerCase() + "" + (Integer.parseInt(rankToRank.getRank(i).toString()) + 1)).equals(commandLeft)){
+                                        commandRight = (files[j].toString().toLowerCase() + "" + (Integer.parseInt(rankToRank.getRank(i).toString()) + 1));
+                                        //processClick((commandLeft + " " + commandRight), i, j);
+                                        makeValidMove(commandLeft + " " + commandRight);
+                                    }
 
-                                    commandRight = (files[j].toString().toLowerCase() + "" + (Integer.parseInt(rankToRank.getRank(i).toString()) + 1));
-                                    processClick((commandLeft+" "+commandRight), i, j);
+                                    //System.out.println("COMMAND: " + commandLeft+" "+commandRight);
+                                    System.out.println("RANK1: " + i1 + " FILE1: " + j1);
+                                    System.out.println("RANK2: " + i + " FILE2: " + j);
+                                    commandLeft = "";
+                                    commandLeftRank = -1;
+                                    commandLeftFile = -1;
+                                    commandRight = "";
                                 }
-
-                                //System.out.println("COMMAND: " + commandLeft+" "+commandRight);
-                                System.out.println("RANK1: " + i1 + " FILE1: " + j1);
-                                System.out.println("RANK2: " + i + " FILE2: " + j);
-                                commandLeft = "";
-                                commandLeftRank = -1;
-                                commandLeftFile = -1;
-                                commandRight = "";
                             }
 
                             return;
@@ -184,6 +257,8 @@ public class Window extends JFrame
             }
         }
     }
+
+
 
 
     public boolean makeValidMove(String command){
@@ -231,21 +306,59 @@ public class Window extends JFrame
                     //Setting what tile the piece is on for the piece that just moved
                     playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setCurrentTile(playingBoard.board[yMoveTo][xMoveTo]);
 
+                    Icon tempIcon = tiles[yCurrent][xCurrent].getIcon();
+                    tiles[yCurrent][xCurrent].setIcon(null);
+                    tiles[yMoveTo][xMoveTo].setIcon(tempIcon);
+
+                    saveGame.add(command);
+
                     movesMade++;
                     return true;
                 } else {
                     System.out.println("***INVALID MOVE***");
                     System.out.print(color == 'l' ? "LIGHT -> " : "DARK -> ");
+                    if(usingFile){
+                        JOptionPane.showMessageDialog(this, "INVALID COMMAND READ FROM FILE", "Maybe turn it off and on?", 2);
+                        movesMade++;
+                    }
                     return false;
                 }
 
             }else {
+                if(usingFile){
+                    JOptionPane.showMessageDialog(this, "INVALID COMMAND READ FROM FILE", "Maybe turn it off and on?", 2);
+                    movesMade++;
+                }
                 System.out.println("***INVALID MOVE***");
                 System.out.print(color == 'l' ? "LIGHT -> " : "DARK -> ");
                 return false;
             }
 
     }
+
+
+    public void readCommandFromFile(String fileName) {
+        allCommands.clear();
+        try {
+            java.io.File file = new java.io.File(fileName+".txt");    //creates a new file instance
+            FileReader fileReader = new FileReader(file);   //reads the file
+            BufferedReader br = new BufferedReader(fileReader);  //creates a buffering character input stream
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (!line.startsWith("#")){
+                    allCommands.add(line);
+                }
+            }
+            fileReader.close();    //closes the stream and release the resources
+        } catch (IOException e) { e.printStackTrace();}
+        // After adding each command to the allCommands array we call describeCommands which will print what each command did to the console.
+        for(String c : allCommands) {
+            makeValidMove(c);
+        }
+        usingFile = false;
+
+    }
+
 
 
 
