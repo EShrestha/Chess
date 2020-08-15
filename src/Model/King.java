@@ -170,6 +170,18 @@ public class King extends Piece implements Movable{
         return inCheck;
     }
 
+    public boolean checkCheckmate (Board board)
+    {
+        boolean inCheckMate = false;
+        List<Location> validMoves = this.getValidMoves(board);
+        for (Location l :validMoves)
+        {
+
+        }
+
+        return inCheckMate;
+    }
+
 
 
 }
