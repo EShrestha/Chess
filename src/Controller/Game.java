@@ -25,6 +25,7 @@ public class Game {
     Tile lightKingTile;
     boolean notGameOver = true;
     Board playingBoard;
+    private boolean playerResignState = true;
 
 
     public Game(){
@@ -69,8 +70,13 @@ public class Game {
         do {
 
             while (!m.matches()) {
-                m = p.matcher(ConsoleIO.promptForString("Enter piece coordinate and move to coordinate (a1 a2): "));
-                if (!m.matches()) {
+                String resign = ConsoleIO.promptForString("Enter piece coordinate and move to coordinate (a1 a2): ").toUpperCase();
+                m = p.matcher(resign);
+                if (resign.equals("FORFEIT")) {
+                    notGameOver = playerQuits(color);
+                    validMoveMade = true;
+
+                } else if(!m.matches()){
                     System.out.print(color == 'l' ? "LIGHT -> " : "DARK -> ");
                 }
             }
@@ -143,6 +149,27 @@ public class Game {
             System.out.print(lP.getShortName() + " ");
         }
         System.out.println("\n");
+    }
+    private boolean gameContinue;
+    public boolean playerQuits(char playerColor){
+
+        while(playerResignState){
+            String response = ConsoleIO.promptForString("Are you sure you want to forfeit? (y/n): ").toUpperCase();
+            if(response.equals("Y")){
+                System.out.print(playerColor == 'l' ? "LIGHT forfeits DARK wins!!!" : "DARK forfeits LIGHT wins!!! ");
+                gameContinue = false;
+                playerResignState = false;
+            }
+            else if (response.equals("N")){
+                gameContinue = true;
+                playerResignState = false;
+            }
+            else{
+                System.out.println("Yes or No? (y/n): ");
+            }
+        }
+        return gameContinue;
+
     }
 
 
