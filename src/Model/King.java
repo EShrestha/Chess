@@ -76,7 +76,7 @@ public class King extends Piece implements Movable{
 
     public boolean checkCheck(Board board, Tile tile)
     {
-        List<Location> PossibleCheckors = new LinkedList<>();
+        boolean inCheck = false;
 
         PieceColor color = movesMade % 2 == 0 ? PieceColor.LIGHT : PieceColor.DARK;
         Map<Location, Tile> tileMap = board.getLocationTileMap();
@@ -85,15 +85,61 @@ public class King extends Piece implements Movable{
         List<Location> BishopPossibleMoveTiles = new LinkedList<>();
         BishopPossibleMoveTiles.addAll(b.getValidMoves(board, tile));
 
+        for(Location l : BishopPossibleMoveTiles){
+            if(l != null && tileMap.get(l).isHasPiece()){
+                if(tileMap.get(l).getCurrentPiece().getShortName() != (color.equals(PieceColor.LIGHT) ? 'B' : 'b' ) || (tileMap.get(l).getCurrentPiece().getShortName() != (color.equals(PieceColor.LIGHT) ? 'Q' : 'q' )))
+                {
+                    BishopPossibleMoveTiles.remove(l);
+                }
+                else if(tileMap.get(l).getCurrentPiece().getPieceColor() == color)
+                {
+                    BishopPossibleMoveTiles.remove(l);
+                }
+
+            }else if(l != null && !tileMap.get(l).isHasPiece()){
+                BishopPossibleMoveTiles.remove(l);
+            }
+        }
 
         Rook r = new Rook(color, tile);
         List<Location> RookPossibleMoveTiles = new LinkedList<>();
         RookPossibleMoveTiles.addAll(r.getValidMoves(board, tile));
 
+        for(Location l : RookPossibleMoveTiles){
+            if(l != null && tileMap.get(l).isHasPiece()){
+                if(tileMap.get(l).getCurrentPiece().getShortName() != (color.equals(PieceColor.LIGHT) ? 'R' : 'r' ) || (tileMap.get(l).getCurrentPiece().getShortName() != (color.equals(PieceColor.LIGHT) ? 'Q' : 'q' )))
+                {
+                    RookPossibleMoveTiles.remove(l);
+                }
+                else if(tileMap.get(l).getCurrentPiece().getPieceColor() == color)
+                {
+                    RookPossibleMoveTiles.remove(l);
+                }
+
+            }else if(l != null && !tileMap.get(l).isHasPiece()){
+                RookPossibleMoveTiles.remove(l);
+            }
+        }
 
         Pawn p = new Pawn(color,tile);
         List<Location> PawnPossibleMoveTiles = new LinkedList<>();
         PawnPossibleMoveTiles.addAll(p.getValidMoves(board, tile));
+
+        for(Location l : PawnPossibleMoveTiles){
+            if(l != null && tileMap.get(l).isHasPiece()){
+                if(tileMap.get(l).getCurrentPiece().getShortName() != (color.equals(PieceColor.LIGHT) ? 'P' : 'p' ))
+                {
+                    PawnPossibleMoveTiles.remove(l);
+                }
+                else if(tileMap.get(l).getCurrentPiece().getPieceColor() == color)
+                {
+                    PawnPossibleMoveTiles.remove(l);
+                }
+
+            }else if(l != null && !tileMap.get(l).isHasPiece()){
+                PawnPossibleMoveTiles.remove(l);
+            }
+        }
 
 
         Knight k = new Knight(color, tile);
@@ -116,8 +162,12 @@ public class King extends Piece implements Movable{
             }
         }
 
+        if(!BishopPossibleMoveTiles.isEmpty() || !RookPossibleMoveTiles.isEmpty() || !PawnPossibleMoveTiles.isEmpty() || !KnightPossibleMoveTiles.isEmpty())
+        {
+            inCheck = true;
+        }
 
-        return true;
+        return inCheck;
     }
 
 
