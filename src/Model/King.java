@@ -4,7 +4,6 @@ import BoardStuff.Board;
 import BoardStuff.Location;
 import BoardStuff.LocationGenerator;
 import BoardStuff.Tile;
-import Controller.Game;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -60,7 +59,7 @@ public class King extends Piece implements Movable{
     }
 
     public Boolean[] inCheckOrCheckmate(){
-        Boolean[] bools = new Boolean[3];
+        Boolean[] bools = new Boolean[4];
         // [0] = check?  [1] = checkmate?  [3] = neither?
 
         bools[0] = true;
@@ -77,11 +76,42 @@ public class King extends Piece implements Movable{
 
     public boolean checkCheck(Board board, Tile tile)
     {
+        List<Location> PossibleCheckors = new LinkedList<>();
+
         PieceColor color = movesMade % 2 == 0 ? PieceColor.LIGHT : PieceColor.DARK;
-        Bishop b = new Bishop(this.pieceColor,tile);
-        Rook r = new Rook(this.pieceColor, tile);
-        Pawn p = new Pawn(this.pieceColor,tile);
-        Knight k = new Knight(this.pieceColor, tile);
+        Map<Location, Tile> tileMap = board.getLocationTileMap();
+
+        Bishop b = new Bishop(color,tile);
+        List<Location> BishopPossibleMoveTiles = new LinkedList<>();
+        BishopPossibleMoveTiles.addAll(b.getValidMoves(board, tile));
+
+
+        Rook r = new Rook(color, tile);
+        List<Location> RookPossibleMoveTiles = new LinkedList<>();
+        RookPossibleMoveTiles.addAll(r.getValidMoves(board, tile));
+
+
+        Pawn p = new Pawn(color,tile);
+        List<Location> PawnPossibleMoveTiles = new LinkedList<>();
+        PawnPossibleMoveTiles.addAll(p.getValidMoves(board, tile));
+
+
+        Knight k = new Knight(color, tile);
+        List<Location> KnightPossibleMoveTiles = new LinkedList<>();
+        KnightPossibleMoveTiles.addAll(k.getValidMoves(board, tile));
+
+        for(Location l : KnightPossibleMoveTiles){
+            if(l != null && tileMap.get(l).isHasPiece()){
+                if(tileMap.get(l).getCurrentPiece().getShortName() != color.equals(PieceColor.LIGHT) ? 'N' : 'n' )
+                    if(tileMap.get(l).getCurrentPiece().getPieceColor() != color){
+                    {
+                        KnightPossibleMoveTiles.remove(l);
+                    }
+                }
+            }else if(l != null && !tileMap.get(l).isHasPiece()){
+                KnightPossibleMoveTiles.remove(l);
+            }
+        }
 
 
         return true;
