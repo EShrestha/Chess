@@ -102,7 +102,7 @@ public class King extends Piece implements Movable{
 
         for(Location l : KnightPossibleMoveTiles){
             if(l != null && tileMap.get(l).isHasPiece()){
-                if(tileMap.get(l).getCurrentPiece().getShortName() != color.equals(PieceColor.LIGHT) ? 'N' : 'n' )
+                if(tileMap.get(l).getCurrentPiece().getShortName() != (color.equals(PieceColor.LIGHT) ? 'N' : 'n' ))
                     if(tileMap.get(l).getCurrentPiece().getPieceColor() != color){
                     {
                         KnightPossibleMoveTiles.remove(l);
