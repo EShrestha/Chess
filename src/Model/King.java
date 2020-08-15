@@ -75,7 +75,13 @@ public class King extends Piece implements Movable{
 
     public boolean checkCheck(Board board, Tile tile)
     {
-       // int color = Game.getMovesMade()
+        int color = Game.movesMade%2;
+        Bishop b = new Bishop(this.pieceColor,tile);
+        Rook r = new Rook(this.pieceColor, tile);
+        Pawn p = new Pawn(this.pieceColor,tile);
+        Knight k = new Knight(this.pieceColor, tile);
+
+
         return true;
     }
 
