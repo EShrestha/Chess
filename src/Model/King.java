@@ -10,6 +10,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import static Controller.Game.movesMade;
+
 public class King extends Piece implements Movable{
     public King(PieceColor pieceColor, Tile tile) {
         super(pieceColor);
@@ -75,7 +77,7 @@ public class King extends Piece implements Movable{
 
     public boolean checkCheck(Board board, Tile tile)
     {
-        int color = Game.movesMade%2;
+        PieceColor color = movesMade % 2 == 0 ? PieceColor.LIGHT : PieceColor.DARK;
         Bishop b = new Bishop(this.pieceColor,tile);
         Rook r = new Rook(this.pieceColor, tile);
         Pawn p = new Pawn(this.pieceColor,tile);
