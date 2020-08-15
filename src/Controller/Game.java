@@ -18,7 +18,7 @@ public class Game {
     RankToRank rankToRank = new RankToRank();
     Player lightPlayer = new Player('l');
     Player darkPlayer = new Player('d');
-    public int movesMade = 0;
+    public static int movesMade = 0;
     boolean lightResign = false;
     boolean darkResign = false;
     Tile darkKingTile;
@@ -28,10 +28,6 @@ public class Game {
 
 
     public Game(){
-    }
-    public int getMovesMade()
-    {
-        return movesMade;
     }
 
     public void playGame(Board activeBoard){
