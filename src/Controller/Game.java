@@ -41,6 +41,7 @@ public class Game {
 
                 System.out.print("LIGHT -> ");
                     makeValidMove('l');
+                    if(!notGameOver){break;}
 
                 movesMade++;
 
@@ -48,6 +49,8 @@ public class Game {
 
                 System.out.print("DARK -> ");
                 makeValidMove('d');
+                if(!notGameOver){break;}
+
 
                 movesMade++;
 
@@ -66,73 +69,79 @@ public class Game {
         Matcher m = p.matcher("");
         boolean validMoveMade = false;
 
+        if(!m.matches()) {
+            String resign = ConsoleIO.promptForString("Enter piece coordinate and move to coordinate (a1 a2): ").toLowerCase();
+            if (resign.equals("q")) {
+                notGameOver = playerQuits(color);
+            }else {
+                do {
 
-        do {
+                    while (!m.matches()) {
 
-            while (!m.matches()) {
-                String resign = ConsoleIO.promptForString("Enter piece coordinate and move to coordinate (a1 a2): ").toUpperCase();
-                m = p.matcher(resign);
-                if (resign.equals("FORFEIT")) {
-                    notGameOver = playerQuits(color);
-                    validMoveMade = true;
-
-                } else if(!m.matches()){
-                    System.out.print(color == 'l' ? "LIGHT -> " : "DARK -> ");
-                }
-            }
-
-            // Getting x and y of the piece user wants ot move and the x and y of where user want to move piece to
-            int xCurrent = Enum.valueOf(BoardStuff.File.class, m.group(1).toUpperCase()).ordinal();
-            int yCurrent = rankToRank.getRank(Integer.parseInt(m.group(2)) - 1);
-            int xMoveTo = Enum.valueOf(BoardStuff.File.class, m.group(3).toUpperCase()).ordinal();
-            int yMoveTo = rankToRank.getRank(Integer.parseInt(m.group(4)) - 1);
-
-
-            if (playingBoard.board[yCurrent][xCurrent].isHasPiece()) {
-                // Getting a list of valid locations for the current piece
-                List<Location> validLocations = playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getValidMoves(playingBoard);
-                System.out.println("ACTUAL VALID MOVES: " + validLocations);
-
-                // Checking if the piece color user wants to move is actually the players color (l/d) and the move they want to make is in the valid locations list
-                if (color == playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getShortColor()
-                        && validLocations.contains(playingBoard.board[yMoveTo][xMoveTo].getLocation())) {
-
-                    // Probably check for check/checkmate here
-
-                    // Marking the piece as already moved once
-                    playingBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
-
-                    // Making a copy of the piece user wants to move then resetting that tile the piece was on
-                    Piece tempCurrentPiece = playingBoard.board[yCurrent][xCurrent].getCurrentPiece();
-                    playingBoard.board[yCurrent][xCurrent].resetTile();
-
-                    // Adding what piece was captured if there was a piece to be captured
-                    if(playingBoard.board[yMoveTo][xMoveTo].isHasPiece()) {
-                        Piece tempMoveToPiece = playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece();
-                        if(color == 'l'){ lightPlayer.addCapturedPiece(tempMoveToPiece);
-                        }else { darkPlayer.addCapturedPiece(tempMoveToPiece); }
-
+                        m = p.matcher(resign);
+                        if (!m.matches()) {
+                            System.out.print(color == 'l' ? "LIGHT -> " : "DARK -> ");
+                        }
                     }
 
-                    playingBoard.board[yMoveTo][xMoveTo].setCurrentPiece(tempCurrentPiece);
-                    //Setting what tile the piece is on for the piece that just moved
-                    playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setCurrentTile(playingBoard.board[yMoveTo][xMoveTo]);
+                    // Getting x and y of the piece user wants ot move and the x and y of where user want to move piece to
+                    int xCurrent = Enum.valueOf(BoardStuff.File.class, m.group(1).toUpperCase()).ordinal();
+                    int yCurrent = rankToRank.getRank(Integer.parseInt(m.group(2)) - 1);
+                    int xMoveTo = Enum.valueOf(BoardStuff.File.class, m.group(3).toUpperCase()).ordinal();
+                    int yMoveTo = rankToRank.getRank(Integer.parseInt(m.group(4)) - 1);
 
-                    validMoveMade = true;
+
+                    if (playingBoard.board[yCurrent][xCurrent].isHasPiece()) {
+                        // Getting a list of valid locations for the current piece
+                        List<Location> validLocations = playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getValidMoves(playingBoard);
+                        System.out.println("ACTUAL VALID MOVES: " + validLocations);
+
+                        // Checking if the piece color user wants to move is actually the players color (l/d) and the move they want to make is in the valid locations list
+                        if (color == playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getShortColor()
+                                && validLocations.contains(playingBoard.board[yMoveTo][xMoveTo].getLocation())) {
+
+                            // Probably check for check/checkmate here
+
+                            // Marking the piece as already moved once
+                            playingBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
+
+                            // Making a copy of the piece user wants to move then resetting that tile the piece was on
+                            Piece tempCurrentPiece = playingBoard.board[yCurrent][xCurrent].getCurrentPiece();
+                            playingBoard.board[yCurrent][xCurrent].resetTile();
+
+                            // Adding what piece was captured if there was a piece to be captured
+                            if (playingBoard.board[yMoveTo][xMoveTo].isHasPiece()) {
+                                Piece tempMoveToPiece = playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece();
+                                if (color == 'l') {
+                                    lightPlayer.addCapturedPiece(tempMoveToPiece);
+                                } else {
+                                    darkPlayer.addCapturedPiece(tempMoveToPiece);
+                                }
+
+                            }
+
+                            playingBoard.board[yMoveTo][xMoveTo].setCurrentPiece(tempCurrentPiece);
+                            //Setting what tile the piece is on for the piece that just moved
+                            playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setCurrentTile(playingBoard.board[yMoveTo][xMoveTo]);
+
+                            validMoveMade = true;
 
 
-                } else {
-                    System.out.println("***INVALID MOVE***");
-                    System.out.print(color == 'l' ? "LIGHT -> " : "DARK -> ");
-                }
+                        } else {
+                            System.out.println("***INVALID MOVE***");
+                            System.out.print(color == 'l' ? "LIGHT -> " : "DARK -> ");
+                        }
 
-            }else {
-                System.out.println("***INVALID MOVE***");
-                System.out.print(color == 'l' ? "LIGHT -> " : "DARK -> ");
+                    } else {
+                        System.out.println("***INVALID MOVE***");
+                        System.out.print(color == 'l' ? "LIGHT -> " : "DARK -> ");
+                    }
+                    // Clearing user input so user can input again
+                    m = p.matcher("");
+                } while (!validMoveMade);
             }
-            // Clearing user input so user can input again
-            m = p.matcher("");
-        }while (!validMoveMade) ;
+
+        }
 
     }
 

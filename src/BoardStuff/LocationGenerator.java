@@ -1,5 +1,7 @@
 package BoardStuff;
 
+import Model.PieceColor;
+
 public class LocationGenerator {
     // Creates locations based on the y(rank) and x(file) position of a piece and y and x offset that is passed in
     private static final File[] files = File.values();
