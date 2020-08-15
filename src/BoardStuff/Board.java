@@ -6,10 +6,12 @@ import Model.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Board {
+public class Board implements Cloneable{
     public static final Integer DIMENSION = 8;
     public Tile[][] board = new Tile[DIMENSION][DIMENSION];
     private final Map<Location, Tile> locationTileMap;
+    public static Tile darkKingsTile;
+    public static Tile lightKingsTile;
 
 
 
@@ -79,6 +81,7 @@ public class Board {
         board[0][2].setCurrentPiece(new Bishop(PieceColor.DARK, board[0][2]));
         board[0][3].setCurrentPiece(new Queen(PieceColor.DARK, board[0][3]));
         board[0][4].setCurrentPiece(new King(PieceColor.DARK, board[0][4]));
+        darkKingsTile = board[0][4];
         board[0][5].setCurrentPiece(new Bishop(PieceColor.DARK, board[0][5]));
         board[0][6].setCurrentPiece(new Knight(PieceColor.DARK, board[0][6]));
         board[0][7].setCurrentPiece(new Rook(PieceColor.DARK, board[0][7]));
@@ -99,6 +102,7 @@ public class Board {
         board[7][2].setCurrentPiece(new Bishop(PieceColor.LIGHT, board[7][2]));
         board[7][3].setCurrentPiece(new Queen(PieceColor.LIGHT, board[7][3]));
         board[7][4].setCurrentPiece(new King(PieceColor.LIGHT, board[7][4]));
+        lightKingsTile = board[7][4];
         board[7][5].setCurrentPiece(new Bishop(PieceColor.LIGHT, board[7][5]));
         board[7][6].setCurrentPiece(new Knight(PieceColor.LIGHT, board[7][6]));
         board[7][7].setCurrentPiece(new Rook(PieceColor.LIGHT, board[7][7]));

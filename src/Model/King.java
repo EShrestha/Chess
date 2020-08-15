@@ -19,6 +19,9 @@ public class King extends Piece implements Movable{
         this.currentTile = tile;
     }
 
+    //Default
+    public King(){}
+
     @Override
     public List<Location> getValidMoves(Board board) {
         List<Location> possibleMoveTiles = new LinkedList<>();
@@ -74,100 +77,105 @@ public class King extends Piece implements Movable{
         return null;
     }
 
-    public boolean checkCheck(Board board, Tile tile)
+    public boolean checkForCheck(Board board, Tile tile)
     {
-        boolean inCheck = false;
-
-        PieceColor color = movesMade % 2 == 0 ? PieceColor.LIGHT : PieceColor.DARK;
         Map<Location, Tile> tileMap = board.getLocationTileMap();
+        List<Location> threats = new LinkedList<>();
+
+        PieceColor color = tile.getCurrentPiece().getPieceColor();
+        char thisColor = movesMade % 2 == 0 ? 'l' : 'd';
+        System.out.println("CURRENT PIECE COLOR:" + color);
+
 
         Bishop b = new Bishop(color,tile);
-        List<Location> BishopPossibleMoveTiles = new LinkedList<>();
-        BishopPossibleMoveTiles.addAll(b.getValidMoves(board, tile));
+        b.setFirstMove(false);
+        List<Location> bishopPossibleMoveTiles = new LinkedList<>();
+        bishopPossibleMoveTiles.addAll(b.getValidMoves(board, tile));
 
-        for(Location l : BishopPossibleMoveTiles){
+        for(Location l : bishopPossibleMoveTiles){
+
             if(l != null && tileMap.get(l).isHasPiece()){
-                if(tileMap.get(l).getCurrentPiece().getShortName() != (color.equals(PieceColor.LIGHT) ? 'B' : 'b' ) || (tileMap.get(l).getCurrentPiece().getShortName() != (color.equals(PieceColor.LIGHT) ? 'Q' : 'q' )))
-                {
-                    BishopPossibleMoveTiles.remove(l);
-                }
-                else if(tileMap.get(l).getCurrentPiece().getPieceColor() == color)
-                {
-                    BishopPossibleMoveTiles.remove(l);
-                }
+                System.out.println("BISHOP CONSIDERING THREAT: " + l);
+                if(!tileMap.get(l).getCurrentPiece().getPieceColor().equals(this.pieceColor)
+                    && tileMap.get(l).getCurrentPiece().getClass().equals(Queen.class.getSimpleName()) || tileMap.get(l).getCurrentPiece().getClass().getSimpleName().equals(Bishop.class.getSimpleName())){
 
-            }else if(l != null && !tileMap.get(l).isHasPiece()){
-                BishopPossibleMoveTiles.remove(l);
+                    threats.add(l);
+                    System.out.println("THREAT ADDED: " + l);
+                }
             }
         }
 
         Rook r = new Rook(color, tile);
-        List<Location> RookPossibleMoveTiles = new LinkedList<>();
-        RookPossibleMoveTiles.addAll(r.getValidMoves(board, tile));
+        r.setFirstMove(false);
+        List<Location> rookPossibleMoveTiles = new LinkedList<>();
+        rookPossibleMoveTiles.addAll(r.getValidMoves(board, tile));
 
-        for(Location l : RookPossibleMoveTiles){
+
+        for(Location l : rookPossibleMoveTiles){
+
             if(l != null && tileMap.get(l).isHasPiece()){
-                if(tileMap.get(l).getCurrentPiece().getShortName() != (color.equals(PieceColor.LIGHT) ? 'R' : 'r' ) || (tileMap.get(l).getCurrentPiece().getShortName() != (color.equals(PieceColor.LIGHT) ? 'Q' : 'q' )))
-                {
-                    RookPossibleMoveTiles.remove(l);
-                }
-                else if(tileMap.get(l).getCurrentPiece().getPieceColor() == color)
-                {
-                    RookPossibleMoveTiles.remove(l);
-                }
+                System.out.println("ROOK CONSIDERING THREAT: " + l);
+                if(!tileMap.get(l).getCurrentPiece().getPieceColor().equals(this.pieceColor)
+                        && tileMap.get(l).getCurrentPiece().getClass().getSimpleName().equals(Queen.class.getSimpleName()) || tileMap.get(l).getCurrentPiece().getClass().getSimpleName().equals(Rook.class.getSimpleName())){
 
-            }else if(l != null && !tileMap.get(l).isHasPiece()){
-                RookPossibleMoveTiles.remove(l);
+                    threats.add(l);
+                    System.out.println("THREAT ADDED: " + l);
+                }
             }
         }
 
         Pawn p = new Pawn(color,tile);
-        List<Location> PawnPossibleMoveTiles = new LinkedList<>();
-        PawnPossibleMoveTiles.addAll(p.getValidMoves(board, tile));
+        p.setFirstMove(false);
+        List<Location> pawnPossibleMoveTiles = new LinkedList<>();
+        pawnPossibleMoveTiles.addAll(p.getValidMoves(board));
 
-        for(Location l : PawnPossibleMoveTiles){
-            if(l != null && tileMap.get(l).isHasPiece()){
-                if(tileMap.get(l).getCurrentPiece().getShortName() != (color.equals(PieceColor.LIGHT) ? 'P' : 'p' ))
-                {
-                    PawnPossibleMoveTiles.remove(l);
-                }
-                else if(tileMap.get(l).getCurrentPiece().getPieceColor() == color)
-                {
-                    PawnPossibleMoveTiles.remove(l);
-                }
 
-            }else if(l != null && !tileMap.get(l).isHasPiece()){
-                PawnPossibleMoveTiles.remove(l);
+
+        if(pawnPossibleMoveTiles != null && !pawnPossibleMoveTiles.isEmpty()) {
+            for (Location l : pawnPossibleMoveTiles) {
+                System.out.println("PAWN CONSIDERING THREATS: " + l);
+
+                if (l != null && tileMap.get(l).isHasPiece()) {
+
+                    if (!tileMap.get(l).getCurrentPiece().getPieceColor().equals(this.pieceColor)
+                            && tileMap.get(l).getCurrentPiece().getClass().getSimpleName().equals(Pawn.class.getSimpleName())) {
+
+                        threats.add(l);
+                        System.out.println("THREAT ADDED: " + l);
+                    }
+                }
             }
         }
 
 
-        Knight k = new Knight(color, tile);
-        List<Location> KnightPossibleMoveTiles = new LinkedList<>();
-        KnightPossibleMoveTiles.addAll(k.getValidMoves(board, tile));
+        Knight k = new Knight(color,tile);
+        k.setFirstMove(false);
+        List<Location> knightPossibleMoveTiles = new LinkedList<>();
+        knightPossibleMoveTiles.addAll(k.getValidMoves(board));
 
-        for(Location l : KnightPossibleMoveTiles){
-            if(l != null && tileMap.get(l).isHasPiece()){
-                if(tileMap.get(l).getCurrentPiece().getShortName() != (color.equals(PieceColor.LIGHT) ? 'N' : 'n' ))
-                {
-                    KnightPossibleMoveTiles.remove(l);
-                }
-                else if(tileMap.get(l).getCurrentPiece().getPieceColor() == color)
-                {
-                    KnightPossibleMoveTiles.remove(l);
-                }
 
-            }else if(l != null && !tileMap.get(l).isHasPiece()){
-                KnightPossibleMoveTiles.remove(l);
+        if(knightPossibleMoveTiles != null && !knightPossibleMoveTiles.isEmpty()) {
+            for (Location l : knightPossibleMoveTiles) {
+                System.out.println("KNIGHT CONSIDERING THREAT: " + l);
+                if (l != null && tileMap.get(l).isHasPiece()) {
+
+                    if (!tileMap.get(l).getCurrentPiece().getPieceColor().equals(this.pieceColor)
+                            && tileMap.get(l).getCurrentPiece().getClass().getSimpleName().equals(Knight.class.getSimpleName())) {
+
+                        threats.add(l);
+                        System.out.println("THREAT ADDED: " + l);
+                    }
+                }
             }
         }
 
-        if(!BishopPossibleMoveTiles.isEmpty() || !RookPossibleMoveTiles.isEmpty() || !PawnPossibleMoveTiles.isEmpty() || !KnightPossibleMoveTiles.isEmpty())
+        System.out.println("FULL THREATS LIST: " + threats);
+        if(!threats.isEmpty())
         {
-            inCheck = true;
+            return true;
         }
 
-        return inCheck;
+        return false;
     }
 
     public boolean checkCheckmate (Board board)

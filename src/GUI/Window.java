@@ -78,7 +78,7 @@ public class Window extends JFrame
             @Override
             public void windowClosing(WindowEvent we)
             {
-                String ObjButtons[] = {"Close/Resign", "Cancel"};
+                String ObjButtons[] = {"Close/Resign", "Never mind"};
                 int PromptResult = JOptionPane.showOptionDialog(null,"What would you like to do?","Leaving so soon?", JOptionPane.DEFAULT_OPTION,JOptionPane.WARNING_MESSAGE,null,ObjButtons,ObjButtons[1]);
                 if(PromptResult==JOptionPane.YES_OPTION)
                 {
@@ -185,11 +185,11 @@ public class Window extends JFrame
         }
 
         try {
-            FileWriter myWriter = new FileWriter(fileName);
+            FileWriter fileWriter = new FileWriter(fileName);
             for(String c : saveGame) {
-                myWriter.write(c+"\n");
+                fileWriter.write(c+"\n");
             }
-            myWriter.close();
+            fileWriter.close();
             // Can alert that the game saved here
         } catch (IOException e) {
             // Can alert that an error occurred here

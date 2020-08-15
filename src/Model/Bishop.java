@@ -56,7 +56,7 @@ public class Bishop extends Piece implements Movable{
 
         for(int i = 1; i < 9 ; i++) {
             if(LocationGenerator.build(currentLocation, fileMultiplier*i, rankMultiplier*i) != null) {
-                System.out.println("CONSIDERING: " + LocationGenerator.build(currentLocation, fileMultiplier*i, rankMultiplier*i));
+                ////DEBUG System.out.println("CONSIDERING: " + LocationGenerator.build(currentLocation, fileMultiplier*i, rankMultiplier*i));
                 if(tileMap.get(LocationGenerator.build(currentLocation, fileMultiplier*i, rankMultiplier*i)).isHasPiece()) {
                     if (tileMap.get(LocationGenerator.build(currentLocation, fileMultiplier*i, rankMultiplier*i)).getCurrentPiece().getPieceColor().equals(this.pieceColor)) {
                         break;

@@ -19,6 +19,7 @@ public abstract class Piece {
     public Piece(PieceColor pieceColor){
         this.pieceColor = pieceColor;
     }
+    public Piece(){}
 
     public String getName() {
         return name;

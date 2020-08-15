@@ -3,6 +3,7 @@ package Controller;
 import BoardStuff.Board;
 import BoardStuff.Location;
 import BoardStuff.RankToRank;
+import Model.King;
 import Model.Pawn;
 import Model.Piece;
 import Model.Player;
@@ -50,9 +51,9 @@ public class Game {
                 movesMade++;
 
             }
-            System.out.println(darkPlayer.getCapturedPieces());
+            System.out.println(getCapturedPieces(darkPlayer));
             playingBoard.printBoard();
-            System.out.println(lightPlayer.getCapturedPieces());
+            System.out.println(getCapturedPieces(lightPlayer));
 
         }while (notGameOver);
 
@@ -89,28 +90,55 @@ public class Game {
                 if (color == playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getShortColor()
                         && validLocations.contains(playingBoard.board[yMoveTo][xMoveTo].getLocation())) {
 
-                    // Marking the piece as already moved once
-                    playingBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
 
-                    // Making a copy of the piece user wants to move then resetting that tile the piece was on
-                    Piece tempCurrentPiece = playingBoard.board[yCurrent][xCurrent].getCurrentPiece();
-                    playingBoard.board[yCurrent][xCurrent].resetTile();
+                    ////////////////////////////////// Check for check
+//                    Board tempBoard = playingBoard;
+//                    tempBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
+//                    Piece tempTempCurrentPiece = tempBoard.board[yCurrent][xCurrent].getCurrentPiece();
+//                    tempBoard.board[yCurrent][xCurrent].resetTile();
+//                    tempBoard.board[yMoveTo][xMoveTo].setCurrentPiece(tempTempCurrentPiece);
+//                    //Setting what tile the piece is on for the piece that just moved
+//                    tempBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setCurrentTile(tempBoard.board[yMoveTo][xMoveTo]);
+                    ////////////////////////////////////
+                    if(!new King().checkForCheck(playingBoard, color == 'l'? Board.lightKingsTile : Board.darkKingsTile)) {
 
-                    // Adding what piece was captured if there was a piece to be captured
-                    if(playingBoard.board[yMoveTo][xMoveTo].isHasPiece()) {
-                        Piece tempMoveToPiece = playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece();
-                        if(color == 'l'){ lightPlayer.addCapturedPiece(tempMoveToPiece);
-                        }else { darkPlayer.addCapturedPiece(tempMoveToPiece); }
 
+                        // Marking the piece as already moved once
+                        playingBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
+                        if(playingBoard.board[yCurrent][xCurrent].getCurrentPiece().equals(King.class)){
+                            if(color == 'l'){
+                                Board.lightKingsTile = playingBoard.board[yMoveTo][xMoveTo];
+                            }else {
+                                Board.darkKingsTile = playingBoard.board[yMoveTo][xMoveTo];
+                            }
+                        }
+
+                        // Making a copy of the piece user wants to move then resetting that tile the piece was on
+                        Piece tempCurrentPiece = playingBoard.board[yCurrent][xCurrent].getCurrentPiece();
+                        playingBoard.board[yCurrent][xCurrent].resetTile();
+
+                        // Adding what piece was captured if there was a piece to be captured
+                        if (playingBoard.board[yMoveTo][xMoveTo].isHasPiece()) {
+                            Piece tempMoveToPiece = playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece();
+                            if (color == 'l') {
+                                lightPlayer.addCapturedPiece(tempMoveToPiece);
+                            } else {
+                                darkPlayer.addCapturedPiece(tempMoveToPiece);
+                            }
+
+                        }
+
+                        playingBoard.board[yMoveTo][xMoveTo].setCurrentPiece(tempCurrentPiece);
+                        //Setting what tile the piece is on for the piece that just moved
+                        playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setCurrentTile(playingBoard.board[yMoveTo][xMoveTo]);
+
+
+                        validMoveMade = true;
+                        move = "X";
+
+                    }else {
+                        System.out.println("INVALID, that puts you in check!");
                     }
-
-                    playingBoard.board[yMoveTo][xMoveTo].setCurrentPiece(tempCurrentPiece);
-                    //Setting what tile the piece is on for the piece that just moved
-                    playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setCurrentTile(playingBoard.board[yMoveTo][xMoveTo]);
-
-
-                    validMoveMade = true;
-                    move = "X";
                 } else {
                     System.out.println("***INVALID MOVE***");
                     System.out.print(color == 'l' ? "LIGHT -> " : "DARK -> ");
@@ -124,6 +152,14 @@ public class Game {
             m = p.matcher("");
         }while (!validMoveMade) ;
 
+    }
 
+    public String getCapturedPieces(Player player){
+        String capPieces = "[";
+        for (Piece p : player.getCapturedPieces()){
+            capPieces += (p.getShortName() + " ");
+        }
+        capPieces += "]";
+        return capPieces;
     }
 }
