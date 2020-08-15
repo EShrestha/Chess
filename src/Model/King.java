@@ -48,15 +48,25 @@ public class King extends Piece implements Movable{
 
         for(Location l : possibleMoveTiles){
             if(l != null && tileMap.get(l).isHasPiece()){
-                if(tileMap.get(l).getCurrentPiece().getPieceColor() != this.getPieceColor()
-                        && tileMap.get(l).getLocation().getFile() != this.getCurrentTile().getLocation().getFile()){
-                    validMoves.add(l);
+                if(tileMap.get(l).getCurrentPiece().getPieceColor() != this.getPieceColor() && tileMap.get(l).getLocation().getFile() != this.getCurrentTile().getLocation().getFile()){
+                   // if(!checkCheck(board, ))
+                     //   validMoves.add(l);
+
+
+                    //Implement checking to see if the move will put it in check and if it doesnt add move
+
+
                 }
             }else if(l != null && !tileMap.get(l).isHasPiece()){
                 if(tileMap.get(l).getLocation().getFile() == this.getCurrentTile().getLocation().getFile()){
+
+                    //Implement checking to see if the move will put it in check and if it doesnt add move
+
+
                     validMoves.add(l);
                 }
             }
+
         }
         return validMoves;
     }
@@ -182,10 +192,6 @@ public class King extends Piece implements Movable{
     {
         boolean inCheckMate = false;
         List<Location> validMoves = this.getValidMoves(board);
-        for (Location l :validMoves)
-        {
-
-        }
         if(validMoves.isEmpty())
             inCheckMate = true;
         return inCheckMate;
