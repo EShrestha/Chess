@@ -178,7 +178,8 @@ public class King extends Piece implements Movable{
         {
 
         }
-
+        if(validMoves.isEmpty())
+            inCheckMate = true;
         return inCheckMate;
     }
 
