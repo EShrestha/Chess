@@ -71,16 +71,16 @@ public class Game {
 
         if(!m.matches()) {
             String resign = ConsoleIO.promptForString("Enter piece coordinate and move to coordinate (a1 a2): ").toLowerCase();
-            if (resign.equals("q")) {
+            if (resign.equals("q") || m.matches()) {
                 notGameOver = playerQuits(color);
             }else {
                 do {
 
                     while (!m.matches()) {
-
-                        m = p.matcher(resign);
+                        System.out.print(color == 'l' ? "LIGHT -> " : "DARK -> ");
+                        m = p.matcher(ConsoleIO.promptForString("Enter piece coordinate and move to coordinate (a1 a2): ").toLowerCase());
                         if (!m.matches()) {
-                            System.out.print(color == 'l' ? "LIGHT -> " : "DARK -> ");
+
                         }
                     }
 
@@ -130,11 +130,13 @@ public class Game {
                         } else {
                             System.out.println("***INVALID MOVE***");
                             System.out.print(color == 'l' ? "LIGHT -> " : "DARK -> ");
+                            m = p.matcher("xx");
                         }
 
                     } else {
                         System.out.println("***INVALID MOVE***");
                         System.out.print(color == 'l' ? "LIGHT -> " : "DARK -> ");
+                        m = p.matcher("xx");
                     }
                     // Clearing user input so user can input again
                     m = p.matcher("");
