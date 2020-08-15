@@ -157,7 +157,11 @@ public class WindowChess {
     public class LoadGameHandler implements ActionListener{
 
         public void actionPerformed(ActionEvent e) {
-
+            Object[] options = {"Load", "Never mind"};
+            String loadFileName = JOptionPane.showInputDialog(window,"Enter file name.", "File Name", -1);
+            if(loadFileName != null && !loadFileName.trim().equals("")){
+                System.out.println("IMPLEMENT LOADING FILE!");
+            }
         }
 
     }
