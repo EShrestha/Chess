@@ -187,6 +187,4 @@ public class King extends Piece implements Movable{
         return inCheckMate;
     }
 
-
-
 }

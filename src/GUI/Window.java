@@ -168,7 +168,7 @@ public class Window extends JFrame {
         String fileName = "Chess_" + java.time.LocalDate.now() + ".txt";
         try {
 
-            java.io.File myObj = new java.io.File(fileName);
+            java.io.File myObj = new java.io.File("src/SavedGames/"+fileName);
             if (myObj.createNewFile()) {
 
             } else {
@@ -181,7 +181,7 @@ public class Window extends JFrame {
         }
 
         try {
-            FileWriter fileWriter = new FileWriter(fileName);
+            FileWriter fileWriter = new FileWriter("src/SavedGames/"+fileName);
             for (String c : saveGame) {
                 fileWriter.write(c + "\n");
             }
@@ -429,9 +429,8 @@ public class Window extends JFrame {
 
     public void readCommandFromFile(String fileName) {
         allCommands.clear();
-        saveGame.clear();
         try {
-            java.io.File file = new java.io.File(fileName + ".txt");    //creates a new file instance
+            java.io.File file = new java.io.File("src/SavedGames/"+fileName + ".txt");    //creates a new file instance
             FileReader fileReader = new FileReader(file);   //reads the file
             BufferedReader br = new BufferedReader(fileReader);  //creates a buffering character input stream
             String line;

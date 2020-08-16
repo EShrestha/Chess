@@ -160,7 +160,7 @@ public class WindowChess {
 
         public void actionPerformed(ActionEvent e) {
             String loadFileName = JOptionPane.showInputDialog(window,"Enter file name.", "File Name", -1);
-            File tmpDir = new File(loadFileName+".txt");
+            File tmpDir = new File("src/SavedGames/"+loadFileName+".txt");
             if(loadFileName != null && !loadFileName.trim().equals("") && tmpDir.exists()){
                 new Window(loadFileName, true);
             }else {
