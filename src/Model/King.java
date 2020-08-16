@@ -50,7 +50,7 @@ public class King extends Piece implements Movable{
             if(l != null && tileMap.get(l).isHasPiece()){
                 if(tileMap.get(l).getCurrentPiece().getPieceColor() != this.getPieceColor() && tileMap.get(l).getLocation().getFile() != this.getCurrentTile().getLocation().getFile()){
                    // if(!checkCheck(board, ))
-                     //   validMoves.add(l);
+                     validMoves.add(l);
 
 
                     //Implement checking to see if the move will put it in check and if it doesnt add move
@@ -71,16 +71,6 @@ public class King extends Piece implements Movable{
         return validMoves;
     }
 
-    public Boolean[] inCheckOrCheckmate(){
-        Boolean[] bools = new Boolean[4];
-        // [0] = check?  [1] = checkmate?  [3] = neither?
-
-        bools[0] = true;
-        bools[1] = false;
-        bools[3] = false;
-
-        return bools;
-    }
 
     @Override
     public List<Location> getValidMoves(Board board, Tile tile) {

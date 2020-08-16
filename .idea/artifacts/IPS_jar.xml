@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="IPS:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/IPS_jar</output-path>
+    <root id="archive" name="IPS.jar">
+      <element id="module-output" name="IPS" />
+      <element id="extracted-dir" path="$USER_HOME$/IdeaProjects/Projects IntelliJ/OOP/ConsoleIOTester/ConsoleIO.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

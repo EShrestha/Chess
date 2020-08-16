@@ -37,6 +37,7 @@ public class Window extends JFrame {
     public int movesMade = 0;
     public static ArrayList<String> saveGame = new ArrayList<>();
     boolean usingFile = false;
+    boolean onceInvalidFileAlert = false;
 
     //Components:
     private JButton[][] tiles = new JButton[8][8];
@@ -108,7 +109,7 @@ public class Window extends JFrame {
                 tiles[i][j] = new JButton();
                 tiles[i][j].setBackground(((i + j) % 2 != 0) ? Color.gray : Color.white);
                 contents.add(tiles[i][j]);
-                tiles[i][j].addActionListener(buttonHandler);
+                //tiles[i][j].addActionListener(buttonHandler);
                 tiles[i][j].addMouseListener(new customMouseListener());
             }
         }
@@ -169,7 +170,7 @@ public class Window extends JFrame {
 
             java.io.File myObj = new java.io.File(fileName);
             if (myObj.createNewFile()) {
-                System.out.println("File created: " + myObj.getName());
+
             } else {
                 JOptionPane.showMessageDialog(this, "Try again.", "File seems to already exist.", 2);
                 return false;
@@ -192,17 +193,6 @@ public class Window extends JFrame {
         }
 
         return true;
-    }
-
-
-    private void processClick(String command, int imoveTo, int jMoveTo) {
-
-        if (makeValidMove(command)) {
-            Icon tempIcon = tiles[commandLeftRank][commandLeftFile].getIcon();
-            tiles[commandLeftRank][commandLeftFile].setIcon(null);
-            tiles[imoveTo][jMoveTo].setIcon(tempIcon);
-            return;
-        }
     }
 
 
@@ -236,8 +226,6 @@ public class Window extends JFrame {
                                 }
 
                                 //System.out.println("COMMAND: " + commandLeft+" "+commandRight);
-                                System.out.println("RANK1: " + i1 + " FILE1: " + j1);
-                                System.out.println("RANK2: " + i + " FILE2: " + j);
                                 commandLeft = "";
                                 commandLeftRank = -1;
                                 commandLeftFile = -1;
@@ -255,50 +243,78 @@ public class Window extends JFrame {
     }
 
     public class customMouseListener implements MouseListener {
+        int clickedi = -1;
+        int clickedj = -1;
+        Color tempColor = Color.RED;
+        int tempbtnx = -1;
+        int tempbtny = -1;
         public void mouseClicked(MouseEvent e) {
+            Object source = e.getSource();
 
+
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    if (source == tiles[i][j]) {
+
+                        clickedi = i;
+                        clickedj = j;
+                        break;
+
+                    }
+                }
+            }
 
             if (e.getButton() == MouseEvent.BUTTON1) { // left click
+
+
+                if (playingBoard.board[clickedi][clickedj].isHasPiece() || !commandLeft.trim().equals("")) {
+                    if (commandLeft.trim().equals("")) {
+                        commandLeft = (files[clickedj].toString().toLowerCase() + "" + (Integer.parseInt(rankToRank.getRank(clickedi).toString()) + 1));
+                        commandLeftRank = clickedi;
+                        commandLeftFile = clickedj;
+
+                    } else if (commandRight.trim().equals("")) {
+                        if (!(files[clickedj].toString().toLowerCase() + "" + (Integer.parseInt(rankToRank.getRank(clickedi).toString()) + 1)).equals(commandLeft)) {
+
+                            commandRight = (files[clickedj].toString().toLowerCase() + "" + (Integer.parseInt(rankToRank.getRank(clickedi).toString()) + 1));
+                            //processClick((commandLeft + " " + commandRight), i, j);
+                            makeValidMove(commandLeft + " " + commandRight);
+                        }
+
+                        //System.out.println("COMMAND: " + commandLeft+" "+commandRight);
+                        commandLeft = "";
+                        commandLeftRank = -1;
+                        commandLeftFile = -1;
+                        commandRight = "";
+                    }
+                }
                 // do stuff
             }
             if (e.getButton() == MouseEvent.BUTTON3) { //right click
-                Object source = e.getSource();
-                for (int i = 0; i < 8; i++) {
-                    for (int j = 0; j < 8; j++) {
-                        if (source == tiles[i][j]) {
-
-                            int xCurrent = files[j].ordinal();
-                            int yCurrent = (Integer.parseInt(rankToRank.getRank(i).toString()) - 1);
-                            System.out.println("xCurrent: " +xCurrent + ", yCurrent: " + yCurrent);
 
 
-                            if (playingBoard.board[i][j].isHasPiece()) {
-                                // Getting a list of valid locations for the current piece
-                                List<Location> validLocations = playingBoard.board[i][j].getCurrentPiece().getValidMoves(playingBoard);
-                                JPopupMenu popupMenu = new JPopupMenu("TITLE HERE");
 
-                                for(Location l : validLocations){
-                                    JMenuItem x = new JMenuItem(l.getFile() +""+l.getRank());
-                                    popupMenu.add(x);
-                                }
+                if ((clickedi != -1 && clickedj != -1) && playingBoard.board[clickedi][clickedj].isHasPiece()) {
+                    if(playingBoard.board[clickedi][clickedj].getCurrentPiece().getPieceColor() == (movesMade%2==0? PieceColor.LIGHT : PieceColor.DARK)) {
+                        // Getting a list of valid locations for the current piece
+                        List<Location> validLocations = playingBoard.board[clickedi][clickedj].getCurrentPiece().getValidMoves(playingBoard);
+                        JPopupMenu popupMenu = new JPopupMenu("TITLE HERE");
 
-                                //JButton label = new JButton("XXXX");
-                                //add(label);
-                                //label.setComponentPopupMenu(popupMenu);
+                        for (Location l : validLocations) {
+                            JMenuItem x = new JMenuItem("    "+l.getFile().toString().toLowerCase() + "" + l.getRank()+"    ");
 
-
-                                popupMenu.show(e.getComponent(), e.getX(), e.getY());
-                                //popupMenu.setSize(1000, 200);
-                                popupMenu.setVisible(true);
-                                System.out.println("RIGHT CLICK TILE: " + i + ", " + j);
-                            }
-
-
-                            return;
-
+                            int tempRank = (rankToRank.getRank(clickedi)) + 1;
+                            x.addActionListener(new menuActionListener(files[clickedj].toString().toLowerCase() +  tempRank) );
+                            popupMenu.add(x);
                         }
+
+                        popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                        //popupMenu.setSize(1000, 200);
+                        popupMenu.setVisible(true);
                     }
+
                 }
+
             }
         }
 
@@ -312,6 +328,16 @@ public class Window extends JFrame {
         }
 
         public void mouseExited(MouseEvent e) {
+        }
+    }
+
+    class menuActionListener implements ActionListener {
+        String temp = "";
+        public menuActionListener(String cL){
+           temp = cL;
+        }
+        public void actionPerformed(ActionEvent e) {
+            makeValidMove(temp+" "+e.getActionCommand().trim());
         }
     }
 
@@ -337,7 +363,6 @@ public class Window extends JFrame {
         if (playingBoard.board[yCurrent][xCurrent].isHasPiece()) {
             // Getting a list of valid locations for the current piece
             List<Location> validLocations = playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getValidMoves(playingBoard);
-            System.out.println("ACTUAL VALID MOVES: " + validLocations);
 
             // Checking if the piece color user wants to move is actually the players color (l/d) and the move they want to make is in the valid locations list
             if (color == playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getShortColor()
@@ -376,22 +401,26 @@ public class Window extends JFrame {
                 movesMade++;
                 return true;
             } else {
-                System.out.println("***INVALID MOVE***");
-                System.out.print(color == 'l' ? "LIGHT -> " : "DARK -> ");
-                if (usingFile) {
-                    JOptionPane.showMessageDialog(this, "INVALID COMMAND READ FROM FILE", "Maybe turn it off and on?", 2);
-                    movesMade++;
+
+                if(!onceInvalidFileAlert) {
+                    if (usingFile) {
+                        JOptionPane.showMessageDialog(this, "INVALID COMMAND READ FROM FILE", "Maybe turn it off and on?", 2);
+                        movesMade++;
+                        onceInvalidFileAlert = true;
+                    }
                 }
                 return false;
             }
 
         } else {
-            if (usingFile) {
-                JOptionPane.showMessageDialog(this, "INVALID COMMAND READ FROM FILE", "Maybe turn it off and on?", 2);
-                movesMade++;
+            if(!onceInvalidFileAlert) {
+                if (usingFile) {
+                    JOptionPane.showMessageDialog(this, "INVALID COMMAND READ FROM FILE", "Maybe turn it off and on?", JOptionPane.WARNING_MESSAGE);
+                    movesMade++;
+                    onceInvalidFileAlert = true;
+                }
             }
-            System.out.println("***INVALID MOVE***");
-            System.out.print(color == 'l' ? "LIGHT -> " : "DARK -> ");
+
             return false;
         }
 
@@ -400,6 +429,7 @@ public class Window extends JFrame {
 
     public void readCommandFromFile(String fileName) {
         allCommands.clear();
+        saveGame.clear();
         try {
             java.io.File file = new java.io.File(fileName + ".txt");    //creates a new file instance
             FileReader fileReader = new FileReader(file);   //reads the file
@@ -417,6 +447,7 @@ public class Window extends JFrame {
         // After adding each command to the allCommands array we call describeCommands which will print what each command did to the console.
         for (String c : allCommands) {
             makeValidMove(c);
+            saveGame.add(c);
         }
         usingFile = false;
 
