@@ -138,6 +138,7 @@ public class Game {
 
                     }else {
                         System.out.println("INVALID, that puts you in check!");
+                        System.out.print(color == 'l' ? "LIGHT -> " : "DARK -> ");
                     }
                 } else {
                     System.out.println("***INVALID MOVE***");

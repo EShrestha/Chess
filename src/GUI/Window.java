@@ -19,8 +19,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Window extends JFrame
-{
+public class Window extends JFrame {
 
     private Container contents;
 
@@ -65,38 +64,35 @@ public class Window extends JFrame
     private ImageIcon dKing = new ImageIcon("src/Icons/dK.png");
 
 
-
-    public Window(String fileName, boolean useFile){
+    public Window(String fileName, boolean useFile) {
 
         super("El Chess");
         playingBoard = new Board(true);
         contents = getContentPane();
-        contents.setLayout(new GridLayout(8,8));
+        contents.setLayout(new GridLayout(8, 8));
 
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosing(WindowEvent we)
-            {
+            public void windowClosing(WindowEvent we) {
                 String ObjButtons[] = {"Close/Resign", "Never mind"};
-                int PromptResult = JOptionPane.showOptionDialog(null,"What would you like to do?","Leaving so soon?", JOptionPane.DEFAULT_OPTION,JOptionPane.WARNING_MESSAGE,null,ObjButtons,ObjButtons[1]);
-                if(PromptResult==JOptionPane.YES_OPTION)
-                {
+                int PromptResult = JOptionPane.showOptionDialog(null, "What would you like to do?", "Leaving so soon?", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, ObjButtons, ObjButtons[1]);
+                if (PromptResult == JOptionPane.YES_OPTION) {
                     String saveBtns[] = {"Yes", "No"};
-                    int saveOrNot =  JOptionPane.showOptionDialog(null,"Would you like to save game?","Before you go...", JOptionPane.DEFAULT_OPTION,JOptionPane.WARNING_MESSAGE,null,saveBtns,saveBtns[1]);
-                    if(saveOrNot == JOptionPane.YES_OPTION){
-                        if(movesMade > 0) {
+                    int saveOrNot = JOptionPane.showOptionDialog(null, "Would you like to save game?", "Before you go...", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, saveBtns, saveBtns[1]);
+                    if (saveOrNot == JOptionPane.YES_OPTION) {
+                        if (movesMade > 0) {
                             if (saveGame()) {
                                 dispose();
                             }
-                        }else {
+                        } else {
                             JOptionPane.showMessageDialog(null, "To low of moves to save.", "You trying to waste storage?", 2);
                             dispose();
                         }
-                    }else if(saveOrNot == JOptionPane.NO_OPTION) {
+                    } else if (saveOrNot == JOptionPane.NO_OPTION) {
                         dispose();
                     }
-                }else if(PromptResult==JOptionPane.NO_OPTION){
+                } else if (PromptResult == JOptionPane.NO_OPTION) {
                     // Cancel button, exits prompt only
                 }
             }
@@ -107,12 +103,13 @@ public class Window extends JFrame
         ButtonHandler buttonHandler = new ButtonHandler();
 
         // Create and add board components:
-        for(int i = 0; i < 8; i++){
-            for(int j = 0; j < 8; j++){
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
                 tiles[i][j] = new JButton();
-                tiles[i][j].setBackground(((i+j) % 2 != 0) ? Color.gray : Color.white);
+                tiles[i][j].setBackground(((i + j) % 2 != 0) ? Color.gray : Color.white);
                 contents.add(tiles[i][j]);
                 tiles[i][j].addActionListener(buttonHandler);
+                tiles[i][j].addMouseListener(new customMouseListener());
             }
         }
         // Where we set the Icon of each button
@@ -153,23 +150,21 @@ public class Window extends JFrame
         tiles[6][7].setIcon(wPawn);
 
 
-
         // Size and display window
         setSize(800, 800);
         setResizable(false);
         setLocationRelativeTo(null); // Centers window
         setVisible(true);
 
-        if(useFile){
+        if (useFile) {
             usingFile = true;
             readCommandFromFile(fileName);
         }
     }
 
 
-
-    private boolean saveGame(){
-        String fileName = "Chess_" + java.time.LocalDate.now()+".txt";
+    private boolean saveGame() {
+        String fileName = "Chess_" + java.time.LocalDate.now() + ".txt";
         try {
 
             java.io.File myObj = new java.io.File(fileName);
@@ -186,8 +181,8 @@ public class Window extends JFrame
 
         try {
             FileWriter fileWriter = new FileWriter(fileName);
-            for(String c : saveGame) {
-                fileWriter.write(c+"\n");
+            for (String c : saveGame) {
+                fileWriter.write(c + "\n");
             }
             fileWriter.close();
             // Can alert that the game saved here
@@ -200,9 +195,9 @@ public class Window extends JFrame
     }
 
 
-    private void processClick(String command, int imoveTo, int jMoveTo){
+    private void processClick(String command, int imoveTo, int jMoveTo) {
 
-        if(makeValidMove(command)){
+        if (makeValidMove(command)) {
             Icon tempIcon = tiles[commandLeftRank][commandLeftFile].getIcon();
             tiles[commandLeftRank][commandLeftFile].setIcon(null);
             tiles[imoveTo][jMoveTo].setIcon(tempIcon);
@@ -211,128 +206,194 @@ public class Window extends JFrame
     }
 
 
-    private class ButtonHandler implements ActionListener{
+
+    private class ButtonHandler implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+
+
             Object source = e.getSource();
-            for(int i = 0; i < 8; i++)
-            {
-                for(int j = 0; j < 8; j++)
-                {
-                    if(source == tiles[i][j])
-                    {
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    if (source == tiles[i][j]) {
                         int i1 = i;
                         int j1 = j;
 
 
-                            if(playingBoard.board[i][j].isHasPiece() || !commandLeft.trim().equals("")) {
-                                if (commandLeft.trim().equals("")) {
-                                    commandLeft = (files[j].toString().toLowerCase() + "" + (Integer.parseInt(rankToRank.getRank(i).toString()) + 1));
-                                    commandLeftRank = i;
-                                    commandLeftFile = j;
+                        if (playingBoard.board[i][j].isHasPiece() || !commandLeft.trim().equals("")) {
+                            if (commandLeft.trim().equals("")) {
+                                commandLeft = (files[j].toString().toLowerCase() + "" + (Integer.parseInt(rankToRank.getRank(i).toString()) + 1));
+                                commandLeftRank = i;
+                                commandLeftFile = j;
 
-                                } else if (commandRight.trim().equals("")) {
-                                    if (!(files[j].toString().toLowerCase() + "" + (Integer.parseInt(rankToRank.getRank(i).toString()) + 1)).equals(commandLeft)) {
+                            } else if (commandRight.trim().equals("")) {
+                                if (!(files[j].toString().toLowerCase() + "" + (Integer.parseInt(rankToRank.getRank(i).toString()) + 1)).equals(commandLeft)) {
 
-                                        commandRight = (files[j].toString().toLowerCase() + "" + (Integer.parseInt(rankToRank.getRank(i).toString()) + 1));
-                                        //processClick((commandLeft + " " + commandRight), i, j);
-                                        makeValidMove(commandLeft + " " + commandRight);
-                                    }
-
-                                    //System.out.println("COMMAND: " + commandLeft+" "+commandRight);
-                                    System.out.println("RANK1: " + i1 + " FILE1: " + j1);
-                                    System.out.println("RANK2: " + i + " FILE2: " + j);
-                                    commandLeft = "";
-                                    commandLeftRank = -1;
-                                    commandLeftFile = -1;
-                                    commandRight = "";
+                                    commandRight = (files[j].toString().toLowerCase() + "" + (Integer.parseInt(rankToRank.getRank(i).toString()) + 1));
+                                    //processClick((commandLeft + " " + commandRight), i, j);
+                                    makeValidMove(commandLeft + " " + commandRight);
                                 }
-                            }
 
-                            return;
+                                //System.out.println("COMMAND: " + commandLeft+" "+commandRight);
+                                System.out.println("RANK1: " + i1 + " FILE1: " + j1);
+                                System.out.println("RANK2: " + i + " FILE2: " + j);
+                                commandLeft = "";
+                                commandLeftRank = -1;
+                                commandLeftFile = -1;
+                                commandRight = "";
+                            }
+                        }
+
+                        return;
 
                     }
                 }
             }
         }
+
+    }
+
+    public class customMouseListener implements MouseListener {
+        public void mouseClicked(MouseEvent e) {
+
+
+            if (e.getButton() == MouseEvent.BUTTON1) { // left click
+                // do stuff
+            }
+            if (e.getButton() == MouseEvent.BUTTON3) { //right click
+                Object source = e.getSource();
+                for (int i = 0; i < 8; i++) {
+                    for (int j = 0; j < 8; j++) {
+                        if (source == tiles[i][j]) {
+
+                            int xCurrent = files[j].ordinal();
+                            int yCurrent = (Integer.parseInt(rankToRank.getRank(i).toString()) - 1);
+                            System.out.println("xCurrent: " +xCurrent + ", yCurrent: " + yCurrent);
+
+
+                            if (playingBoard.board[i][j].isHasPiece()) {
+                                // Getting a list of valid locations for the current piece
+                                List<Location> validLocations = playingBoard.board[i][j].getCurrentPiece().getValidMoves(playingBoard);
+                                JPopupMenu popupMenu = new JPopupMenu("TITLE HERE");
+
+                                for(Location l : validLocations){
+                                    JMenuItem x = new JMenuItem(l.getFile() +""+l.getRank());
+                                    popupMenu.add(x);
+                                }
+
+                                //JButton label = new JButton("XXXX");
+                                //add(label);
+                                //label.setComponentPopupMenu(popupMenu);
+
+
+                                popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                                //popupMenu.setSize(1000, 200);
+                                popupMenu.setVisible(true);
+                                System.out.println("RIGHT CLICK TILE: " + i + ", " + j);
+                            }
+
+
+                            return;
+
+                        }
+                    }
+                }
+            }
+        }
+
+        public void mousePressed(MouseEvent e) {
+        }
+
+        public void mouseReleased(MouseEvent e) {
+        }
+
+        public void mouseEntered(MouseEvent e) {
+        }
+
+        public void mouseExited(MouseEvent e) {
+        }
     }
 
 
 
-
-    public boolean makeValidMove(String command){
+    public boolean makeValidMove(String command) {
         char color = movesMade % 2 == 0 ? 'l' : 'd';
         // Group 1 2 3 4 ----> a 1  a 2
         Pattern p = Pattern.compile("^([a-h])(\\d)\\s([a-h])(\\d)$");
         Matcher m = p.matcher(command);
-        if(!m.matches()){return false;}
+        if (!m.matches()) {
+            return false;
+        }
 
 
-            // Getting x and y of the piece user wants ot move and the x and y of where user want to move piece to
-            int xCurrent = Enum.valueOf(BoardStuff.File.class, m.group(1).toUpperCase()).ordinal();
-            int yCurrent = rankToRank.getRank(Integer.parseInt(m.group(2)) - 1);
-            int xMoveTo = Enum.valueOf(BoardStuff.File.class, m.group(3).toUpperCase()).ordinal();
-            int yMoveTo = rankToRank.getRank(Integer.parseInt(m.group(4)) - 1);
+        // Getting x and y of the piece user wants ot move and the x and y of where user want to move piece to
+        int xCurrent = Enum.valueOf(BoardStuff.File.class, m.group(1).toUpperCase()).ordinal();
+        int yCurrent = rankToRank.getRank(Integer.parseInt(m.group(2)) - 1);
+        int xMoveTo = Enum.valueOf(BoardStuff.File.class, m.group(3).toUpperCase()).ordinal();
+        int yMoveTo = rankToRank.getRank(Integer.parseInt(m.group(4)) - 1);
 
 
-            if (playingBoard.board[yCurrent][xCurrent].isHasPiece()) {
-                // Getting a list of valid locations for the current piece
-                List<Location> validLocations = playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getValidMoves(playingBoard);
-                System.out.println("ACTUAL VALID MOVES: " + validLocations);
+        if (playingBoard.board[yCurrent][xCurrent].isHasPiece()) {
+            // Getting a list of valid locations for the current piece
+            List<Location> validLocations = playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getValidMoves(playingBoard);
+            System.out.println("ACTUAL VALID MOVES: " + validLocations);
 
-                // Checking if the piece color user wants to move is actually the players color (l/d) and the move they want to make is in the valid locations list
-                if (color == playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getShortColor()
-                        && validLocations.contains(playingBoard.board[yMoveTo][xMoveTo].getLocation())) {
+            // Checking if the piece color user wants to move is actually the players color (l/d) and the move they want to make is in the valid locations list
+            if (color == playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getShortColor()
+                    && validLocations.contains(playingBoard.board[yMoveTo][xMoveTo].getLocation())) {
 
-                    // Probably check for check/checkmate here
+                // Probably check for check/checkmate here
 
-                    // Marking the piece as already moved once
-                    playingBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
+                // Marking the piece as already moved once
+                playingBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
 
-                    // Making a copy of the piece user wants to move then resetting that tile the piece was on
-                    Piece tempCurrentPiece = playingBoard.board[yCurrent][xCurrent].getCurrentPiece();
-                    playingBoard.board[yCurrent][xCurrent].resetTile();
+                // Making a copy of the piece user wants to move then resetting that tile the piece was on
+                Piece tempCurrentPiece = playingBoard.board[yCurrent][xCurrent].getCurrentPiece();
+                playingBoard.board[yCurrent][xCurrent].resetTile();
 
-                    // Adding what piece was captured if there was a piece to be captured
-                    if(playingBoard.board[yMoveTo][xMoveTo].isHasPiece()) {
-                        Piece tempMoveToPiece = playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece();
-                        if(color == 'l'){ lightPlayer.addCapturedPiece(tempMoveToPiece);
-                        }else { darkPlayer.addCapturedPiece(tempMoveToPiece); }
-
+                // Adding what piece was captured if there was a piece to be captured
+                if (playingBoard.board[yMoveTo][xMoveTo].isHasPiece()) {
+                    Piece tempMoveToPiece = playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece();
+                    if (color == 'l') {
+                        lightPlayer.addCapturedPiece(tempMoveToPiece);
+                    } else {
+                        darkPlayer.addCapturedPiece(tempMoveToPiece);
                     }
 
-                    playingBoard.board[yMoveTo][xMoveTo].setCurrentPiece(tempCurrentPiece);
-                    //Setting what tile the piece is on for the piece that just moved
-                    playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setCurrentTile(playingBoard.board[yMoveTo][xMoveTo]);
-
-                    Icon tempIcon = tiles[yCurrent][xCurrent].getIcon();
-                    tiles[yCurrent][xCurrent].setIcon(null);
-                    tiles[yMoveTo][xMoveTo].setIcon(tempIcon);
-
-                    saveGame.add(command);
-
-                    movesMade++;
-                    return true;
-                } else {
-                    System.out.println("***INVALID MOVE***");
-                    System.out.print(color == 'l' ? "LIGHT -> " : "DARK -> ");
-                    if(usingFile){
-                        JOptionPane.showMessageDialog(this, "INVALID COMMAND READ FROM FILE", "Maybe turn it off and on?", 2);
-                        movesMade++;
-                    }
-                    return false;
                 }
 
-            }else {
-                if(usingFile){
+                playingBoard.board[yMoveTo][xMoveTo].setCurrentPiece(tempCurrentPiece);
+                //Setting what tile the piece is on for the piece that just moved
+                playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setCurrentTile(playingBoard.board[yMoveTo][xMoveTo]);
+
+                Icon tempIcon = tiles[yCurrent][xCurrent].getIcon();
+                tiles[yCurrent][xCurrent].setIcon(null);
+                tiles[yMoveTo][xMoveTo].setIcon(tempIcon);
+
+                saveGame.add(command);
+
+                movesMade++;
+                return true;
+            } else {
+                System.out.println("***INVALID MOVE***");
+                System.out.print(color == 'l' ? "LIGHT -> " : "DARK -> ");
+                if (usingFile) {
                     JOptionPane.showMessageDialog(this, "INVALID COMMAND READ FROM FILE", "Maybe turn it off and on?", 2);
                     movesMade++;
                 }
-                System.out.println("***INVALID MOVE***");
-                System.out.print(color == 'l' ? "LIGHT -> " : "DARK -> ");
                 return false;
             }
+
+        } else {
+            if (usingFile) {
+                JOptionPane.showMessageDialog(this, "INVALID COMMAND READ FROM FILE", "Maybe turn it off and on?", 2);
+                movesMade++;
+            }
+            System.out.println("***INVALID MOVE***");
+            System.out.print(color == 'l' ? "LIGHT -> " : "DARK -> ");
+            return false;
+        }
 
     }
 
@@ -340,28 +401,26 @@ public class Window extends JFrame
     public void readCommandFromFile(String fileName) {
         allCommands.clear();
         try {
-            java.io.File file = new java.io.File(fileName+".txt");    //creates a new file instance
+            java.io.File file = new java.io.File(fileName + ".txt");    //creates a new file instance
             FileReader fileReader = new FileReader(file);   //reads the file
             BufferedReader br = new BufferedReader(fileReader);  //creates a buffering character input stream
             String line;
             while ((line = br.readLine()) != null) {
-                if (!line.startsWith("#")){
+                if (!line.startsWith("#")) {
                     allCommands.add(line);
                 }
             }
             fileReader.close();    //closes the stream and release the resources
-        } catch (IOException e) { e.printStackTrace();}
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         // After adding each command to the allCommands array we call describeCommands which will print what each command did to the console.
-        for(String c : allCommands) {
+        for (String c : allCommands) {
             makeValidMove(c);
         }
         usingFile = false;
 
     }
-
-
-
-
 
 
 }
