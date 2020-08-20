@@ -97,7 +97,7 @@ public class King extends Piece implements Movable{
             if(l != null && tileMap.get(l).isHasPiece()){
                 System.out.println("BISHOP CONSIDERING THREAT: " + l);
                 if(!tileMap.get(l).getCurrentPiece().getPieceColor().equals(this.pieceColor)
-                        && tileMap.get(l).getCurrentPiece().getClass().equals(Queen.class.getSimpleName()) || tileMap.get(l).getCurrentPiece().getClass().getSimpleName().equals(Bishop.class.getSimpleName())){
+                        && tileMap.get(l).getCurrentPiece().getClass().getSimpleName().equals(Queen.class.getSimpleName()) || tileMap.get(l).getCurrentPiece().getClass().getSimpleName().equals(Bishop.class.getSimpleName())){
 
                     threats.add(l);
                     System.out.println("THREAT ADDED: " + l);
@@ -186,5 +186,7 @@ public class King extends Piece implements Movable{
             inCheckMate = true;
         return inCheckMate;
     }
+
+
 
 }

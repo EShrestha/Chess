@@ -6,14 +6,15 @@ import Model.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Board implements Cloneable{
+public class Board{
     public static final Integer DIMENSION = 8;
     public Tile[][] board = new Tile[DIMENSION][DIMENSION];
-    private final Map<Location, Tile> locationTileMap;
+    private  Map<Location, Tile> locationTileMap;
     public static Tile darkKingsTile;
     public static Tile lightKingsTile;
 
 
+    public Board(){ }
 
     // If no files are passed in, setup board using this
     public Board(boolean setUpNewGame){

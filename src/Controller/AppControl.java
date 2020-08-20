@@ -8,11 +8,9 @@ public class AppControl {
 
     //Board activeBoard;
 
-    public void run(){
+    public void run() {
         System.out.println("Welcome to chess");
         menuControl();
-        //new CommandReader().readCommandFromFile("chessCommands"); // .txt extension is implied
-        //new Board().printBoard();
         System.out.println("Thank you for playing!");
 
     }
@@ -23,11 +21,10 @@ public class AppControl {
             switch (promptMainmenu()) {
                 case 1:
                     Board activeFileBoard = new Board(ConsoleIO.promptForString("Enter file name (no extensions): "));
-                    new Game().playGame(activeFileBoard);
+                    new Game(activeFileBoard);
                     break;
                 case 2:
-                    Board activeBlankBoard = new Board(true);
-                    new Game().playGame(activeBlankBoard);
+                    new Game();
                     break;
                 case 3:
 

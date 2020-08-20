@@ -3,7 +3,7 @@ package BoardStuff;
 import Model.Piece;
 
 public class Tile {
-    private final TileColor tileColor;
+    private TileColor tileColor;
     private Location location;
     private boolean hasPiece;
     private Piece currentPiece;
@@ -25,6 +25,10 @@ public class Tile {
         return tileColor;
     }
 
+    public void setTileColor(TileColor color){
+        this.tileColor = color;
+    }
+
     public Location getLocation() {
         return location;
     }
@@ -39,6 +43,10 @@ public class Tile {
 
     public Piece getCurrentPiece() {
         return currentPiece;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     public void setCurrentPiece(Piece currentPiece) {

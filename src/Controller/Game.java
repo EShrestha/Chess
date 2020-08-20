@@ -1,8 +1,6 @@
 package Controller;
 
-import BoardStuff.Board;
-import BoardStuff.Location;
-import BoardStuff.RankToRank;
+import BoardStuff.*;
 import Model.King;
 import Model.Pawn;
 import Model.Piece;
@@ -12,6 +10,7 @@ import lib.ConsoleIO;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,14 +22,42 @@ public class Game {
     public static int movesMade = 0;
     boolean lightResign = false;
     boolean darkResign = false;
-    Board playingBoard;
+    Board playingBoardFile;
+    Board playingBoard = new Board(true);
 
 
-    public Game(){
+    public Game() {
+        boolean notGameOver = true;
+        playingBoard.printBoard();
+
+        do{
+
+            if(movesMade % 2 == 0){ // Lights turn
+
+                System.out.print("LIGHT -> ");
+                makeValidMove('l');
+
+                movesMade++;
+
+            }else if(movesMade % 2 == 1) { // Darks turn
+
+                System.out.print("DARK -> ");
+                makeValidMove('d');
+
+                movesMade++;
+
+            }
+            System.out.println(getCapturedPieces(darkPlayer));
+            playingBoard.printBoard();
+            System.out.println(getCapturedPieces(lightPlayer));
+
+        }while (notGameOver);
+
+
     }
 
-    public void playGame(Board activeBoard){
-        playingBoard = activeBoard;
+    public Game(Board activeBoard) {
+        playingBoardFile = activeBoard;
         boolean notGameOver = true;
         playingBoard.printBoard();
 
@@ -59,7 +86,7 @@ public class Game {
 
     }
 
-    public void makeValidMove(char color){
+    public void makeValidMove(char color) {
         // Group 1 2 3 4 ----> a 1  a 2
         Pattern p = Pattern.compile("^([a-h])(\\d)\\s([a-h])(\\d)$");
         Matcher m = p.matcher("");
@@ -75,9 +102,9 @@ public class Game {
             }
 
             // Getting x and y of the piece user wants ot move and the x and y of where user want to move piece to
-            Integer xCurrent = Enum.valueOf(BoardStuff.File.class, m.group(1).toUpperCase()).ordinal();
+            Integer xCurrent = Enum.valueOf(File.class, m.group(1).toUpperCase()).ordinal();
             Integer yCurrent = rankToRank.getRank(Integer.parseInt(m.group(2)) - 1);
-            Integer xMoveTo = Enum.valueOf(BoardStuff.File.class, m.group(3).toUpperCase()).ordinal();
+            Integer xMoveTo = Enum.valueOf(File.class, m.group(3).toUpperCase()).ordinal();
             Integer yMoveTo = rankToRank.getRank(Integer.parseInt(m.group(4)) - 1);
 
 
@@ -92,15 +119,19 @@ public class Game {
 
 
                     ////////////////////////////////// Check for check
-//                    Board tempBoard = playingBoard;
-//                    tempBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
-//                    Piece tempTempCurrentPiece = tempBoard.board[yCurrent][xCurrent].getCurrentPiece();
-//                    tempBoard.board[yCurrent][xCurrent].resetTile();
-//                    tempBoard.board[yMoveTo][xMoveTo].setCurrentPiece(tempTempCurrentPiece);
-//                    //Setting what tile the piece is on for the piece that just moved
-//                    tempBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setCurrentTile(tempBoard.board[yMoveTo][xMoveTo]);
+                    Board tempBoard = createTempBoard(playingBoard);
+                    tempBoard.printBoard();
+                    tempBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
+                    Piece tempTempCurrentPiece = tempBoard.board[yCurrent][xCurrent].getCurrentPiece();
+                    tempBoard.board[yCurrent][xCurrent].resetTile();
+                    tempBoard.board[yMoveTo][xMoveTo].setCurrentPiece(tempTempCurrentPiece);
+                    //Setting what tile the piece is on for the piece that just moved
+                    tempBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setCurrentTile(tempBoard.board[yMoveTo][xMoveTo]);
                     ////////////////////////////////////
-                    if(!new King().checkForCheck(playingBoard, color == 'l'? Board.lightKingsTile : Board.darkKingsTile)) {
+                    if(!new King().checkForCheck(tempBoard, color == 'l'? Board.lightKingsTile : Board.darkKingsTile)) {
+
+                        System.out.println("TEMP: " + tempBoard.board[yCurrent][xCurrent].toString());
+                        System.out.println("PLAYING: " + playingBoard.board[yCurrent][xCurrent].toString());
 
 
                         // Marking the piece as already moved once
@@ -137,7 +168,7 @@ public class Game {
                         move = "X";
 
                     }else {
-                        System.out.println("INVALID, that puts you in check!");
+                        System.out.println("****INVALID**** PUTS YOU IN CHECK");
                         System.out.print(color == 'l' ? "LIGHT -> " : "DARK -> ");
                     }
                 } else {
@@ -163,4 +194,25 @@ public class Game {
         capPieces += "]";
         return capPieces;
     }
+
+    public Board createTempBoard(Board originalBoard){
+        Board tempBoard = new Board(false);
+        Map<Location, Tile> tileMap = originalBoard.getLocationTileMap();
+
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j< 8; j++){
+
+                tempBoard.board[i][j].setTileColor(originalBoard.board[i][j].getTileColor());
+                tempBoard.board[i][j].setLocation(originalBoard.board[i][j].getLocation());
+                if(originalBoard.board[i][j].isHasPiece()){
+                    tempBoard.board[i][j].setCurrentPiece(originalBoard.board[i][j].getCurrentPiece());
+                }
+
+
+            }
+        }
+        return tempBoard;
+    }
+
+
 }

@@ -157,10 +157,37 @@ public class Window extends JFrame {
         setLocationRelativeTo(null); // Centers window
         setVisible(true);
 
+        // Menu Bar
+        final JMenuBar menuBar = createMenuBar();
+        setJMenuBar(menuBar);
+
         if (useFile) {
             usingFile = true;
             readCommandFromFile(fileName);
         }
+    }
+
+    private JMenuBar createMenuBar(){
+        final JMenuBar menuBar = new JMenuBar();
+        menuBar.add(createFinalMenu());
+        menuBar.setLayout(new GridBagLayout());
+        menuBar.setBackground(colorBlack);
+        return  menuBar;
+    }
+
+    private JMenu createFinalMenu(){
+        final JMenu fileMenu = new JMenu("File");
+
+        final JMenuItem titleScreen = new JMenuItem("Title Screen");
+        titleScreen.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setVisible(true);
+            }
+        });
+
+        fileMenu.add(titleScreen);
+        return fileMenu;
     }
 
 

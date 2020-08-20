@@ -11,12 +11,12 @@ public class WindowChess {
 
     JFrame window;
 
-    private final static Dimension OUTER_FRAME_DIMENSION = new Dimension(800,800);
+    private final static Dimension OUTER_FRAME_DIMENSION = new Dimension(400,600);
 
     Container container;
     JPanel titleNamePanel, startButtonPanel, loadGamePanel, quitGamePanel, gamePanel;
     JLabel titleNameLabel;
-    Font titleFont = new Font("Helvetica", Font.BOLD, 200);
+    Font titleFont = new Font("Helvetica", Font.BOLD, 80);
     Font normalFont = new Font("Helvetica", Font.BOLD, 36);
     JButton startButton, loadButton, quitButton;
 
@@ -41,11 +41,12 @@ public class WindowChess {
         window.getContentPane().setBackground(Color.white); // setting background color of the window as black
         window.setLayout(null); // so we can use our own custom layout
         window.setVisible(true); // makes the window appear
+        window.setLocationRelativeTo(null);
         container = window.getContentPane();
 
         // Making the title name appear
         titleNamePanel = new JPanel();
-        titleNamePanel.setBounds(0, 100, 800, 300);
+        titleNamePanel.setBounds(0, 50, 400, 300);
         titleNamePanel.setBackground(Color.white);
         titleNameLabel = new JLabel("CHESS");
         titleNameLabel.setForeground(Color.black);
@@ -54,7 +55,7 @@ public class WindowChess {
 
         // Adding a New Game button
         startButtonPanel = new JPanel();
-        startButtonPanel.setBounds(300, 400, 200,80);
+        startButtonPanel.setBounds(100, 200, 200,80);
         startButtonPanel.setBackground(Color.white);
         startButton = new JButton("New Game ");
         startButton.setBackground(Color.white);
@@ -65,7 +66,7 @@ public class WindowChess {
 
         // Adding a Load Game button
         loadGamePanel = new JPanel();
-        loadGamePanel.setBounds(300, 480, 200,80);
+        loadGamePanel.setBounds(100, 280, 200,80);
         loadGamePanel.setBackground(Color.white);
         loadButton = new JButton("Load Game");
         loadButton.setBackground(Color.white);
@@ -76,7 +77,7 @@ public class WindowChess {
 
         // Adding a Quit button
         quitGamePanel = new JPanel();
-        quitGamePanel.setBounds(300, 560, 200,80);
+        quitGamePanel.setBounds(100, 360, 200,80);
         quitGamePanel.setBackground(Color.white);
         quitButton = new JButton("Quit Game");
         quitButton.setBackground(Color.white);
