@@ -26,6 +26,7 @@ public class Game {
     Board playingBoard = new Board(true);
 
 
+
     public Game() {
         boolean notGameOver = true;
         playingBoard.printBoard();
@@ -91,6 +92,7 @@ public class Game {
         Pattern p = Pattern.compile("^([a-h])(\\d)\\s([a-h])(\\d)$");
         Matcher m = p.matcher("");
         Boolean validMoveMade = false;
+        Map<Location, Tile> tileMap = playingBoard.getLocationTileMap();
 
         do {
             String move;
@@ -131,12 +133,9 @@ public class Game {
                     ////////////////////////////////////
                     if(!new King().checkForCheck(tempBoard, color == 'l'? Board.lightKingsTile : Board.darkKingsTile)) {
 
-                        System.out.println("TEMP: " + tempBoard.board[yCurrent][xCurrent].toString());
-                        System.out.println("PLAYING: " + playingBoard.board[yCurrent][xCurrent].toString());
-
-
                         // Marking the piece as already moved once
                         playingBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
+                        // If the piece that moved is the king then their tile location is updated as well in the Board class
                         if(playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getClass().getSimpleName().equals(King.class.getSimpleName())){
                             if(color == 'l'){
                                 Board.lightKingsTile = playingBoard.board[yMoveTo][xMoveTo];
@@ -144,10 +143,35 @@ public class Game {
                                 Board.darkKingsTile = playingBoard.board[yMoveTo][xMoveTo];
                             }
                         }
+                        // Checking special moves for PAWN move
+                        if(playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getClass().getSimpleName().equals(Pawn.class.getSimpleName())
+                        && Math.abs((playingBoard.board[yMoveTo][xMoveTo].getLocation().getRank() - playingBoard.board[yCurrent][xCurrent].getLocation().getRank() )) == 2){
+                            Location locationLeft = LocationGenerator.build(playingBoard.board[yMoveTo][xMoveTo].getLocation(),-1,0);
+                            Location locationRight = LocationGenerator.build(playingBoard.board[yMoveTo][xMoveTo].getLocation(),1,0);
+                            Piece pieceLeft;
+                            Piece pieceRight;
+                            // For a pawn on the left
+                            if(tileMap.get(locationLeft) != null && tileMap.get(locationLeft).isHasPiece() && tileMap.get(locationLeft).getCurrentPiece().getClass().getSimpleName().equals(Pawn.class.getSimpleName())){
+                                pieceLeft = tileMap.get(locationLeft).getCurrentPiece();
+                                tileMap.get(locationLeft).getCurrentPiece().setCanEnPassant(true);
+                                tileMap.get(locationLeft).getCurrentPiece().setEnPassantEnabledOnMove(movesMade);
+                                tileMap.get(locationLeft).getCurrentPiece().setEnPassantTile(playingBoard.board[yMoveTo][xMoveTo]);
+                                System.out.println("CAN ENPASSANT: " + pieceLeft);
+                            }
+                            // For a pawn on the right
+                            if(tileMap.get(locationRight) != null && tileMap.get(locationRight).isHasPiece() && tileMap.get(locationRight).getCurrentPiece().getClass().getSimpleName().equals(Pawn.class.getSimpleName())){
+                                pieceRight = tileMap.get(locationRight).getCurrentPiece();
+                                tileMap.get(locationRight).getCurrentPiece().setCanEnPassant(true);
+                                tileMap.get(locationRight).getCurrentPiece().setEnPassantEnabledOnMove(movesMade);
+                                tileMap.get(locationRight).getCurrentPiece().setEnPassantTile(playingBoard.board[yMoveTo][xMoveTo]);
+                                System.out.println("CAN ENPASSANT: " + pieceRight);
+                            }
+
+                        } // End of PAWN special move
 
                         // Making a copy of the piece user wants to move then resetting that tile the piece was on
                         Piece tempCurrentPiece = playingBoard.board[yCurrent][xCurrent].getCurrentPiece();
-                        playingBoard.board[yCurrent][xCurrent].resetTile();
+
 
                         // Adding what piece was captured if there was a piece to be captured
                         if (playingBoard.board[yMoveTo][xMoveTo].isHasPiece()) {
@@ -158,8 +182,19 @@ public class Game {
                                 darkPlayer.addCapturedPiece(tempMoveToPiece);
                             }
 
+                        }else if(tempCurrentPiece.getClass().getSimpleName().equals(Pawn.class.getSimpleName())
+                                && !playingBoard.board[yMoveTo][xMoveTo].isHasPiece()
+                                && playingBoard.board[yCurrent][xCurrent].getLocation().getFile() != playingBoard.board[yMoveTo][xMoveTo].getLocation().getFile()
+                                && playingBoard.board[yMoveTo][xMoveTo].getLocation().getFile() == playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getEnPassantTile().getLocation().getFile()){
+                            if (color == 'l') {
+                                lightPlayer.addCapturedPiece(playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getEnPassantTile().getCurrentPiece());
+                            } else {
+                                darkPlayer.addCapturedPiece(playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getEnPassantTile().getCurrentPiece());
+                            }
+                            playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getEnPassantTile().resetTile();
                         }
 
+                        playingBoard.board[yCurrent][xCurrent].resetTile();
                         playingBoard.board[yMoveTo][xMoveTo].setCurrentPiece(tempCurrentPiece);
                         //Setting what tile the piece is on for the piece that just moved
                         playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setCurrentTile(playingBoard.board[yMoveTo][xMoveTo]);

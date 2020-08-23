@@ -1,9 +1,6 @@
 package Model;
 
-import BoardStuff.Board;
-import BoardStuff.Location;
-import BoardStuff.RankToRank;
-import BoardStuff.Tile;
+import BoardStuff.*;
 
 import java.util.List;
 
@@ -15,6 +12,8 @@ public abstract class Piece {
     protected boolean isFirstMove = true;
     protected boolean canEnPassant = false;
     protected int enPassantEnabledOnMove;
+    //protected File enPassantFile;
+    protected Tile enPassantTile;
     protected char shortColor;
     RankToRank rankToRank = new RankToRank();
 
@@ -61,8 +60,17 @@ public abstract class Piece {
         this.canEnPassant = canEnPassant;
     }
 
+
     public void setEnPassantEnabledOnMove(int enPassantEnabledOnMove) {
         this.enPassantEnabledOnMove = enPassantEnabledOnMove;
+    }
+
+    public Tile getEnPassantTile() {
+        return enPassantTile;
+    }
+
+    public void setEnPassantTile(Tile enPassantTile) {
+        this.enPassantTile = enPassantTile;
     }
 
     @Override

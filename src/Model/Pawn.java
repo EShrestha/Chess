@@ -55,13 +55,19 @@ public class Pawn extends Piece implements Movable{
             }
         }
         if(this.canEnPassant && (this.enPassantEnabledOnMove == (Game.movesMade -1))){
+            System.out.println("IN ENPASS METHOD");
+            System.out.println("ENPASS FILE: " + this.getEnPassantTile().getLocation().getFile());
             if(LocationGenerator.build(currentLocation, 1, rankOffset) != null
-            && tileMap.get(LocationGenerator.build(currentLocation, 1, rankOffset)).isHasPiece()){
-                possibleMoveTiles.add(LocationGenerator.build(currentLocation, 1, rankOffset));
+            && this.getEnPassantTile().getLocation().getFile() == LocationGenerator.build(currentLocation, 1, rankOffset).getFile()){
+                System.out.println("IN A");
+                System.out.println("ENPASS TILE: " + this.getEnPassantTile());
+                validMoves.add(LocationGenerator.build(currentLocation, 1, rankOffset));
             }
             if(LocationGenerator.build(currentLocation, -1, rankOffset) != null
-            && tileMap.get(LocationGenerator.build(currentLocation, -1, rankOffset)).isHasPiece()){
-                possibleMoveTiles.add(LocationGenerator.build(currentLocation, -1, rankOffset));
+            && this.getEnPassantTile().getLocation().getFile() == LocationGenerator.build(currentLocation, -1, rankOffset).getFile()){
+                System.out.println("IN B");
+                System.out.println("ENPASS TILE: " + this.getEnPassantTile());
+                validMoves.add(LocationGenerator.build(currentLocation, -1, rankOffset));
             }
         }
 
