@@ -108,7 +108,8 @@ public class Game {
             Integer yMoveTo = rankToRank.getRank(Integer.parseInt(m.group(4)) - 1);
 
 
-            if (playingBoard.board[yCurrent][xCurrent].isHasPiece()) {
+            if (yCurrent != null && yMoveTo != null
+            && playingBoard.board[yCurrent][xCurrent].isHasPiece()) {
                 // Getting a list of valid locations for the current piece
                 List<Location> validLocations = playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getValidMoves(playingBoard);
                 System.out.println("VALID MOVES: " + validLocations);

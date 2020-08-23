@@ -4,6 +4,8 @@ import BoardStuff.Board;
 import BoardStuff.Location;
 import BoardStuff.LocationGenerator;
 import BoardStuff.Tile;
+import Controller.Game;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +54,17 @@ public class Pawn extends Piece implements Movable{
                 }
             }
         }
+        if(this.canEnPassant && (this.enPassantEnabledOnMove == (Game.movesMade -1))){
+            if(LocationGenerator.build(currentLocation, 1, rankOffset) != null
+            && tileMap.get(LocationGenerator.build(currentLocation, 1, rankOffset)).isHasPiece()){
+                possibleMoveTiles.add(LocationGenerator.build(currentLocation, 1, rankOffset));
+            }
+            if(LocationGenerator.build(currentLocation, -1, rankOffset) != null
+            && tileMap.get(LocationGenerator.build(currentLocation, -1, rankOffset)).isHasPiece()){
+                possibleMoveTiles.add(LocationGenerator.build(currentLocation, -1, rankOffset));
+            }
+        }
+
         return validMoves;
     }
 
