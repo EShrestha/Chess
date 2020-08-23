@@ -13,6 +13,8 @@ public abstract class Piece {
     protected PieceColor pieceColor;
     protected Tile currentTile;
     protected boolean isFirstMove = true;
+    protected boolean canEnPassant = false;
+    protected int enPassantEnabledOnMove;
     protected char shortColor;
     RankToRank rankToRank = new RankToRank();
 
@@ -53,6 +55,14 @@ public abstract class Piece {
 
     public void setFirstMove(boolean firstMove) {
         isFirstMove = firstMove;
+    }
+
+    public void setCanEnPassant(boolean canEnPassant) {
+        this.canEnPassant = canEnPassant;
+    }
+
+    public void setEnPassantEnabledOnMove(int enPassantEnabledOnMove) {
+        this.enPassantEnabledOnMove = enPassantEnabledOnMove;
     }
 
     @Override

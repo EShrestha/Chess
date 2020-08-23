@@ -136,7 +136,7 @@ public class Game {
 
                         // Marking the piece as already moved once
                         playingBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
-                        if(playingBoard.board[yCurrent][xCurrent].getCurrentPiece().equals(King.class)){
+                        if(playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getClass().getSimpleName().equals(King.class.getSimpleName())){
                             if(color == 'l'){
                                 Board.lightKingsTile = playingBoard.board[yMoveTo][xMoveTo];
                             }else {
@@ -163,13 +163,22 @@ public class Game {
                         //Setting what tile the piece is on for the piece that just moved
                         playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setCurrentTile(playingBoard.board[yMoveTo][xMoveTo]);
 
-
+                        System.out.println("TILE MOVED: " + Math.abs((playingBoard.board[yMoveTo][xMoveTo].getLocation().getRank() - playingBoard.board[yCurrent][xCurrent].getLocation().getRank() )));
                         validMoveMade = true;
                         move = "X";
 
                     }else {
                         System.out.println("****INVALID**** PUTS YOU IN CHECK");
                         System.out.print(color == 'l' ? "LIGHT -> " : "DARK -> ");
+                        Board.TEMPlightKingsTile.setLocation(Board.lightKingsTile.getLocation());
+                        Board.TEMPlightKingsTile.setTileColor(Board.lightKingsTile.getTileColor());
+                        Board.TEMPlightKingsTile.setCurrentPiece(Board.lightKingsTile.getCurrentPiece());
+                        Board.TEMPlightKingsTile.setHasPiece(Board.lightKingsTile.isHasPiece());
+
+                        Board.TEMPdarkKingsTile.setLocation(Board.darkKingsTile.getLocation());
+                        Board.TEMPdarkKingsTile.setTileColor(Board.darkKingsTile.getTileColor());
+                        Board.TEMPdarkKingsTile.setCurrentPiece(Board.darkKingsTile.getCurrentPiece());
+                        Board.TEMPdarkKingsTile.setHasPiece(Board.darkKingsTile.isHasPiece());
                     }
                 } else {
                     System.out.println("***INVALID MOVE***");

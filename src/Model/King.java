@@ -40,6 +40,11 @@ public class King extends Piece implements Movable{
         possibleMoveTiles.add(LocationGenerator.build(currentLocation, -1, 1)); // left one up/down 1 from currentLocation
         possibleMoveTiles.add(LocationGenerator.build(currentLocation, 1, 1));
         possibleMoveTiles.add(LocationGenerator.build(currentLocation, -1, -1));
+        // for castling
+        if(isFirstMove()){
+            possibleMoveTiles.add(LocationGenerator.build(currentLocation, -2, 0)); // long castle
+            possibleMoveTiles.add(LocationGenerator.build(currentLocation, 2, 0)); // short castle
+        }
 
         Map<Location, Tile> tileMap = board.getLocationTileMap();
 
@@ -48,7 +53,7 @@ public class King extends Piece implements Movable{
 
         for(Location l : possibleMoveTiles){
             if(l != null && tileMap.get(l).isHasPiece()){
-                if(tileMap.get(l).getCurrentPiece().getPieceColor() != this.getPieceColor() && tileMap.get(l).getLocation().getFile() != this.getCurrentTile().getLocation().getFile()){
+                if(tileMap.get(l).getCurrentPiece().getPieceColor() != this.getPieceColor()){
                    // if(!checkCheck(board, ))
                      validMoves.add(l);
 
@@ -58,13 +63,8 @@ public class King extends Piece implements Movable{
 
                 }
             }else if(l != null && !tileMap.get(l).isHasPiece()){
-                if(tileMap.get(l).getLocation().getFile() == this.getCurrentTile().getLocation().getFile()){
-
-                    //Implement checking to see if the move will put it in check and if it doesnt add move
-
 
                     validMoves.add(l);
-                }
             }
 
         }
@@ -84,7 +84,7 @@ public class King extends Piece implements Movable{
 
         PieceColor color = tile.getCurrentPiece().getPieceColor();
         char thisColor = movesMade % 2 == 0 ? 'l' : 'd';
-        System.out.println("CURRENT PIECE COLOR:" + color);
+        //System.out.println("CURRENT PIECE COLOR:" + color);
 
 
         Bishop b = new Bishop(color,tile);
@@ -93,14 +93,14 @@ public class King extends Piece implements Movable{
         bishopPossibleMoveTiles.addAll(b.getValidMoves(board, tile));
 
         for(Location l : bishopPossibleMoveTiles){
-
+            //System.out.println("BISHOP CONSIDERING THREAT: " + l);
             if(l != null && tileMap.get(l).isHasPiece()){
-                System.out.println("BISHOP CONSIDERING THREAT: " + l);
+
                 if(!tileMap.get(l).getCurrentPiece().getPieceColor().equals(this.pieceColor)
                         && tileMap.get(l).getCurrentPiece().getClass().getSimpleName().equals(Queen.class.getSimpleName()) || tileMap.get(l).getCurrentPiece().getClass().getSimpleName().equals(Bishop.class.getSimpleName())){
 
                     threats.add(l);
-                    System.out.println("THREAT ADDED: " + l);
+                    //System.out.println("THREAT ADDED: " + l);
                 }
             }
         }
@@ -112,14 +112,14 @@ public class King extends Piece implements Movable{
 
 
         for(Location l : rookPossibleMoveTiles){
-
+            //System.out.println("ROOK CONSIDERING THREAT: " + l);
             if(l != null && tileMap.get(l).isHasPiece()){
-                System.out.println("ROOK CONSIDERING THREAT: " + l);
+
                 if(!tileMap.get(l).getCurrentPiece().getPieceColor().equals(this.pieceColor)
                         && tileMap.get(l).getCurrentPiece().getClass().getSimpleName().equals(Queen.class.getSimpleName()) || tileMap.get(l).getCurrentPiece().getClass().getSimpleName().equals(Rook.class.getSimpleName())){
 
                     threats.add(l);
-                    System.out.println("THREAT ADDED: " + l);
+                    //System.out.println("THREAT ADDED: " + l);
                 }
             }
         }
@@ -133,7 +133,7 @@ public class King extends Piece implements Movable{
 
         if(pawnPossibleMoveTiles != null && !pawnPossibleMoveTiles.isEmpty()) {
             for (Location l : pawnPossibleMoveTiles) {
-                System.out.println("PAWN CONSIDERING THREATS: " + l);
+                //System.out.println("PAWN CONSIDERING THREATS: " + l);
 
                 if (l != null && tileMap.get(l).isHasPiece()) {
 
@@ -141,7 +141,7 @@ public class King extends Piece implements Movable{
                             && tileMap.get(l).getCurrentPiece().getClass().getSimpleName().equals(Pawn.class.getSimpleName())) {
 
                         threats.add(l);
-                        System.out.println("THREAT ADDED: " + l);
+                        //System.out.println("THREAT ADDED: " + l);
                     }
                 }
             }
@@ -155,15 +155,16 @@ public class King extends Piece implements Movable{
 
 
         if(knightPossibleMoveTiles != null && !knightPossibleMoveTiles.isEmpty()) {
+
             for (Location l : knightPossibleMoveTiles) {
-                System.out.println("KNIGHT CONSIDERING THREAT: " + l);
+                //System.out.println("KNIGHT CONSIDERING THREAT: " + l);
                 if (l != null && tileMap.get(l).isHasPiece()) {
 
                     if (!tileMap.get(l).getCurrentPiece().getPieceColor().equals(this.pieceColor)
                             && tileMap.get(l).getCurrentPiece().getClass().getSimpleName().equals(Knight.class.getSimpleName())) {
 
                         threats.add(l);
-                        System.out.println("THREAT ADDED: " + l);
+                        //System.out.println("THREAT ADDED: " + l);
                     }
                 }
             }

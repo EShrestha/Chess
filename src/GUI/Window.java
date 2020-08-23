@@ -152,7 +152,7 @@ public class Window extends JFrame {
 
 
         // Size and display window
-        setSize(800, 800);
+        setSize(800, 825); // extra 25 pixels to account for the jmenubar at the top
         setResizable(false);
         setLocationRelativeTo(null); // Centers window
         setVisible(true);
@@ -171,6 +171,7 @@ public class Window extends JFrame {
         final JMenuBar menuBar = new JMenuBar();
         menuBar.add(createFinalMenu());
         menuBar.setLayout(new GridBagLayout());
+        menuBar.setPreferredSize(new Dimension(800,25));
         menuBar.setBackground(colorBlack);
         return  menuBar;
     }
