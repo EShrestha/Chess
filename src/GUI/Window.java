@@ -38,6 +38,10 @@ public class Window extends JFrame {
     public static ArrayList<String> saveGame = new ArrayList<>();
     boolean usingFile = false;
     boolean onceInvalidFileAlert = false;
+    // Menu Bar
+    final JMenuBar menuBar = createMenuBar();
+    final JMenu fileMenu = new JMenu("LIGHT Player To Make First Move");
+
 
     //Components:
     private JButton[][] tiles = new JButton[8][8];
@@ -157,9 +161,8 @@ public class Window extends JFrame {
         setLocationRelativeTo(null); // Centers window
         setVisible(true);
 
-        // Menu Bar
-        final JMenuBar menuBar = createMenuBar();
         setJMenuBar(menuBar);
+        menuBar.add(fileMenu);
 
         if (useFile) {
             usingFile = true;
@@ -169,15 +172,16 @@ public class Window extends JFrame {
 
     private JMenuBar createMenuBar(){
         final JMenuBar menuBar = new JMenuBar();
-        menuBar.add(createFinalMenu());
+        //menuBar.add(createFinalMenu());
         menuBar.setLayout(new GridBagLayout());
         menuBar.setPreferredSize(new Dimension(800,25));
-        menuBar.setBackground(colorBlack);
+        menuBar.setBackground(Color.white);
+        menuBar.setForeground(Color.black);
         return  menuBar;
     }
 
     private JMenu createFinalMenu(){
-        final JMenu fileMenu = new JMenu("File");
+
 
         final JMenuItem titleScreen = new JMenuItem("Title Screen");
         titleScreen.addActionListener(new ActionListener() {
@@ -187,7 +191,7 @@ public class Window extends JFrame {
             }
         });
 
-        fileMenu.add(titleScreen);
+        //fileMenu.add(titleScreen);
         return fileMenu;
     }
 
@@ -427,6 +431,10 @@ public class Window extends JFrame {
                 saveGame.add(command);
 
                 movesMade++;
+                String turn = "TURN: " + (movesMade % 2 == 0 ? "LIGHT" : "DARK") + "    |    PREVIOUS MOVE: " + tempCurrentPiece.getClass().getSimpleName().toUpperCase() + " " + command.toUpperCase();
+
+                //Back ground color changes
+                updateColorAndText(turn);
                 return true;
             } else {
 
@@ -452,6 +460,17 @@ public class Window extends JFrame {
             return false;
         }
 
+    }
+
+    public void updateColorAndText(String textToSet){
+        if(movesMade % 2 == 0){
+            menuBar.setBackground(Color.WHITE);
+            fileMenu.setForeground(Color.BLACK);
+        }else {
+            menuBar.setBackground(Color.BLACK);
+            fileMenu.setForeground(Color.WHITE);
+        }
+        fileMenu.setText(textToSet);
     }
 
 

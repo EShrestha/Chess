@@ -26,9 +26,7 @@ public class WindowChess {
 
 
 
-    public static void main(String[] args) {
-        new WindowChess();
-    }
+    public static void main(String[] args) { new WindowChess(); }
 
     public WindowChess(){
 
