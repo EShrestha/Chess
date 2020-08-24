@@ -5,6 +5,7 @@ import Command.CommandReader;
 import Controller.Game;
 import Model.*;
 import lib.ConsoleIO;
+import Controller.Game.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,6 +16,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -86,7 +88,7 @@ public class Window extends JFrame {
                     String saveBtns[] = {"Yes", "No"};
                     int saveOrNot = JOptionPane.showOptionDialog(null, "Would you like to save game?", "Before you go...", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, saveBtns, saveBtns[1]);
                     if (saveOrNot == JOptionPane.YES_OPTION) {
-                        if (movesMade > 0) {
+                        if (Game.movesMade > 0) {
                             if (saveGame()) {
                                 dispose();
                             }
@@ -327,7 +329,7 @@ public class Window extends JFrame {
 
 
                 if ((clickedi != -1 && clickedj != -1) && playingBoard.board[clickedi][clickedj].isHasPiece()) {
-                    if(playingBoard.board[clickedi][clickedj].getCurrentPiece().getPieceColor() == (movesMade%2==0? PieceColor.LIGHT : PieceColor.DARK)) {
+                    if(playingBoard.board[clickedi][clickedj].getCurrentPiece().getPieceColor() == (Game.movesMade%2==0? PieceColor.LIGHT : PieceColor.DARK)) {
                         // Getting a list of valid locations for the current piece
                         List<Location> validLocations = playingBoard.board[clickedi][clickedj].getCurrentPiece().getValidMoves(playingBoard);
                         JPopupMenu popupMenu = new JPopupMenu("TITLE HERE");
@@ -376,94 +378,286 @@ public class Window extends JFrame {
 
 
     public boolean makeValidMove(String command) {
-        char color = movesMade % 2 == 0 ? 'l' : 'd';
-        // Group 1 2 3 4 ----> a 1  a 2
+        char color = Game.movesMade % 2 == 0 ? 'l' : 'd';
         Pattern p = Pattern.compile("^([a-h])(\\d)\\s([a-h])(\\d)$");
         Matcher m = p.matcher(command);
-        if (!m.matches()) {
+        Map<Location, Tile> tileMap = playingBoard.getLocationTileMap();
+
+        if(!m.matches()){
             return false;
         }
 
+            // Getting x and y of the piece user wants ot move and the x and y of where user want to move piece to
+            Integer xCurrent = Enum.valueOf(File.class, m.group(1).toUpperCase()).ordinal();
+            Integer yCurrent = rankToRank.getRank(Integer.parseInt(m.group(2)) - 1);
+            Integer xMoveTo = Enum.valueOf(File.class, m.group(3).toUpperCase()).ordinal();
+            Integer yMoveTo = rankToRank.getRank(Integer.parseInt(m.group(4)) - 1);
 
-        // Getting x and y of the piece user wants ot move and the x and y of where user want to move piece to
-        int xCurrent = Enum.valueOf(BoardStuff.File.class, m.group(1).toUpperCase()).ordinal();
-        int yCurrent = rankToRank.getRank(Integer.parseInt(m.group(2)) - 1);
-        int xMoveTo = Enum.valueOf(BoardStuff.File.class, m.group(3).toUpperCase()).ordinal();
-        int yMoveTo = rankToRank.getRank(Integer.parseInt(m.group(4)) - 1);
+
+            if (playingBoard.board[yCurrent][xCurrent].isHasPiece()) {
+                // Getting a list of valid locations for the current piece
+                List<Location> validLocations = playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getValidMoves(playingBoard);
+                System.out.println("VALID LOCATIONS: " + validLocations);
+
+                // Checking if the piece color user wants to move is actually the players color (l/d) and the move they want to make is in the valid locations list
+                if (color == playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getShortColor()
+                        && validLocations.contains(playingBoard.board[yMoveTo][xMoveTo].getLocation())) {
 
 
-        if (playingBoard.board[yCurrent][xCurrent].isHasPiece()) {
-            // Getting a list of valid locations for the current piece
-            List<Location> validLocations = playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getValidMoves(playingBoard);
+                    ////////////////TEMP BOARD CHECKS////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    Board tempBoard = createTempBoard(playingBoard); // Creating a copy board: TEMP board
+                    Map<Location, Tile> TempTileMap = tempBoard.getLocationTileMap();
+                    tempBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false); // Setting the move piece as already moved once
+                    Piece tempTempCurrentPiece = tempBoard.board[yCurrent][xCurrent].getCurrentPiece(); // Capturing the current piece user wants to move
 
-            // Checking if the piece color user wants to move is actually the players color (l/d) and the move they want to make is in the valid locations list
-            if (color == playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getShortColor()
-                    && validLocations.contains(playingBoard.board[yMoveTo][xMoveTo].getLocation())) {
 
-                // Probably check for check/checkmate here
+                    // Saving current piece information
+                    // Making a copy of the piece user wants to move then resetting that tile the piece was on
+                    Piece tempCurrentPiece = playingBoard.board[yCurrent][xCurrent].getCurrentPiece();
+                    Icon tempPieceIcon = tiles[yCurrent][xCurrent].getIcon();
 
-                // Marking the piece as already moved once
-                playingBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
-
-                // Making a copy of the piece user wants to move then resetting that tile the piece was on
-                Piece tempCurrentPiece = playingBoard.board[yCurrent][xCurrent].getCurrentPiece();
-                playingBoard.board[yCurrent][xCurrent].resetTile();
-
-                // Adding what piece was captured if there was a piece to be captured
-                if (playingBoard.board[yMoveTo][xMoveTo].isHasPiece()) {
-                    Piece tempMoveToPiece = playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece();
-                    if (color == 'l') {
-                        lightPlayer.addCapturedPiece(tempMoveToPiece);
-                    } else {
-                        darkPlayer.addCapturedPiece(tempMoveToPiece);
+                    // SPECIAL MOVES OF KING in TEMPBOARD
+                    if(tempBoard.board[yCurrent][xCurrent].getCurrentPiece().getClass().getSimpleName().equals(King.class.getSimpleName())){
+                        if(color == 'l'){
+                            Board.TEMPlightKingsTile = tempBoard.board[yMoveTo][xMoveTo];
+                        }else if (color == 'd') {
+                            Board.TEMPdarkKingsTile = tempBoard.board[yMoveTo][xMoveTo];
+                        }else {
+                            Board.TEMPdarkKingsTile = Board.darkKingsTile;
+                            Board.TEMPlightKingsTile = Board.lightKingsTile;
+                        }
                     }
 
+                    // SPECIAL MOVES OF PAWN in TEMPBOARD
+                    if(tempBoard.board[yCurrent][xCurrent].getCurrentPiece().getClass().getSimpleName().equals(Pawn.class.getSimpleName())){
+                        if(Math.abs((tempBoard.board[yMoveTo][xMoveTo].getLocation().getRank() - tempBoard.board[yCurrent][xCurrent].getLocation().getRank() )) == 2) {
+                            Location locationLeft = LocationGenerator.build(tempBoard.board[yMoveTo][xMoveTo].getLocation(), -1, 0);
+                            Location locationRight = LocationGenerator.build(tempBoard.board[yMoveTo][xMoveTo].getLocation(), 1, 0);
+                            Piece pieceLeft;
+                            Piece pieceRight;
+                            // For a pawn on the left
+                            if (TempTileMap.get(locationLeft) != null && TempTileMap.get(locationLeft).isHasPiece() && TempTileMap.get(locationLeft).getCurrentPiece().getClass().getSimpleName().equals(Pawn.class.getSimpleName())) {
+                                pieceLeft = TempTileMap.get(locationLeft).getCurrentPiece();
+                                TempTileMap.get(locationLeft).getCurrentPiece().setCanEnPassant(true);
+                                TempTileMap.get(locationLeft).getCurrentPiece().setEnPassantEnabledOnMove(Game.movesMade);
+                                TempTileMap.get(locationLeft).getCurrentPiece().setEnPassantTile(tempBoard.board[yMoveTo][xMoveTo]);
+                                System.out.println("CAN ENPASSANT: " + pieceLeft);
+                            }
+                            // For a pawn on the right
+                            if (TempTileMap.get(locationRight) != null && TempTileMap.get(locationRight).isHasPiece() && TempTileMap.get(locationRight).getCurrentPiece().getClass().getSimpleName().equals(Pawn.class.getSimpleName())) {
+                                pieceRight = TempTileMap.get(locationRight).getCurrentPiece();
+                                TempTileMap.get(locationRight).getCurrentPiece().setCanEnPassant(true);
+                                TempTileMap.get(locationRight).getCurrentPiece().setEnPassantEnabledOnMove(Game.movesMade);
+                                TempTileMap.get(locationRight).getCurrentPiece().setEnPassantTile(tempBoard.board[yMoveTo][xMoveTo]);
+                                System.out.println("CAN ENPASSANT: " + pieceRight);
+                            }
+                        }
+
+                        if((tempBoard.board[yMoveTo][xMoveTo].getLocation().getRank() == 8 && color == 'l') || (tempBoard.board[yMoveTo][xMoveTo].getLocation().getRank() == 1 && color == 'd')) {
+                            boolean notValid = true;
+                            do {
+                                Object[] options = {"Queen", "Rook", "Knight", "Bishop"};
+                                String s = (String) JOptionPane.showInputDialog(
+                                        this,
+                                        "Promote Pawn To: ",
+                                        "Promotion!",
+                                        JOptionPane.PLAIN_MESSAGE,
+                                        wPawn,
+                                        options,
+                                        "Queen");
+
+                                if (s != null && s.trim().length() > 0) {
+                                    if (s.equals("Queen")) {
+                                        tempCurrentPiece = new Queen(color == 'l' ? PieceColor.LIGHT : PieceColor.DARK, tempTempCurrentPiece.getCurrentTile());
+                                        tempPieceIcon = color == 'l' ? wQueen : dQueen;
+                                        notValid = false;
+                                    } else if (s.equals("Rook")) {
+                                        tempCurrentPiece = new Rook(color == 'l' ? PieceColor.LIGHT : PieceColor.DARK, tempTempCurrentPiece.getCurrentTile());
+                                        tempPieceIcon = color == 'l' ? wRook : dRook;
+                                        notValid = false;
+                                    } else if (s.equals("Knight")) {
+                                        tempCurrentPiece = new Knight(color == 'l' ? PieceColor.LIGHT : PieceColor.DARK, tempTempCurrentPiece.getCurrentTile());
+                                        tempPieceIcon = color == 'l' ? wKnight : dKnight;
+                                        notValid = false;
+                                    } else if (s.equals("Bishop")) {
+                                        tempCurrentPiece = new Bishop(color == 'l' ? PieceColor.LIGHT : PieceColor.DARK, tempTempCurrentPiece.getCurrentTile());
+                                        tempPieceIcon = color == 'l' ? wBishop : dBishop;
+                                        notValid = false;
+                                    } else {
+                                        notValid = true;
+                                    }
+                                }
+
+
+                            }while (notValid) ;
+                        }
+                    } // End of PAWN checks
+
+                    tempBoard.board[yCurrent][xCurrent].resetTile(); // Resetting the current tile so it is a blank tile
+                    tempBoard.board[yMoveTo][xMoveTo].setCurrentPiece(tempTempCurrentPiece); // Moving the captured piece to the move to tile
+                    tempBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setCurrentTile(tempBoard.board[yMoveTo][xMoveTo]); // Adding the tiles location to the piece
+
+                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    if(!new King().checkForCheck(tempBoard, color == 'l'? Board.TEMPlightKingsTile : Board.TEMPdarkKingsTile)) {
+
+
+                        // Marking the piece as already moved once
+                        playingBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
+                        // If the piece that moved is the king then their tile location is updated as well in the Board class
+                        if(playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getClass().getSimpleName().equals(King.class.getSimpleName())){
+                            if(color == 'l'){
+                                Board.lightKingsTile = playingBoard.board[yMoveTo][xMoveTo];
+                            }else {
+                                Board.darkKingsTile = playingBoard.board[yMoveTo][xMoveTo];
+                            }
+                        }
+
+                        // SPECIAL MOVES OF PAWN
+                        if(playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getClass().getSimpleName().equals(Pawn.class.getSimpleName())){
+                            if(Math.abs((playingBoard.board[yMoveTo][xMoveTo].getLocation().getRank() - playingBoard.board[yCurrent][xCurrent].getLocation().getRank() )) == 2) {
+                                Location locationLeft = LocationGenerator.build(playingBoard.board[yMoveTo][xMoveTo].getLocation(), -1, 0);
+                                Location locationRight = LocationGenerator.build(playingBoard.board[yMoveTo][xMoveTo].getLocation(), 1, 0);
+                                Piece pieceLeft;
+                                Piece pieceRight;
+                                // For a pawn on the left
+                                if (tileMap.get(locationLeft) != null && tileMap.get(locationLeft).isHasPiece() && tileMap.get(locationLeft).getCurrentPiece().getClass().getSimpleName().equals(Pawn.class.getSimpleName())) {
+                                    pieceLeft = tileMap.get(locationLeft).getCurrentPiece();
+                                    tileMap.get(locationLeft).getCurrentPiece().setCanEnPassant(true);
+                                    tileMap.get(locationLeft).getCurrentPiece().setEnPassantEnabledOnMove(Game.movesMade);
+                                    tileMap.get(locationLeft).getCurrentPiece().setEnPassantTile(playingBoard.board[yMoveTo][xMoveTo]);
+                                }
+                                // For a pawn on the right
+                                if (tileMap.get(locationRight) != null && tileMap.get(locationRight).isHasPiece() && tileMap.get(locationRight).getCurrentPiece().getClass().getSimpleName().equals(Pawn.class.getSimpleName())) {
+                                    pieceRight = tileMap.get(locationRight).getCurrentPiece();
+                                    tileMap.get(locationRight).getCurrentPiece().setCanEnPassant(true);
+                                    tileMap.get(locationRight).getCurrentPiece().setEnPassantEnabledOnMove(Game.movesMade);
+                                    tileMap.get(locationRight).getCurrentPiece().setEnPassantTile(playingBoard.board[yMoveTo][xMoveTo]);
+                                }
+                            }
+
+                            if(playingBoard.board[yMoveTo][xMoveTo].getLocation().getRank() == 8 && color == 'l'){
+                                System.out.println("LIGHT gets to promote pawn here.");
+                            }
+                            if(playingBoard.board[yMoveTo][xMoveTo].getLocation().getRank() == 1 && color == 'd'){
+                                System.out.println("DARK gets to promote pawn here");
+                            }
+
+                        } // End of PAWN checks
+
+
+
+
+                        // Adding what piece was captured if there was a piece to be captured
+                        if (playingBoard.board[yMoveTo][xMoveTo].isHasPiece()) {
+                            Piece tempMoveToPiece = playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece();
+                            if (color == 'l') {
+                                lightPlayer.addCapturedPiece(tempMoveToPiece);
+                            } else {
+                                darkPlayer.addCapturedPiece(tempMoveToPiece);
+                            }
+
+                        }else if(tempCurrentPiece.getClass().getSimpleName().equals(Pawn.class.getSimpleName())
+                                && !playingBoard.board[yMoveTo][xMoveTo].isHasPiece()
+                                && playingBoard.board[yCurrent][xCurrent].getLocation().getFile() != playingBoard.board[yMoveTo][xMoveTo].getLocation().getFile()
+                                && playingBoard.board[yMoveTo][xMoveTo].getLocation().getFile() == playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getEnPassantTile().getLocation().getFile()){
+                            if (color == 'l') {
+                                lightPlayer.addCapturedPiece(playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getEnPassantTile().getCurrentPiece());
+                            } else {
+                                darkPlayer.addCapturedPiece(playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getEnPassantTile().getCurrentPiece());
+                            }
+                            playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getEnPassantTile().resetTile();
+                            tiles[rankToRank.getRank(playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getEnPassantTile().getLocation().getRank() - 1)][playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getEnPassantTile().getLocation().getFile().ordinal()].setIcon(null);
+                            System.out.println("TILE: " + playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getEnPassantTile());
+                            System.out.println("RANK: " + rankToRank.getRank(playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getEnPassantTile().getLocation().getRank() - 1));
+                            System.out.println("FILE: " + playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getEnPassantTile().getLocation().getFile().ordinal());
+
+                        }
+
+                        playingBoard.board[yCurrent][xCurrent].resetTile();
+                        tiles[yCurrent][xCurrent].setIcon(null);
+                        playingBoard.board[yMoveTo][xMoveTo].setCurrentPiece(tempCurrentPiece);
+                        tiles[yMoveTo][xMoveTo].setIcon(tempPieceIcon);
+
+                        //Setting what tile the piece is on for the piece that just moved
+                        playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setCurrentTile(playingBoard.board[yMoveTo][xMoveTo]);
+
+                        // After move made do these
+                        saveGame.add(command);
+                        Game.movesMade++;
+                        String turn = getCapturedPieces(darkPlayer) + "    |    " + "TURN: " + (Game.movesMade % 2 == 0 ? "LIGHT" : "DARK") + "    |    PREVIOUS MOVE: " + tempCurrentPiece.getClass().getSimpleName().toUpperCase() + " " + command.toUpperCase() + "    |    " + getCapturedPieces(lightPlayer);
+                        //Back ground color changes
+                        updateColorAndText(turn);
+                        return true;
+
+                    }else {
+                        System.out.println("****INVALID**** PUTS YOU IN CHECK");
+                        System.out.print(color == 'l' ? "LIGHT -> " : "DARK -> ");
+                        Board.TEMPlightKingsTile.setLocation(Board.lightKingsTile.getLocation());
+                        Board.TEMPlightKingsTile.setTileColor(Board.lightKingsTile.getTileColor());
+                        Board.TEMPlightKingsTile.setCurrentPiece(Board.lightKingsTile.getCurrentPiece());
+                        Board.TEMPlightKingsTile.setHasPiece(Board.lightKingsTile.isHasPiece());
+
+                        Board.TEMPdarkKingsTile.setLocation(Board.darkKingsTile.getLocation());
+                        Board.TEMPdarkKingsTile.setTileColor(Board.darkKingsTile.getTileColor());
+                        Board.TEMPdarkKingsTile.setCurrentPiece(Board.darkKingsTile.getCurrentPiece());
+                        Board.TEMPdarkKingsTile.setHasPiece(Board.darkKingsTile.isHasPiece());
+                    }
+                } else {
+                    if(!onceInvalidFileAlert) {
+                        if (usingFile) {
+                            JOptionPane.showMessageDialog(this, "INVALID COMMAND READ FROM FILE", "Maybe turn it off and on?", 2);
+                            Game.movesMade++;
+                            onceInvalidFileAlert = true;
+                        }
+                    }
+                    return false;
                 }
 
-                playingBoard.board[yMoveTo][xMoveTo].setCurrentPiece(tempCurrentPiece);
-                //Setting what tile the piece is on for the piece that just moved
-                playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setCurrentTile(playingBoard.board[yMoveTo][xMoveTo]);
-
-                Icon tempIcon = tiles[yCurrent][xCurrent].getIcon();
-                tiles[yCurrent][xCurrent].setIcon(null);
-                tiles[yMoveTo][xMoveTo].setIcon(tempIcon);
-
-                saveGame.add(command);
-
-                movesMade++;
-                String turn = "TURN: " + (movesMade % 2 == 0 ? "LIGHT" : "DARK") + "    |    PREVIOUS MOVE: " + tempCurrentPiece.getClass().getSimpleName().toUpperCase() + " " + command.toUpperCase();
-
-                //Back ground color changes
-                updateColorAndText(turn);
-                return true;
-            } else {
-
+            }else {
                 if(!onceInvalidFileAlert) {
                     if (usingFile) {
-                        JOptionPane.showMessageDialog(this, "INVALID COMMAND READ FROM FILE", "Maybe turn it off and on?", 2);
-                        movesMade++;
+                        JOptionPane.showMessageDialog(this, "INVALID COMMAND READ FROM FILE", "Maybe turn it off and on?", JOptionPane.WARNING_MESSAGE);
+                        Game.movesMade++;
                         onceInvalidFileAlert = true;
                     }
                 }
+
                 return false;
             }
 
-        } else {
-            if(!onceInvalidFileAlert) {
-                if (usingFile) {
-                    JOptionPane.showMessageDialog(this, "INVALID COMMAND READ FROM FILE", "Maybe turn it off and on?", JOptionPane.WARNING_MESSAGE);
-                    movesMade++;
-                    onceInvalidFileAlert = true;
-                }
-            }
+        return false;
+    }
 
-            return false;
+
+    public String getCapturedPieces(Player player){
+        String capPieces = "[";
+        for (Piece p : player.getCapturedPieces()){
+            capPieces += (p.getShortName() + " ");
         }
+        capPieces += "]";
+        return capPieces;
+    }
+    public Board createTempBoard(Board originalBoard){
+        Board tempBoard = new Board(false);
+        Map<Location, Tile> tileMap = originalBoard.getLocationTileMap();
 
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j< 8; j++){
+
+                tempBoard.board[i][j].setTileColor(originalBoard.board[i][j].getTileColor());
+                tempBoard.board[i][j].setLocation(originalBoard.board[i][j].getLocation());
+                if(originalBoard.board[i][j].isHasPiece()){
+                    tempBoard.board[i][j].setCurrentPiece(originalBoard.board[i][j].getCurrentPiece());
+                }
+
+
+            }
+        }
+        return tempBoard;
     }
 
     public void updateColorAndText(String textToSet){
-        if(movesMade % 2 == 0){
+        if(Game.movesMade % 2 == 0){
             menuBar.setBackground(Color.WHITE);
             fileMenu.setForeground(Color.BLACK);
         }else {

@@ -1,12 +1,10 @@
 package Controller;
 
 import BoardStuff.*;
-import Model.King;
-import Model.Pawn;
-import Model.Piece;
-import Model.Player;
+import Model.*;
 import lib.ConsoleIO;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -115,8 +113,7 @@ public class Game {
                 // Getting a list of valid locations for the current piece
                 List<Location> validLocations = playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getValidMoves(playingBoard);
                 System.out.println("VALID MOVES: " + validLocations);
-                System.out.println("CURRENT COLOR: " + color + "CURRENT PIECE COLOR: " + playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getShortColor());
-                System.out.println("MOVE IS VALID?: " + validLocations.contains(playingBoard.board[yMoveTo][xMoveTo].getLocation()));
+
 
                 // Checking if the piece color user wants to move is actually the players color (l/d) and the move they want to make is in the valid locations list
                 if (color == playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getShortColor()
@@ -182,6 +179,8 @@ public class Game {
 
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     if(!new King().checkForCheck(tempBoard, color == 'l'? Board.TEMPlightKingsTile : Board.TEMPdarkKingsTile)) {
+                        // Making a copy of the piece user wants to move then resetting that tile the piece was on
+                        Piece tempCurrentPiece = playingBoard.board[yCurrent][xCurrent].getCurrentPiece();
 
                         // Marking the piece as already moved once
                         playingBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
@@ -219,17 +218,32 @@ public class Game {
                                     }
                                 }
 
-                                if(playingBoard.board[yMoveTo][xMoveTo].getLocation().getRank() == 8 && color == 'l'){
-                                    System.out.println("LIGHT gets to promote pawn here.");
-                                }
-                                if(playingBoard.board[yMoveTo][xMoveTo].getLocation().getRank() == 1 && color == 'd'){
-                                    System.out.println("DARK gets to promote pawn here");
-                                }
+                            if((tempBoard.board[yMoveTo][xMoveTo].getLocation().getRank() == 8 && color == 'l') || (tempBoard.board[yMoveTo][xMoveTo].getLocation().getRank() == 1 && color == 'd')) {
+                                boolean notValid = true;
+                                do {
+                                        String s = ConsoleIO.promptForString("What piece would you like to promote this pawn to? ");
+                                        if (s.equals("Queen")) {
+                                            tempCurrentPiece = new Queen(color == 'l' ? PieceColor.LIGHT : PieceColor.DARK, tempTempCurrentPiece.getCurrentTile());
+                                            notValid = false;
+                                        } else if (s.equals("Rook")) {
+                                            tempCurrentPiece = new Rook(color == 'l' ? PieceColor.LIGHT : PieceColor.DARK, tempTempCurrentPiece.getCurrentTile());
+                                            notValid = false;
+                                        } else if (s.equals("Knight")) {
+                                            tempCurrentPiece = new Knight(color == 'l' ? PieceColor.LIGHT : PieceColor.DARK, tempTempCurrentPiece.getCurrentTile());
+                                            notValid = false;
+                                        } else if (s.equals("Bishop")) {
+                                            tempCurrentPiece = new Bishop(color == 'l' ? PieceColor.LIGHT : PieceColor.DARK, tempTempCurrentPiece.getCurrentTile());
+                                            notValid = false;
+                                        } else {
+                                            notValid = true;
+                                        }
+
+                                }while (notValid) ;
+                            }
 
                         } // End of PAWN checks
 
-                        // Making a copy of the piece user wants to move then resetting that tile the piece was on
-                        Piece tempCurrentPiece = playingBoard.board[yCurrent][xCurrent].getCurrentPiece();
+
 
 
                         // Adding what piece was captured if there was a piece to be captured
