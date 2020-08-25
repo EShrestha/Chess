@@ -276,10 +276,16 @@ public class Window extends JFrame {
 
     }
 
+    Color tempFirstClickColor;
+    Color tempSecondClickColor;
+    int tempIFirstClick;
+    int tempJFirstClick;
+    int tempISecondClick;
+    int tempJSecondClick;
     public class customMouseListener implements MouseListener {
         int clickedi = -1;
         int clickedj = -1;
-        Color tempColor = Color.RED;
+
         int tempbtnx = -1;
         int tempbtny = -1;
         public void mouseClicked(MouseEvent e) {
@@ -306,11 +312,19 @@ public class Window extends JFrame {
                         commandLeft = (files[clickedj].toString().toLowerCase() + "" + (Integer.parseInt(rankToRank.getRank(clickedi).toString()) + 1));
                         commandLeftRank = clickedi;
                         commandLeftFile = clickedj;
+                        tempFirstClickColor = tiles[clickedi][clickedj].getBackground();
+                        tempIFirstClick = clickedi;
+                        tempJFirstClick = clickedj;
+                        tiles[clickedi][clickedj].setBackground(Color.PINK);
 
                     } else if (commandRight.trim().equals("")) {
                         if (!(files[clickedj].toString().toLowerCase() + "" + (Integer.parseInt(rankToRank.getRank(clickedi).toString()) + 1)).equals(commandLeft)) {
 
                             commandRight = (files[clickedj].toString().toLowerCase() + "" + (Integer.parseInt(rankToRank.getRank(clickedi).toString()) + 1));
+                            tempSecondClickColor = tiles[clickedi][clickedj].getBackground();
+                            tempISecondClick = clickedi;
+                            tempJSecondClick = clickedj;
+                            tiles[clickedi][clickedj].setBackground(Color.ORANGE);
                             //processClick((commandLeft + " " + commandRight), i, j);
                             makeValidMove(commandLeft + " " + commandRight);
                         }
@@ -320,7 +334,11 @@ public class Window extends JFrame {
                         commandLeftRank = -1;
                         commandLeftFile = -1;
                         commandRight = "";
+                        tiles[tempIFirstClick][tempJFirstClick].setBackground(tempFirstClickColor);
+                        tiles[tempISecondClick][tempJSecondClick].setBackground(tempSecondClickColor);
+
                     }
+
                 }
                 // do stuff
             }
@@ -441,7 +459,6 @@ public class Window extends JFrame {
                                 TempTileMap.get(locationLeft).getCurrentPiece().setCanEnPassant(true);
                                 TempTileMap.get(locationLeft).getCurrentPiece().setEnPassantEnabledOnMove(Game.movesMade);
                                 TempTileMap.get(locationLeft).getCurrentPiece().setEnPassantTile(tempBoard.board[yMoveTo][xMoveTo]);
-                                System.out.println("CAN ENPASSANT: " + pieceLeft);
                             }
                             // For a pawn on the right
                             if (TempTileMap.get(locationRight) != null && TempTileMap.get(locationRight).isHasPiece() && TempTileMap.get(locationRight).getCurrentPiece().getClass().getSimpleName().equals(Pawn.class.getSimpleName())) {
@@ -449,7 +466,6 @@ public class Window extends JFrame {
                                 TempTileMap.get(locationRight).getCurrentPiece().setCanEnPassant(true);
                                 TempTileMap.get(locationRight).getCurrentPiece().setEnPassantEnabledOnMove(Game.movesMade);
                                 TempTileMap.get(locationRight).getCurrentPiece().setEnPassantTile(tempBoard.board[yMoveTo][xMoveTo]);
-                                System.out.println("CAN ENPASSANT: " + pieceRight);
                             }
                         }
 

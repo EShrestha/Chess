@@ -191,6 +191,43 @@ public class Game {
                             }else {
                                 Board.darkKingsTile = playingBoard.board[yMoveTo][xMoveTo];
                             }
+
+                            if(playingBoard.board[yCurrent][xCurrent].getCurrentPiece().isFirstMove()
+                            && (Math.abs(playingBoard.board[yMoveTo][xMoveTo].getLocation().getFile().ordinal() - playingBoard.board[yCurrent][xCurrent].getLocation().getFile().ordinal()) == 2)){
+
+                                // Means user wants to castle to the left side of the board
+                                if(playingBoard.board[yMoveTo][xMoveTo].getLocation().getFile().ordinal() - playingBoard.board[yCurrent][xCurrent].getLocation().getFile().ordinal() < 0){
+                                   if(color == 'l') {
+                                       // Check if d1 is not in check and is empty and c1 is empty and b1 is empty
+                                       if(!playingBoard.board[yCurrent][(xCurrent - 1)].isHasPiece() && !playingBoard.board[yCurrent][(xCurrent - 2)].isHasPiece() && !playingBoard.board[yCurrent][(xCurrent - 3)].isHasPiece()){
+                                            // if test passes check if rook on a1 isFirstMove
+                                           //if() {
+                                               // if that test passes only move the rook from a1 to d1
+                                               //if(){ }
+                                           //}
+                                   }
+                                   }else{
+                                       // Check if d8 is not in check and is empty and c8 is empty and b8 is empty
+                                            // if test passes check if rook on a8 isFirstMove
+                                                // if that test passes only move the rook from a8 to d8
+                                   }
+
+                                }
+                                // Means user wants to castle to the right side of the board
+                                if(playingBoard.board[yMoveTo][xMoveTo].getLocation().getFile().ordinal() - playingBoard.board[yCurrent][xCurrent].getLocation().getFile().ordinal() < 0){
+                                    if(color == 'l') {
+                                        // Check if f1 is not in check and g1 is empty
+                                    }else {
+                                        //Check if f8 is not in check and g8 is empty
+                                    }
+
+                                }
+
+
+                            }
+
+
+
                         }
 
                         // SPECIAL MOVES OF PAWN
@@ -219,7 +256,7 @@ public class Game {
                                 }
 
                             if((tempBoard.board[yMoveTo][xMoveTo].getLocation().getRank() == 8 && color == 'l') || (tempBoard.board[yMoveTo][xMoveTo].getLocation().getRank() == 1 && color == 'd')) {
-                                boolean notValid = true;
+                                boolean notValid;
                                 do {
                                         String s = ConsoleIO.promptForString("What piece would you like to promote this pawn to? ");
                                         if (s.equals("Queen")) {
@@ -242,6 +279,8 @@ public class Game {
                             }
 
                         } // End of PAWN checks
+
+
 
 
 
