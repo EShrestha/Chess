@@ -196,7 +196,9 @@ public class Game {
                         Piece tempCurrentPiece = playingBoard.board[yCurrent][xCurrent].getCurrentPiece();
 
                         // Marking the piece as already moved once
-                        playingBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
+                        if(!playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getClass().getSimpleName().equals(King.class.getSimpleName())) {
+                            playingBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
+                        }
                         // If the piece that moved is the king then their tile location is updated as well in the Board class
                         if(playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getClass().getSimpleName().equals(King.class.getSimpleName())){
                             if(color == 'l'){
@@ -206,35 +208,43 @@ public class Game {
                             }
 
                             if(playingBoard.board[yCurrent][xCurrent].getCurrentPiece().isFirstMove()
-                            && (Math.abs(playingBoard.board[yMoveTo][xMoveTo].getLocation().getFile().ordinal() - playingBoard.board[yCurrent][xCurrent].getLocation().getFile().ordinal()) == 2)){
+                                    && (Math.abs(playingBoard.board[yMoveTo][xMoveTo].getLocation().getFile().ordinal() - playingBoard.board[yCurrent][xCurrent].getLocation().getFile().ordinal()) == 2)){
 
+                                System.out.println("MOVED KING 2 SPACES");
                                 // Means user wants to castle to the left side of the board
                                 if(playingBoard.board[yMoveTo][xMoveTo].getLocation().getFile().ordinal() - playingBoard.board[yCurrent][xCurrent].getLocation().getFile().ordinal() < 0){
-                                   if(color == 'l') {
-                                       // Check if d1 is not in check and is empty and c1 is empty and b1 is empty
-                                       if(!playingBoard.board[yCurrent][(xCurrent - 1)].isHasPiece() && !playingBoard.board[yCurrent][(xCurrent - 2)].isHasPiece() && !playingBoard.board[yCurrent][(xCurrent - 3)].isHasPiece()){
-                                            // if test passes check if rook on a1 isFirstMove
-                                           //if() {
-                                               // if that test passes only move the rook from a1 to d1
-                                               //if(){ }
-                                           //}
-                                   }
-                                   }else{
-                                       // Check if d8 is not in check and is empty and c8 is empty and b8 is empty
-                                            // if piece on a8 is a rook && if rook on a8 isFirstMove
-                                                // if that test passes only move the rook from a8 to d8
-                                                    playingBoard.board[0][0].resetTile();
-                                                    playingBoard.board[0][3].setCurrentPiece(new Rook(color == 'l'? PieceColor.LIGHT : PieceColor.DARK, playingBoard.board[0][3]));
+                                    System.out.println("User wants to castle left");
+                                    if(color == 'l') {
+                                        System.out.println("Light wants to castle left");
+                                        playingBoard.board[7][0].resetTile();
+                                        playingBoard.board[7][3].setCurrentPiece(new Rook(color == 'l' ? PieceColor.LIGHT : PieceColor.DARK, playingBoard.board[7][3]));
+                                        playingBoard.board[7][3].getCurrentPiece().setFirstMove(false);
+                                        playingBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
 
-                                   }
+                                    }else{
+                                        System.out.println("Dark wants to castle left");
+                                        playingBoard.board[0][0].resetTile();
+                                        playingBoard.board[0][3].setCurrentPiece(new Rook(color == 'l' ? PieceColor.LIGHT : PieceColor.DARK, playingBoard.board[0][3]));
+                                        playingBoard.board[0][3].getCurrentPiece().setFirstMove(false);
+                                        playingBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
+
+                                    }
 
                                 }
                                 // Means user wants to castle to the right side of the board
-                                if(playingBoard.board[yMoveTo][xMoveTo].getLocation().getFile().ordinal() - playingBoard.board[yCurrent][xCurrent].getLocation().getFile().ordinal() < 0){
+                                if(playingBoard.board[yMoveTo][xMoveTo].getLocation().getFile().ordinal() - playingBoard.board[yCurrent][xCurrent].getLocation().getFile().ordinal() > 0){
                                     if(color == 'l') {
-                                        // Check if f1 is not in check and g1 is empty
+                                        System.out.println("Light wants to castle right");
+                                        playingBoard.board[7][7].resetTile();
+                                        playingBoard.board[7][5].setCurrentPiece(new Rook(color == 'l' ? PieceColor.LIGHT : PieceColor.DARK, playingBoard.board[7][5]));
+                                        playingBoard.board[7][5].getCurrentPiece().setFirstMove(false);
+                                        playingBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
                                     }else {
-                                        //Check if f8 is not in check and g8 is empty
+                                        System.out.println("Dark wants to castle right");
+                                        playingBoard.board[0][7].resetTile();
+                                        playingBoard.board[0][5].setCurrentPiece(new Rook(color == 'l' ? PieceColor.LIGHT : PieceColor.DARK, playingBoard.board[0][5]));
+                                        playingBoard.board[0][5].getCurrentPiece().setFirstMove(false);
+                                        playingBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
                                     }
 
                                 }

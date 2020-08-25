@@ -521,7 +521,9 @@ public class Window extends JFrame {
 
 
                         // Marking the piece as already moved once
-                        playingBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
+                        if(!playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getClass().getSimpleName().equals(King.class.getSimpleName())) {
+                            playingBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
+                        }
                         // If the piece that moved is the king then their tile location is updated as well in the Board class
                         if(playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getClass().getSimpleName().equals(King.class.getSimpleName())){
                             if(color == 'l'){
@@ -529,7 +531,58 @@ public class Window extends JFrame {
                             }else {
                                 Board.darkKingsTile = playingBoard.board[yMoveTo][xMoveTo];
                             }
-                        }
+
+                            if(playingBoard.board[yCurrent][xCurrent].getCurrentPiece().isFirstMove()
+                                    && (Math.abs(playingBoard.board[yMoveTo][xMoveTo].getLocation().getFile().ordinal() - playingBoard.board[yCurrent][xCurrent].getLocation().getFile().ordinal()) == 2)){
+
+                                System.out.println("MOVED KING 2 SPACES");
+                                // Means user wants to castle to the left side of the board
+                                if(playingBoard.board[yMoveTo][xMoveTo].getLocation().getFile().ordinal() - playingBoard.board[yCurrent][xCurrent].getLocation().getFile().ordinal() < 0){
+                                    System.out.println("User wants to castle left");
+                                    if(color == 'l') {
+                                        System.out.println("Light wants to castle left");
+                                        playingBoard.board[7][0].resetTile();
+                                        tiles[7][0].setIcon(null);
+                                        playingBoard.board[7][3].setCurrentPiece(new Rook(color == 'l' ? PieceColor.LIGHT : PieceColor.DARK, playingBoard.board[7][3]));
+                                        playingBoard.board[7][3].getCurrentPiece().setFirstMove(false);
+                                        tiles[7][3].setIcon(wRook);
+                                        playingBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
+
+                                    }else{
+                                        System.out.println("Dark wants to castle left");
+                                        playingBoard.board[0][0].resetTile();
+                                        tiles[0][0].setIcon(null);
+                                        playingBoard.board[0][3].setCurrentPiece(new Rook(color == 'l' ? PieceColor.LIGHT : PieceColor.DARK, playingBoard.board[0][3]));
+                                        playingBoard.board[0][3].getCurrentPiece().setFirstMove(false);
+                                        tiles[0][3].setIcon(dRook);
+                                        playingBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
+
+                                    }
+
+                                }
+                                // Means user wants to castle to the right side of the board
+                                if(playingBoard.board[yMoveTo][xMoveTo].getLocation().getFile().ordinal() - playingBoard.board[yCurrent][xCurrent].getLocation().getFile().ordinal() > 0){
+                                    if(color == 'l') {
+                                        System.out.println("Light wants to castle right");
+                                        playingBoard.board[7][7].resetTile();
+                                        tiles[7][7].setIcon(null);
+                                        playingBoard.board[7][5].setCurrentPiece(new Rook(color == 'l' ? PieceColor.LIGHT : PieceColor.DARK, playingBoard.board[7][5]));
+                                        playingBoard.board[7][5].getCurrentPiece().setFirstMove(false);
+                                        tiles[7][5].setIcon(wRook);
+                                        playingBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
+                                    }else {
+                                        System.out.println("Dark wants to castle right");
+                                        playingBoard.board[0][7].resetTile();
+                                        tiles[0][7].setIcon(null);
+                                        playingBoard.board[0][5].setCurrentPiece(new Rook(color == 'l' ? PieceColor.LIGHT : PieceColor.DARK, playingBoard.board[0][5]));
+                                        playingBoard.board[0][5].getCurrentPiece().setFirstMove(false);
+                                        tiles[0][5].setIcon(dRook);
+                                        playingBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
+                                    }
+
+                                }
+                            }
+                        }// END OF KING SPECIAL MOVES
 
                         // SPECIAL MOVES OF PAWN
                         if(playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getClass().getSimpleName().equals(Pawn.class.getSimpleName())){

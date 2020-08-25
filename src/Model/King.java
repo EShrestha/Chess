@@ -26,7 +26,7 @@ public class King extends Piece implements Movable{
     public List<Location> getValidMoves(Board board) {
         List<Location> possibleMoveTiles = new LinkedList<>();
         Location currentLocation = this.getCurrentTile().getLocation();
-
+        Map<Location, Tile> tileMap = board.getLocationTileMap();
         // If it's the first move
         //if(this.isFirstMove()){
             //maybe implement castling here
@@ -42,11 +42,32 @@ public class King extends Piece implements Movable{
         possibleMoveTiles.add(LocationGenerator.build(currentLocation, -1, -1));
         // for castling
         if(isFirstMove()){
-            possibleMoveTiles.add(LocationGenerator.build(currentLocation, -2, 0)); // long castle
-            possibleMoveTiles.add(LocationGenerator.build(currentLocation, 2, 0)); // short castle
+            if( !tileMap.get(LocationGenerator.build(currentLocation, -1, 0)).isHasPiece()
+            && !tileMap.get(LocationGenerator.build(currentLocation, -2, 0)).isHasPiece()
+            && !tileMap.get(LocationGenerator.build(currentLocation, -3, 0)).isHasPiece()){
+
+                if(tileMap.get(LocationGenerator.build(currentLocation, -4, 0)).isHasPiece()) {
+                    if(tileMap.get(LocationGenerator.build(currentLocation, -4, 0)).getCurrentPiece().getClass().getSimpleName().equals(Rook.class.getSimpleName())
+                    && tileMap.get(LocationGenerator.build(currentLocation, -4, 0)).getCurrentPiece().isFirstMove) {
+                        possibleMoveTiles.add(LocationGenerator.build(currentLocation, -2, 0)); // long castle
+                    }
+                }
+
+            }
+
+            if(!tileMap.get(LocationGenerator.build(currentLocation, 1, 0)).isHasPiece()
+            && !tileMap.get(LocationGenerator.build(currentLocation, 2, 0)).isHasPiece()) {
+
+                if(tileMap.get(LocationGenerator.build(currentLocation, 3, 0)).isHasPiece()) {
+                    if(tileMap.get(LocationGenerator.build(currentLocation, 3, 0)).getCurrentPiece().getClass().getSimpleName().equals(Rook.class.getSimpleName())
+                            && tileMap.get(LocationGenerator.build(currentLocation, 3, 0)).getCurrentPiece().isFirstMove) {
+                        possibleMoveTiles.add(LocationGenerator.build(currentLocation, 2, 0)); // short castle
+                    }
+                }
+            }
         }
 
-        Map<Location, Tile> tileMap = board.getLocationTileMap();
+
 
         // Filters out the tiles from the possibleMoveTiles that are not a valid tile
         List<Location> validMoves = new LinkedList<>();
@@ -55,7 +76,10 @@ public class King extends Piece implements Movable{
             if(l != null && tileMap.get(l).isHasPiece()){
                 if(tileMap.get(l).getCurrentPiece().getPieceColor() != this.getPieceColor()){
                    // if(!checkCheck(board, ))
-                     validMoves.add(l);
+                    if(!checkForCheck(board, tileMap.get(l))){
+                        validMoves.add(l);
+                    }
+
 
 
                     //Implement checking to see if the move will put it in check and if it doesnt add move
@@ -64,7 +88,9 @@ public class King extends Piece implements Movable{
                 }
             }else if(l != null && !tileMap.get(l).isHasPiece()){
 
+                if(!checkForCheck(board, tileMap.get(l))) {
                     validMoves.add(l);
+                }
             }
 
         }
@@ -82,7 +108,7 @@ public class King extends Piece implements Movable{
         Map<Location, Tile> tileMap = board.getLocationTileMap();
         List<Location> threats = new LinkedList<>();
 
-        PieceColor color = tile.getCurrentPiece().getPieceColor();
+        PieceColor color = tile.isHasPiece() ? tile.getCurrentPiece().getPieceColor() : this.getPieceColor();
         char thisColor = movesMade % 2 == 0 ? 'l' : 'd';
         //System.out.println("CURRENT PIECE COLOR:" + color);
 
