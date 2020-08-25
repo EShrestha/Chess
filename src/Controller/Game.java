@@ -172,13 +172,26 @@ public class Game {
                         }
 
                     } // End of PAWN checks
+                    if(tempTempCurrentPiece.getClass().getSimpleName().equals(Pawn.class.getSimpleName())
+                            && !tempBoard.board[yMoveTo][xMoveTo].isHasPiece()
+                            && tempBoard.board[yCurrent][xCurrent].getLocation().getFile() != tempBoard.board[yMoveTo][xMoveTo].getLocation().getFile()
+                            && tempBoard.board[yMoveTo][xMoveTo].getLocation().getFile() == tempBoard.board[yCurrent][xCurrent].getCurrentPiece().getEnPassantTile().getLocation().getFile()){
+                        if (color == 'l') {
+                            lightPlayer.addCapturedPiece(tempBoard.board[yCurrent][xCurrent].getCurrentPiece().getEnPassantTile().getCurrentPiece());
+                        } else {
+                            darkPlayer.addCapturedPiece(tempBoard.board[yCurrent][xCurrent].getCurrentPiece().getEnPassantTile().getCurrentPiece());
+                        }
+                        tempBoard.board[yCurrent][xCurrent].getCurrentPiece().getEnPassantTile().resetTile();
+                    }
 
                     tempBoard.board[yCurrent][xCurrent].resetTile(); // Resetting the current tile so it is a blank tile
                     tempBoard.board[yMoveTo][xMoveTo].setCurrentPiece(tempTempCurrentPiece); // Moving the captured piece to the move to tile
                     tempBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setCurrentTile(tempBoard.board[yMoveTo][xMoveTo]); // Adding the tiles location to the piece
 
+
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     if(!new King().checkForCheck(tempBoard, color == 'l'? Board.TEMPlightKingsTile : Board.TEMPdarkKingsTile)) {
+                        System.out.println("NOT IN CHECK CONFIRMED");
                         // Making a copy of the piece user wants to move then resetting that tile the piece was on
                         Piece tempCurrentPiece = playingBoard.board[yCurrent][xCurrent].getCurrentPiece();
 
@@ -225,13 +238,9 @@ public class Game {
                                     }
 
                                 }
-
-
                             }
+                        } // END OF KING SPECIAL MOVES
 
-
-
-                        }
 
                         // SPECIAL MOVES OF PAWN
                         if(playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getClass().getSimpleName().equals(Pawn.class.getSimpleName())){
@@ -357,6 +366,8 @@ public class Game {
 
     public Board createTempBoard(Board originalBoard){
         Board tempBoard = new Board(false);
+        Piece tempPiece = null;
+        PieceColor tempColor;
         Map<Location, Tile> tileMap = originalBoard.getLocationTileMap();
 
         for(int i = 0; i < 8; i++){
@@ -365,7 +376,33 @@ public class Game {
                 tempBoard.board[i][j].setTileColor(originalBoard.board[i][j].getTileColor());
                 tempBoard.board[i][j].setLocation(originalBoard.board[i][j].getLocation());
                 if(originalBoard.board[i][j].isHasPiece()){
-                    tempBoard.board[i][j].setCurrentPiece(originalBoard.board[i][j].getCurrentPiece());
+                    tempColor = originalBoard.board[i][j].getCurrentPiece().getPieceColor();
+                    if(originalBoard.board[i][j].getCurrentPiece().getClass().getSimpleName().equals(Pawn.class.getSimpleName())){
+                        tempPiece = new Pawn(tempColor, tempBoard.board[i][j]);
+                        tempPiece.setFirstMove(originalBoard.board[i][j].getCurrentPiece().isFirstMove());
+                    }
+                    if(originalBoard.board[i][j].getCurrentPiece().getClass().getSimpleName().equals(Rook.class.getSimpleName())){
+                        tempPiece = new Rook(tempColor, tempBoard.board[i][j]);
+                        tempPiece.setFirstMove(originalBoard.board[i][j].getCurrentPiece().isFirstMove());
+                    }
+                    if(originalBoard.board[i][j].getCurrentPiece().getClass().getSimpleName().equals(Knight.class.getSimpleName())){
+                        tempPiece = new Knight(tempColor, tempBoard.board[i][j]);
+                        tempPiece.setFirstMove(originalBoard.board[i][j].getCurrentPiece().isFirstMove());
+                    }
+                    if(originalBoard.board[i][j].getCurrentPiece().getClass().getSimpleName().equals(Bishop.class.getSimpleName())){
+                        tempPiece = new Bishop(tempColor, tempBoard.board[i][j]);
+                        tempPiece.setFirstMove(originalBoard.board[i][j].getCurrentPiece().isFirstMove());
+                    }
+                    if(originalBoard.board[i][j].getCurrentPiece().getClass().getSimpleName().equals(Queen.class.getSimpleName())){
+                        tempPiece = new Queen(tempColor, tempBoard.board[i][j]);
+                        tempPiece.setFirstMove(originalBoard.board[i][j].getCurrentPiece().isFirstMove());
+                    }
+                    if(originalBoard.board[i][j].getCurrentPiece().getClass().getSimpleName().equals(King.class.getSimpleName())){
+                        tempPiece = new King(tempColor, tempBoard.board[i][j]);
+                        tempPiece.setFirstMove(originalBoard.board[i][j].getCurrentPiece().isFirstMove());
+                    }
+
+                    tempBoard.board[i][j].setCurrentPiece(tempPiece);
                 }
 
 

@@ -90,14 +90,17 @@ public class Window extends JFrame {
                     if (saveOrNot == JOptionPane.YES_OPTION) {
                         if (Game.movesMade > 0) {
                             if (saveGame()) {
+                                Game.movesMade = 0;
                                 dispose();
                             }
                         } else {
                             JOptionPane.showMessageDialog(null, "To low of moves to save.", "You trying to waste storage?", 2);
+                            Game.movesMade = 0;
                             dispose();
                         }
                     } else if (saveOrNot == JOptionPane.NO_OPTION) {
                         dispose();
+                        Game.movesMade = 0;
                     }
                 } else if (PromptResult == JOptionPane.NO_OPTION) {
                     // Cancel button, exits prompt only
@@ -509,9 +512,9 @@ public class Window extends JFrame {
                         }
                     } // End of PAWN checks
 
-                    tempBoard.board[yCurrent][xCurrent].resetTile(); // Resetting the current tile so it is a blank tile
-                    tempBoard.board[yMoveTo][xMoveTo].setCurrentPiece(tempTempCurrentPiece); // Moving the captured piece to the move to tile
-                    tempBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setCurrentTile(tempBoard.board[yMoveTo][xMoveTo]); // Adding the tiles location to the piece
+                        tempBoard.board[yCurrent][xCurrent].resetTile(); // Resetting the current tile so it is a blank tile
+                        tempBoard.board[yMoveTo][xMoveTo].setCurrentPiece(tempTempCurrentPiece); // Moving the captured piece to the move to tile
+                        tempBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setCurrentTile(tempBoard.board[yMoveTo][xMoveTo]); // Adding the tiles location to the piece
 
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                     if(!new King().checkForCheck(tempBoard, color == 'l'? Board.TEMPlightKingsTile : Board.TEMPdarkKingsTile)) {
@@ -655,6 +658,8 @@ public class Window extends JFrame {
     }
     public Board createTempBoard(Board originalBoard){
         Board tempBoard = new Board(false);
+        Piece tempPiece = null;
+        PieceColor tempColor;
         Map<Location, Tile> tileMap = originalBoard.getLocationTileMap();
 
         for(int i = 0; i < 8; i++){
@@ -663,7 +668,33 @@ public class Window extends JFrame {
                 tempBoard.board[i][j].setTileColor(originalBoard.board[i][j].getTileColor());
                 tempBoard.board[i][j].setLocation(originalBoard.board[i][j].getLocation());
                 if(originalBoard.board[i][j].isHasPiece()){
-                    tempBoard.board[i][j].setCurrentPiece(originalBoard.board[i][j].getCurrentPiece());
+                    tempColor = originalBoard.board[i][j].getCurrentPiece().getPieceColor();
+                    if(originalBoard.board[i][j].getCurrentPiece().getClass().getSimpleName().equals(Pawn.class.getSimpleName())){
+                        tempPiece = new Pawn(tempColor, tempBoard.board[i][j]);
+                        tempPiece.setFirstMove(originalBoard.board[i][j].getCurrentPiece().isFirstMove());
+                    }
+                    if(originalBoard.board[i][j].getCurrentPiece().getClass().getSimpleName().equals(Rook.class.getSimpleName())){
+                        tempPiece = new Rook(tempColor, tempBoard.board[i][j]);
+                        tempPiece.setFirstMove(originalBoard.board[i][j].getCurrentPiece().isFirstMove());
+                    }
+                    if(originalBoard.board[i][j].getCurrentPiece().getClass().getSimpleName().equals(Knight.class.getSimpleName())){
+                        tempPiece = new Knight(tempColor, tempBoard.board[i][j]);
+                        tempPiece.setFirstMove(originalBoard.board[i][j].getCurrentPiece().isFirstMove());
+                    }
+                    if(originalBoard.board[i][j].getCurrentPiece().getClass().getSimpleName().equals(Bishop.class.getSimpleName())){
+                        tempPiece = new Bishop(tempColor, tempBoard.board[i][j]);
+                        tempPiece.setFirstMove(originalBoard.board[i][j].getCurrentPiece().isFirstMove());
+                    }
+                    if(originalBoard.board[i][j].getCurrentPiece().getClass().getSimpleName().equals(Queen.class.getSimpleName())){
+                        tempPiece = new Queen(tempColor, tempBoard.board[i][j]);
+                        tempPiece.setFirstMove(originalBoard.board[i][j].getCurrentPiece().isFirstMove());
+                    }
+                    if(originalBoard.board[i][j].getCurrentPiece().getClass().getSimpleName().equals(King.class.getSimpleName())){
+                        tempPiece = new King(tempColor, tempBoard.board[i][j]);
+                        tempPiece.setFirstMove(originalBoard.board[i][j].getCurrentPiece().isFirstMove());
+                    }
+
+                    tempBoard.board[i][j].setCurrentPiece(tempPiece);
                 }
 
 
