@@ -41,7 +41,7 @@ public class King extends Piece implements Movable{
         possibleMoveTiles.add(LocationGenerator.build(currentLocation, 1, 1));
         possibleMoveTiles.add(LocationGenerator.build(currentLocation, -1, -1));
         // for castling
-        if(isFirstMove()){
+        if(isFirstMove() && !checkForCheck(board, currentTile)){
             if( !tileMap.get(LocationGenerator.build(currentLocation, -1, 0)).isHasPiece()
             && !tileMap.get(LocationGenerator.build(currentLocation, -2, 0)).isHasPiece()
             && !tileMap.get(LocationGenerator.build(currentLocation, -3, 0)).isHasPiece()){
