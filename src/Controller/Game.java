@@ -208,8 +208,11 @@ public class Game {
                                    }
                                    }else{
                                        // Check if d8 is not in check and is empty and c8 is empty and b8 is empty
-                                            // if test passes check if rook on a8 isFirstMove
+                                            // if piece on a8 is a rook && if rook on a8 isFirstMove
                                                 // if that test passes only move the rook from a8 to d8
+                                                    playingBoard.board[0][0].resetTile();
+                                                    playingBoard.board[0][3].setCurrentPiece(new Rook(color == 'l'? PieceColor.LIGHT : PieceColor.DARK, playingBoard.board[0][3]));
+
                                    }
 
                                 }
