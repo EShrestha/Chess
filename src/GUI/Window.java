@@ -404,6 +404,7 @@ public class Window extends JFrame {
         Matcher m = p.matcher(command);
         Map<Location, Tile> tileMap = playingBoard.getLocationTileMap();
 
+
         if(!m.matches()){
             return false;
         }
@@ -517,7 +518,7 @@ public class Window extends JFrame {
                         tempBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setCurrentTile(tempBoard.board[yMoveTo][xMoveTo]); // Adding the tiles location to the piece
 
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    if(!new King().checkForCheck(tempBoard, color == 'l'? Board.TEMPlightKingsTile : Board.TEMPdarkKingsTile)) {
+                    if(new King().checkForCheck(tempBoard, color == 'l'? Board.TEMPlightKingsTile : Board.TEMPdarkKingsTile).isEmpty()) {
 
 
                         // Marking the piece as already moved once
@@ -659,6 +660,7 @@ public class Window extends JFrame {
                         String turn = getCapturedPieces(darkPlayer) + "    |    " + "TURN: " + (Game.movesMade % 2 == 0 ? "LIGHT" : "DARK") + "    |    PREVIOUS MOVE: " + tempCurrentPiece.getClass().getSimpleName().toUpperCase() + " " + command.toUpperCase() + "    |    " + getCapturedPieces(lightPlayer);
                         //Back ground color changes
                         updateColorAndText(turn);
+                        isCheckMate(tempBoard, color);
                         return true;
 
                     }else {
@@ -700,6 +702,34 @@ public class Window extends JFrame {
         return false;
     }
 
+    public void isCheckMate(Board tempBoard, char color){
+        System.out.println("IN HERE");
+        Map<Location, Tile> tileMap = tempBoard.getLocationTileMap();
+
+        if(color == 'd' && Board.TEMPlightKingsTile.getCurrentPiece().getValidMoves(tempBoard).isEmpty()) {
+            System.out.println("A");
+            // Light king has no valid moves left and had a piece attacking it
+            if (!new King().checkForCheck(tempBoard, color == 'd' ? Board.TEMPlightKingsTile : Board.TEMPdarkKingsTile).isEmpty()) {
+                System.out.println("B");
+                Location firstAttackingPiece = new King().checkForCheck(tempBoard, color == 'd' ? Board.TEMPlightKingsTile : Board.TEMPdarkKingsTile).get(0);
+                if(new King().checkForCheck(tempBoard,tileMap.get(firstAttackingPiece)).isEmpty()){
+                    System.out.println("DARK WINS BY CHECKMATE");
+                }
+
+            }
+        }
+        if(color == 'l' && Board.TEMPdarkKingsTile.getCurrentPiece().getValidMoves(tempBoard).isEmpty()) {
+            System.out.println("D");
+            // Dark king has no valid moves left and has a piece attacking it
+            if (!new King().checkForCheck(tempBoard, color == 'l' ? Board.TEMPdarkKingsTile : Board.TEMPlightKingsTile).isEmpty()) {
+                System.out.println("E");
+                Location firstAttackingPiece = new King().checkForCheck(tempBoard, color == 'l' ? Board.TEMPdarkKingsTile : Board.TEMPlightKingsTile).get(0);
+                if(new King().checkForCheck(tempBoard,tileMap.get(firstAttackingPiece)).isEmpty()){
+                    System.out.println("LIGHT WINS BY CHECKMATE!");
+                }
+            }
+        }
+    }
 
     public String getCapturedPieces(Player player){
         String capPieces = "[";

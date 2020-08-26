@@ -41,7 +41,7 @@ public class King extends Piece implements Movable{
         possibleMoveTiles.add(LocationGenerator.build(currentLocation, 1, 1));
         possibleMoveTiles.add(LocationGenerator.build(currentLocation, -1, -1));
         // for castling
-        if(isFirstMove() && !checkForCheck(board, currentTile)){
+        if(isFirstMove() && checkForCheck(board, currentTile).isEmpty()){
             if( !tileMap.get(LocationGenerator.build(currentLocation, -1, 0)).isHasPiece()
             && !tileMap.get(LocationGenerator.build(currentLocation, -2, 0)).isHasPiece()
             && !tileMap.get(LocationGenerator.build(currentLocation, -3, 0)).isHasPiece()){
@@ -76,7 +76,7 @@ public class King extends Piece implements Movable{
             if(l != null && tileMap.get(l).isHasPiece()){
                 if(tileMap.get(l).getCurrentPiece().getPieceColor() != this.getPieceColor()){
                    // if(!checkCheck(board, ))
-                    if(!checkForCheck(board, tileMap.get(l))){
+                    if(!checkForCheck(board, tileMap.get(l)).isEmpty()){
                         validMoves.add(l);
                     }
 
@@ -88,7 +88,7 @@ public class King extends Piece implements Movable{
                 }
             }else if(l != null && !tileMap.get(l).isHasPiece()){
 
-                if(!checkForCheck(board, tileMap.get(l))) {
+                if(checkForCheck(board, tileMap.get(l)).isEmpty()) {
                     validMoves.add(l);
                 }
             }
@@ -103,7 +103,7 @@ public class King extends Piece implements Movable{
         return null;
     }
 
-    public boolean checkForCheck(Board board, Tile tile)
+    public List<Location> checkForCheck(Board board, Tile tile)
     {
         Map<Location, Tile> tileMap = board.getLocationTileMap();
         List<Location> threats = new LinkedList<>();
@@ -197,12 +197,7 @@ public class King extends Piece implements Movable{
         }
 
         System.out.println("FULL THREATS LIST: " + threats);
-        if(!threats.isEmpty())
-        {
-            return true;
-        }
-
-        return false;
+        return threats;
     }
 
     public boolean checkCheckmate (Board board)

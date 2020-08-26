@@ -135,27 +135,6 @@ public class Board{
 
     }
 
-    public static boolean amiInCheck(Board originalBoard, Integer yCurrent, Integer xCurrent, Integer yMoveTo, Integer xMoveTo ){
-        Board tempBoard = createTempBoard(originalBoard);
-        tempBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
-        Piece tempTempCurrentPiece = tempBoard.board[yCurrent][xCurrent].getCurrentPiece();
-        //if king is moving the update it in tempboard first to see if it will be in checked
-        if(tempTempCurrentPiece.getClass().getSimpleName().equals(King.class.getSimpleName())){
-            if(Game.movesMade % 2 == 0){
-                Board.TEMPlightKingsTile = tempBoard.board[yMoveTo][xMoveTo];
-            }else {
-                Board.TEMPdarkKingsTile = tempBoard.board[yMoveTo][xMoveTo];
-            }
-        }
-        tempBoard.board[yCurrent][xCurrent].resetTile();
-        tempBoard.board[yMoveTo][xMoveTo].setCurrentPiece(tempTempCurrentPiece);
-        //Setting what tile the piece is on for the piece that just moved
-        tempBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setCurrentTile(tempBoard.board[yMoveTo][xMoveTo]);
-
-        boolean r = new King().checkForCheck(tempBoard, (Game.movesMade % 2) == 0 ? Board.TEMPlightKingsTile : Board.TEMPdarkKingsTile);
-        resetTempTiles();
-        return r;
-    }
 
     public static Board createTempBoard(Board originalBoard){
         Board tempBoard = new Board(false);

@@ -190,7 +190,7 @@ public class Game {
 
 
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    if(!new King().checkForCheck(tempBoard, color == 'l'? Board.TEMPlightKingsTile : Board.TEMPdarkKingsTile)) {
+                    if(new King().checkForCheck(tempBoard, color == 'l'? Board.TEMPlightKingsTile : Board.TEMPdarkKingsTile).isEmpty()) {
                         System.out.println("NOT IN CHECK CONFIRMED");
                         // Making a copy of the piece user wants to move then resetting that tile the piece was on
                         Piece tempCurrentPiece = playingBoard.board[yCurrent][xCurrent].getCurrentPiece();
