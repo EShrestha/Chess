@@ -15,6 +15,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -35,14 +36,19 @@ public class Window extends JFrame {
 
     private Board playingBoard;
     Player lightPlayer = new Player('l');
+    List<Icon> lightCaps = new LinkedList<>();
     Player darkPlayer = new Player('d');
+    List<Icon> darkCaps = new LinkedList<>();
     public int movesMade = 0;
     public static ArrayList<String> saveGame = new ArrayList<>();
     boolean usingFile = false;
     boolean onceInvalidFileAlert = false;
     // Menu Bar
     final JMenuBar menuBar = createMenuBar();
+    final JMenu darkMenu = new JMenu();
     final JMenu fileMenu = new JMenu("LIGHT Player To Make First Move");
+    final JMenu lightMenu = new JMenu();
+    final int CAP_ICON = 25;
 
 
     //Components:
@@ -167,7 +173,9 @@ public class Window extends JFrame {
         setVisible(true);
 
         setJMenuBar(menuBar);
+        menuBar.add(darkMenu);
         menuBar.add(fileMenu);
+        menuBar.add(lightMenu);
 
         if (useFile) {
             usingFile = true;
@@ -475,6 +483,12 @@ public class Window extends JFrame {
 
                         if((tempBoard.board[yMoveTo][xMoveTo].getLocation().getRank() == 8 && color == 'l') || (tempBoard.board[yMoveTo][xMoveTo].getLocation().getRank() == 1 && color == 'd')) {
                             boolean notValid = true;
+                            Image image = (color == 'l' ? wPawn : dPawn).getImage();
+                            Image newImg = image.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+                            ImageIcon finalImg = new ImageIcon(newImg);
+
+                            menuBar.removeAll();
+
                             do {
                                 Object[] options = {"Queen", "Rook", "Knight", "Bishop"};
                                 String s = (String) JOptionPane.showInputDialog(
@@ -482,7 +496,7 @@ public class Window extends JFrame {
                                         "Promote Pawn To: ",
                                         "Promotion!",
                                         JOptionPane.PLAIN_MESSAGE,
-                                        wPawn,
+                                        finalImg,
                                         options,
                                         "Queen");
 
@@ -539,9 +553,9 @@ public class Window extends JFrame {
                                 System.out.println("MOVED KING 2 SPACES");
                                 // Means user wants to castle to the left side of the board
                                 if(playingBoard.board[yMoveTo][xMoveTo].getLocation().getFile().ordinal() - playingBoard.board[yCurrent][xCurrent].getLocation().getFile().ordinal() < 0){
-                                    System.out.println("User wants to castle left");
+                                    System.out.println("User wants to castle long");
                                     if(color == 'l') {
-                                        System.out.println("Light wants to castle left");
+                                        System.out.println("Light wants to castle long");
                                         playingBoard.board[7][0].resetTile();
                                         tiles[7][0].setIcon(null);
                                         playingBoard.board[7][3].setCurrentPiece(new Rook(color == 'l' ? PieceColor.LIGHT : PieceColor.DARK, playingBoard.board[7][3]));
@@ -550,7 +564,7 @@ public class Window extends JFrame {
                                         playingBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
 
                                     }else{
-                                        System.out.println("Dark wants to castle left");
+                                        System.out.println("Dark wants to castle long");
                                         playingBoard.board[0][0].resetTile();
                                         tiles[0][0].setIcon(null);
                                         playingBoard.board[0][3].setCurrentPiece(new Rook(color == 'l' ? PieceColor.LIGHT : PieceColor.DARK, playingBoard.board[0][3]));
@@ -564,7 +578,7 @@ public class Window extends JFrame {
                                 // Means user wants to castle to the right side of the board
                                 if(playingBoard.board[yMoveTo][xMoveTo].getLocation().getFile().ordinal() - playingBoard.board[yCurrent][xCurrent].getLocation().getFile().ordinal() > 0){
                                     if(color == 'l') {
-                                        System.out.println("Light wants to castle right");
+                                        System.out.println("Light wants to castle short");
                                         playingBoard.board[7][7].resetTile();
                                         tiles[7][7].setIcon(null);
                                         playingBoard.board[7][5].setCurrentPiece(new Rook(color == 'l' ? PieceColor.LIGHT : PieceColor.DARK, playingBoard.board[7][5]));
@@ -572,7 +586,7 @@ public class Window extends JFrame {
                                         tiles[7][5].setIcon(wRook);
                                         playingBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
                                     }else {
-                                        System.out.println("Dark wants to castle right");
+                                        System.out.println("Dark wants to castle short");
                                         playingBoard.board[0][7].resetTile();
                                         tiles[0][7].setIcon(null);
                                         playingBoard.board[0][5].setCurrentPiece(new Rook(color == 'l' ? PieceColor.LIGHT : PieceColor.DARK, playingBoard.board[0][5]));
@@ -657,7 +671,8 @@ public class Window extends JFrame {
                         // After move made do these
                         saveGame.add(command);
                         Game.movesMade++;
-                        String turn = getCapturedPieces(darkPlayer) + "    |    " + "TURN: " + (Game.movesMade % 2 == 0 ? "LIGHT" : "DARK") + "    |    PREVIOUS MOVE: " + tempCurrentPiece.getClass().getSimpleName().toUpperCase() + " " + command.toUpperCase() + "    |    " + getCapturedPieces(lightPlayer);
+                        //String turn = getCapturedPieces(darkPlayer) + "    |    " + "TURN: " + (Game.movesMade % 2 == 0 ? "LIGHT" : "DARK") + "    |    PREVIOUS MOVE: " + tempCurrentPiece.getClass().getSimpleName().toUpperCase() + " " + command.toUpperCase() + "    |    " + getCapturedPieces(lightPlayer);
+                        String turn = ("TURN: " + (Game.movesMade % 2 == 0 ? "LIGHT" : "DARK") + "  |  PREVIOUS MOVE: " + tempCurrentPiece.getClass().getSimpleName().toUpperCase() + " " + command.toUpperCase());
                         //Back ground color changes
                         updateColorAndText(turn);
                         isCheckMate(tempBoard, color);
@@ -713,7 +728,12 @@ public class Window extends JFrame {
                 System.out.println("B");
                 Location firstAttackingPiece = new King().checkForCheck(tempBoard, color == 'd' ? Board.TEMPlightKingsTile : Board.TEMPdarkKingsTile).get(0);
                 if(new King().checkForCheck(tempBoard,tileMap.get(firstAttackingPiece)).isEmpty()){
-                    System.out.println("DARK WINS BY CHECKMATE");
+                   // If any tile between the kings tile and the attacking piece tile can be reached by a light color piece
+                    //if(){
+
+                        System.out.println("DARK WINS BY CHECKMATE");
+                    //}
+
                 }
 
             }
@@ -731,6 +751,13 @@ public class Window extends JFrame {
         }
     }
 
+    public void makeCappedIcons(Player p){
+        for(Piece c : p.getCapturedPieces()){
+
+        }
+
+    }
+
     public String getCapturedPieces(Player player){
         String capPieces = "[";
         for (Piece p : player.getCapturedPieces()){
@@ -739,6 +766,7 @@ public class Window extends JFrame {
         capPieces += "]";
         return capPieces;
     }
+
     public Board createTempBoard(Board originalBoard){
         Board tempBoard = new Board(false);
         Piece tempPiece = null;
@@ -786,15 +814,172 @@ public class Window extends JFrame {
         return tempBoard;
     }
 
+
+    final int iconWidth = 20;
+    final int iconHeight = 20;
     public void updateColorAndText(String textToSet){
+        int pawns = 0;
+        int rooks = 0;
+        int knights = 0;
+        int bishops = 0;
+        int queens = 0;
+        menuBar.removeAll();
         if(Game.movesMade % 2 == 0){
             menuBar.setBackground(Color.WHITE);
-            fileMenu.setForeground(Color.BLACK);
+            fileMenu.setForeground(Color.GRAY);
         }else {
-            menuBar.setBackground(Color.BLACK);
+            menuBar.setBackground(Color.GRAY);
             fileMenu.setForeground(Color.WHITE);
         }
+
+        if(true) {
+            System.out.println("IN Y");
+            for (Piece p : lightPlayer.getCapturedPieces()) {
+                System.out.println("IN Z");
+                if (p.getClass().getSimpleName().equals("Pawn")) {
+                    pawns++;
+                }
+                if (p.getClass().getSimpleName().equals("Rook")) {
+                    rooks++;
+                }
+                if (p.getClass().getSimpleName().equals("Queen")) {
+                    queens++;
+                }
+                if (p.getClass().getSimpleName().equals("Knight")) {
+                    knights++;
+                }
+                if (p.getClass().getSimpleName().equals("Bishop")) {
+                    bishops++;
+                }
+            }
+
+            Image wP = dPawn.getImage();
+            Image ia = wP.getScaledInstance(iconWidth, iconHeight, Image.SCALE_SMOOTH);
+            JMenu a = new JMenu();
+            a.setIcon(new ImageIcon(ia));
+            if (pawns > 0) {
+                a.setText(pawns + "x");
+            }else{
+                a.setText("   ");
+            }
+            menuBar.add(a);
+
+            Image wB = dBishop.getImage();
+            Image ib = wB.getScaledInstance(iconWidth, iconHeight, Image.SCALE_SMOOTH);
+            JMenu b = new JMenu();
+            b.setIcon(new ImageIcon(ib));
+            if (bishops > 0) {
+                b.setText(bishops + "x");
+            }else{
+                b.setText("   ");
+            }
+            menuBar.add(b);
+
+            Image wK = dKnight.getImage();
+            Image ik = wK.getScaledInstance(iconWidth, iconHeight, Image.SCALE_SMOOTH);
+            JMenu c = new JMenu();
+            c.setIcon(new ImageIcon(ik));
+            if (knights > 0) {
+                c.setText(knights + "x");
+            }else{
+                c.setText("   ");
+            }
+            menuBar.add(c);
+
+            Image wR = dRook.getImage();
+            Image ir = wR.getScaledInstance(iconWidth, iconHeight, Image.SCALE_SMOOTH);
+            JMenu d = new JMenu();
+            d.setIcon(new ImageIcon(ir));
+            if (rooks > 0) {
+                d.setText(rooks + "x");
+            }else{
+                d.setText("   ");
+            }
+            menuBar.add(d);
+
+            Image wQ = dQueen.getImage();
+            Image iq = wQ.getScaledInstance(iconWidth, iconHeight, Image.SCALE_SMOOTH);
+            JMenu e = new JMenu();
+            e.setIcon(new ImageIcon(iq));
+            if (queens > 0) {
+                e.setText(queens + "x");
+            }else{
+                e.setText("   ");
+            }
+            menuBar.add(e);
+        }
+
+
+
+        pawns = 0;
+        rooks = 0;
+        knights = 0;
+        bishops = 0;
+        queens = 0;
         fileMenu.setText(textToSet);
+        menuBar.add(fileMenu);
+
+        if(true){
+            System.out.println("IN Y");
+            for(Piece p : darkPlayer.getCapturedPieces()){
+                System.out.println("IN Z");
+                if(p.getClass().getSimpleName().equals("Pawn")){pawns++ ;}
+                if(p.getClass().getSimpleName().equals("Rook")){rooks++ ;}
+                if(p.getClass().getSimpleName().equals("Queen")){queens++ ;}
+                if(p.getClass().getSimpleName().equals("Knight")){knights++ ;}
+                if(p.getClass().getSimpleName().equals("Bishop")){bishops++ ;}
+            }
+
+
+            Image wQ = wQueen.getImage();
+            Image iq = wQ.getScaledInstance(iconWidth, iconHeight, Image.SCALE_SMOOTH);
+            JMenu e = new JMenu();
+            e.setIcon(new ImageIcon(iq));
+            if(queens > 0){e.setText(queens+"x");}else{
+                e.setText("   ");
+            }
+            menuBar.add(e);
+
+            Image wR = wRook.getImage();
+            Image ir = wR.getScaledInstance(iconWidth, iconHeight, Image.SCALE_SMOOTH);
+            JMenu d = new JMenu();
+            d.setIcon(new ImageIcon(ir));
+            if(rooks > 0){d.setText(rooks+"x");}else{
+                d.setText("   ");
+            }
+            menuBar.add(d);
+
+            Image wK = wKnight.getImage();
+            Image ik = wK.getScaledInstance(iconWidth, iconHeight, Image.SCALE_SMOOTH);
+            JMenu c = new JMenu();
+            c.setIcon(new ImageIcon(ik));
+            if(knights > 0){c.setText(knights+"x");}else{
+                c.setText("   ");
+            }
+            menuBar.add(c);
+
+            Image wB = wBishop.getImage();
+            Image ib = wB.getScaledInstance(iconWidth, iconHeight, Image.SCALE_SMOOTH);
+            JMenu b = new JMenu();
+            b.setIcon(new ImageIcon(ib));
+            if(bishops > 0){b.setText(bishops+"x");}else{
+                b.setText("   ");
+            }
+            menuBar.add(b);
+
+
+
+            Image wP = wPawn.getImage();
+            Image ia = wP.getScaledInstance(iconWidth, iconHeight, Image.SCALE_SMOOTH);
+            JMenu a = new JMenu();
+            a.setIcon(new ImageIcon(ia));
+            if(pawns > 0){a.setText(pawns+"x");}else{
+                a.setText("   ");
+            }
+            menuBar.add(a);
+
+
+        }
     }
 
 
