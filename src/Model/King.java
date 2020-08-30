@@ -41,7 +41,8 @@ public class King extends Piece implements Movable{
         possibleMoveTiles.add(LocationGenerator.build(currentLocation, 1, 1));
         possibleMoveTiles.add(LocationGenerator.build(currentLocation, -1, -1));
         // for castling
-        if(isFirstMove() && checkForCheck(board, currentTile).isEmpty()){
+        if(isFirstMove() && checkForCheck(board, currentTile).isEmpty()
+        && (this.getCurrentTile().getLocation().getRank() == 8 || this.getCurrentTile().getLocation().getRank() == 1 )){
             if( !tileMap.get(LocationGenerator.build(currentLocation, -1, 0)).isHasPiece()
             && !tileMap.get(LocationGenerator.build(currentLocation, -2, 0)).isHasPiece()
             && !tileMap.get(LocationGenerator.build(currentLocation, -3, 0)).isHasPiece()){
@@ -79,10 +80,6 @@ public class King extends Piece implements Movable{
                     if(!checkForCheck(board, tileMap.get(l)).isEmpty()){
                         validMoves.add(l);
                     }
-
-
-
-                    //Implement checking to see if the move will put it in check and if it doesnt add move
 
 
                 }
@@ -198,15 +195,6 @@ public class King extends Piece implements Movable{
 
         System.out.println("FULL THREATS LIST: " + threats);
         return threats;
-    }
-
-    public boolean checkCheckmate (Board board)
-    {
-        boolean inCheckMate = false;
-        List<Location> validMoves = this.getValidMoves(board);
-        if(validMoves.isEmpty())
-            inCheckMate = true;
-        return inCheckMate;
     }
 
 

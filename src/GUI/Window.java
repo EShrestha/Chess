@@ -1,11 +1,8 @@
 package GUI;
 
 import BoardStuff.*;
-import Command.CommandReader;
 import Controller.Game;
 import Model.*;
-import lib.ConsoleIO;
-import Controller.Game.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -543,8 +540,10 @@ public class Window extends JFrame {
                         if(playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getClass().getSimpleName().equals(King.class.getSimpleName())){
                             if(color == 'l'){
                                 Board.lightKingsTile = playingBoard.board[yMoveTo][xMoveTo];
+
                             }else {
                                 Board.darkKingsTile = playingBoard.board[yMoveTo][xMoveTo];
+
                             }
 
                             if(playingBoard.board[yCurrent][xCurrent].getCurrentPiece().isFirstMove()
@@ -660,9 +659,18 @@ public class Window extends JFrame {
 
                         }
 
+//                        if(playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getClass().getSimpleName().equals(King.class.getSimpleName())){
+//                            if(color == 'l'){
+//                                Board.lightKingMoved = true;
+//                            }else{
+//                                Board.darktKingMoved = true;
+//                            }
+//                        }
+
                         playingBoard.board[yCurrent][xCurrent].resetTile();
                         tiles[yCurrent][xCurrent].setIcon(null);
                         playingBoard.board[yMoveTo][xMoveTo].setCurrentPiece(tempCurrentPiece);
+                        playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setFirstMove(false);
                         tiles[yMoveTo][xMoveTo].setIcon(tempPieceIcon);
 
                         //Setting what tile the piece is on for the piece that just moved
@@ -1012,6 +1020,7 @@ public class Window extends JFrame {
         Game.movesMade = 0;
         lightPlayer.getCapturedPieces().clear();
         darkPlayer.getCapturedPieces().clear();
+
     }
 
 

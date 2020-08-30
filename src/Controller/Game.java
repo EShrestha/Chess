@@ -131,8 +131,10 @@ public class Game {
                     if(tempBoard.board[yCurrent][xCurrent].getCurrentPiece().getClass().getSimpleName().equals(King.class.getSimpleName())){
                         if(color == 'l'){
                             Board.TEMPlightKingsTile = tempBoard.board[yMoveTo][xMoveTo];
+                            tempBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setFirstMove(false);
                         }else if (color == 'd') {
                             Board.TEMPdarkKingsTile = tempBoard.board[yMoveTo][xMoveTo];
+                            tempBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setFirstMove(false);
                         }else {
                             Board.TEMPdarkKingsTile = Board.darkKingsTile;
                             Board.TEMPlightKingsTile = Board.lightKingsTile;
@@ -203,8 +205,12 @@ public class Game {
                         if(playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getClass().getSimpleName().equals(King.class.getSimpleName())){
                             if(color == 'l'){
                                 Board.lightKingsTile = playingBoard.board[yMoveTo][xMoveTo];
+                                playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setFirstMove(false);
+
                             }else {
                                 Board.darkKingsTile = playingBoard.board[yMoveTo][xMoveTo];
+                                playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setFirstMove(false);
+
                             }
 
                             if(playingBoard.board[yCurrent][xCurrent].getCurrentPiece().isFirstMove()
@@ -221,12 +227,14 @@ public class Game {
                                         playingBoard.board[7][3].getCurrentPiece().setFirstMove(false);
                                         playingBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
 
+
                                     }else{
                                         System.out.println("Dark wants to castle left");
                                         playingBoard.board[0][0].resetTile();
                                         playingBoard.board[0][3].setCurrentPiece(new Rook(color == 'l' ? PieceColor.LIGHT : PieceColor.DARK, playingBoard.board[0][3]));
                                         playingBoard.board[0][3].getCurrentPiece().setFirstMove(false);
                                         playingBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
+
 
                                     }
 
@@ -239,12 +247,14 @@ public class Game {
                                         playingBoard.board[7][5].setCurrentPiece(new Rook(color == 'l' ? PieceColor.LIGHT : PieceColor.DARK, playingBoard.board[7][5]));
                                         playingBoard.board[7][5].getCurrentPiece().setFirstMove(false);
                                         playingBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
+
                                     }else {
                                         System.out.println("Dark wants to castle right");
                                         playingBoard.board[0][7].resetTile();
                                         playingBoard.board[0][5].setCurrentPiece(new Rook(color == 'l' ? PieceColor.LIGHT : PieceColor.DARK, playingBoard.board[0][5]));
                                         playingBoard.board[0][5].getCurrentPiece().setFirstMove(false);
                                         playingBoard.board[yCurrent][xCurrent].getCurrentPiece().setFirstMove(false);
+
                                     }
 
                                 }
@@ -328,8 +338,10 @@ public class Game {
                             playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getEnPassantTile().resetTile();
                         }
 
+
                         playingBoard.board[yCurrent][xCurrent].resetTile();
                         playingBoard.board[yMoveTo][xMoveTo].setCurrentPiece(tempCurrentPiece);
+                        playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setFirstMove(false);
                         //Setting what tile the piece is on for the piece that just moved
                         playingBoard.board[yMoveTo][xMoveTo].getCurrentPiece().setCurrentTile(playingBoard.board[yMoveTo][xMoveTo]);
 
