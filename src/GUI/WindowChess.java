@@ -97,7 +97,6 @@ public class WindowChess {
         quitButton.addActionListener(onClickQuitGame);
         quitGamePanel.add(quitButton);
 
-
         //Adding all panels to the container
         container.add(loadGamePanel);
         container.add(titleNamePanel);
@@ -106,62 +105,10 @@ public class WindowChess {
         container.add(howToPlayPanel);
         container.add(quitGamePanel);
         window.setVisible(true);
-
-    }
-
-    private JMenuBar createMenuBar(){
-        final JMenuBar menuBar = new JMenuBar();
-        menuBar.add(createFinalMenu());
-        return  menuBar;
-    }
-
-    private JMenu createFinalMenu(){
-        final JMenu fileMenu = new JMenu("File");
-
-        final JMenuItem titleScreen = new JMenuItem("Title Screen");
-        titleScreen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                gamePanel.setVisible(false);
-
-                titleNamePanel.setVisible(true);
-                startButtonPanel.setVisible(true);
-                loadGamePanel.setVisible(true);
-                howToPlayPanel.setVisible(true);
-                quitGamePanel.setVisible(true);
-
-                window.setVisible(true);
-            }
-        });
-
-
-
-        fileMenu.add(titleScreen);
-        return fileMenu;
-    }
-
-    // New Game Screen
-    public void createGameScreen(){
-        titleNamePanel.setVisible(false);
-        startButtonPanel.setVisible(false);
-        loadGamePanel.setVisible(false);
-        quitGamePanel.setVisible(false);
-
-        // Menu Bar
-        final JMenuBar menuBar = createMenuBar();
-        this.window.setJMenuBar(menuBar);
-
-        gamePanel = new JPanel();
-        gamePanel.setBounds(0, 0, 800, 800);
-        gamePanel.setBackground(Color.BLUE);
-        container.add(gamePanel);
-        gamePanel.setVisible(true);
-        window.setVisible(true);
     }
 
 
-
-    public class NewGameHandler implements ActionListener{
+    public static class NewGameHandler implements ActionListener{
 
         public void actionPerformed(ActionEvent e) {
 
@@ -174,7 +121,7 @@ public class WindowChess {
     public class LoadGameHandler implements ActionListener{
 
         public void actionPerformed(ActionEvent e) {
-            String loadFileName = JOptionPane.showInputDialog(window,"Enter file name.", "File Name", -1);
+            String loadFileName = JOptionPane.showInputDialog(window,"Enter file name.", "File Name", JOptionPane.PLAIN_MESSAGE);
             File tmpDir = new File("src/SavedGames/"+loadFileName+".txt");
             if(loadFileName != null && !loadFileName.trim().equals("") && tmpDir.exists()){
                 new Window(loadFileName, true);
@@ -189,7 +136,7 @@ public class WindowChess {
 
     }
 
-    public class HowToPlayHandler implements ActionListener{
+    public static class HowToPlayHandler implements ActionListener{
 
         public void actionPerformed(ActionEvent e) {
             String os = System.getProperty("os.name").toLowerCase();
@@ -198,14 +145,17 @@ public class WindowChess {
 
             if(os.indexOf("win") >= 0){ // Windows
                 try {
-                    rt.exec("rundll32 url.dll,FileProtocolHandler " + url);
+
+                        rt.exec("rundll32 url.dll,FileProtocolHandler " + url);
+
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
 
             }else if(os.indexOf("mac") >= 0){ // Mac
                 try {
-                    rt.exec("open " + url);
+                        rt.exec("open " + url);
+
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -227,22 +177,14 @@ public class WindowChess {
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
-
-
             }
-
-
         }
-
     }
 
-    public class QuitGameHandler implements ActionListener{
-
+    public static class QuitGameHandler implements ActionListener{
         public void actionPerformed(ActionEvent e) {
             System.exit(0);
         }
-
     }
-
 
 }
