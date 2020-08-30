@@ -79,7 +79,7 @@ public class Window extends JFrame {
 
     public Window(String fileName, boolean useFile) {
 
-        super("El Chess");
+        super("CHESS");
         playingBoard = new Board(true);
         contents = getContentPane();
         contents.setLayout(new GridLayout(8, 8));
@@ -731,7 +731,10 @@ public class Window extends JFrame {
                    // If any tile between the kings tile and the attacking piece tile can be reached by a light color piece
                     //if(){
 
-                        System.out.println("DARK WINS BY CHECKMATE");
+                    System.out.println("DARK WINS BY CHECKMATE");
+                    JOptionPane.showMessageDialog(this, "DARK win by checkmate", "GAME OVER!",2);
+                    reset();
+                    this.dispose();
                     //}
 
                 }
@@ -746,17 +749,14 @@ public class Window extends JFrame {
                 Location firstAttackingPiece = new King().checkForCheck(tempBoard, color == 'l' ? Board.TEMPdarkKingsTile : Board.TEMPlightKingsTile).get(0);
                 if(new King().checkForCheck(tempBoard,tileMap.get(firstAttackingPiece)).isEmpty()){
                     System.out.println("LIGHT WINS BY CHECKMATE!");
+                    JOptionPane.showMessageDialog(this, "LIGHT win by checkmate", "GAME OVER!",2);
+                    reset();
+                    this.dispose();
                 }
             }
         }
     }
 
-    public void makeCappedIcons(Player p){
-        for(Piece c : p.getCapturedPieces()){
-
-        }
-
-    }
 
     public String getCapturedPieces(Player player){
         String capPieces = "[";
@@ -1006,6 +1006,12 @@ public class Window extends JFrame {
         }
         usingFile = false;
 
+    }
+
+    public void reset(){
+        Game.movesMade = 0;
+        lightPlayer.getCapturedPieces().clear();
+        darkPlayer.getCapturedPieces().clear();
     }
 
 

@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 
 
 public class WindowChess {
@@ -14,14 +15,15 @@ public class WindowChess {
     private final static Dimension OUTER_FRAME_DIMENSION = new Dimension(400,600);
 
     Container container;
-    JPanel titleNamePanel, startButtonPanel, loadGamePanel, quitGamePanel, gamePanel;
+    JPanel titleNamePanel, startButtonPanel, loadGamePanel, howToPlayPanel, quitGamePanel, gamePanel;
     JLabel titleNameLabel;
     Font titleFont = new Font("Helvetica", Font.BOLD, 80);
     Font normalFont = new Font("Helvetica", Font.BOLD, 36);
-    JButton startButton, loadButton, quitButton;
+    JButton startButton, loadButton, quitButton, howToPlayButton;
 
     NewGameHandler onClickNewGame = new NewGameHandler();
     LoadGameHandler onClickLoadGame = new LoadGameHandler();
+    HowToPlayHandler onClickHowToPlay = new HowToPlayHandler();
     QuitGameHandler onClickQuitGame = new QuitGameHandler();
 
 
@@ -30,7 +32,7 @@ public class WindowChess {
 
     public WindowChess(){
 
-        window = new JFrame("EL CHESS"); // Assigning a new JFrame
+        window = new JFrame("CHESS"); // Assigning a new JFrame
         window.setLayout(new BorderLayout());
         window.setResizable(false);
         window.setSize(OUTER_FRAME_DIMENSION); // The dimensions of the window
@@ -73,9 +75,20 @@ public class WindowChess {
         loadButton.addActionListener(onClickLoadGame);
         loadGamePanel.add(loadButton);
 
+        // Adding a How To Play button
+        howToPlayPanel = new JPanel();
+        howToPlayPanel.setBounds(100, 360, 200,80);
+        howToPlayPanel.setBackground(Color.white);
+        howToPlayButton = new JButton("Information");
+        howToPlayButton.setBackground(Color.white);
+        howToPlayButton.setForeground(Color.black);
+        howToPlayButton.setFont(normalFont);
+        howToPlayButton.addActionListener(onClickHowToPlay);
+        howToPlayPanel.add(howToPlayButton);
+
         // Adding a Quit button
         quitGamePanel = new JPanel();
-        quitGamePanel.setBounds(100, 360, 200,80);
+        quitGamePanel.setBounds(100, 440, 200,80);
         quitGamePanel.setBackground(Color.white);
         quitButton = new JButton("Quit Game");
         quitButton.setBackground(Color.white);
@@ -86,9 +99,11 @@ public class WindowChess {
 
 
         //Adding all panels to the container
+        container.add(loadGamePanel);
         container.add(titleNamePanel);
         container.add(startButtonPanel);
-        container.add(loadGamePanel);
+
+        container.add(howToPlayPanel);
         container.add(quitGamePanel);
         window.setVisible(true);
 
@@ -112,6 +127,7 @@ public class WindowChess {
                 titleNamePanel.setVisible(true);
                 startButtonPanel.setVisible(true);
                 loadGamePanel.setVisible(true);
+                howToPlayPanel.setVisible(true);
                 quitGamePanel.setVisible(true);
 
                 window.setVisible(true);
@@ -169,6 +185,53 @@ public class WindowChess {
                     JOptionPane.showMessageDialog(window, "Come on, really?", "Huh!", 2);
                 }
             }
+        }
+
+    }
+
+    public class HowToPlayHandler implements ActionListener{
+
+        public void actionPerformed(ActionEvent e) {
+            String os = System.getProperty("os.name").toLowerCase();
+            Runtime rt = Runtime.getRuntime();
+            String url = "https://www.wikihow.com/Play-Chess";
+
+            if(os.indexOf("win") >= 0){ // Windows
+                try {
+                    rt.exec("rundll32 url.dll,FileProtocolHandler " + url);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+
+            }else if(os.indexOf("mac") >= 0){ // Mac
+                try {
+                    rt.exec("open " + url);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+
+            }else if(os.indexOf("nix") >=0 || os.indexOf("nux") >=0){ // Linux
+                String[] browsers = { "epiphany", "firefox", "mozilla", "konqueror",
+                        "netscape", "opera", "links", "lynx" };
+
+                StringBuffer cmd = new StringBuffer();
+                for (int i = 0; i < browsers.length; i++)
+                    if(i == 0)
+                        cmd.append(String.format(    "%s \"%s\"", browsers[i], url));
+                    else
+                        cmd.append(String.format(" || %s \"%s\"", browsers[i], url));
+                // If the first didn't work, try the next browser and so on
+
+                try {
+                    rt.exec(new String[] { "sh", "-c", cmd.toString() });
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+
+
+            }
+
+
         }
 
     }
