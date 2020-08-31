@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -94,15 +93,18 @@ public class Window extends JFrame {
                         if (Game.movesMade > 0) {
                             if (saveGame()) {
                                 Game.movesMade = 0;
+                                reset();
                                 dispose();
                             }
                         } else {
                             JOptionPane.showMessageDialog(null, "To low of moves to save.", "You trying to waste storage?", 2);
                             Game.movesMade = 0;
+                            reset();
                             dispose();
                         }
                     } else if (saveOrNot == JOptionPane.NO_OPTION) {
                         dispose();
+                        reset();
                         Game.movesMade = 0;
                     }
                 } else if (PromptResult == JOptionPane.NO_OPTION) {
@@ -182,29 +184,12 @@ public class Window extends JFrame {
 
     private JMenuBar createMenuBar(){
         final JMenuBar menuBar = new JMenuBar();
-        //menuBar.add(createFinalMenu());
         menuBar.setLayout(new GridBagLayout());
         menuBar.setPreferredSize(new Dimension(800,25));
         menuBar.setBackground(Color.white);
         menuBar.setForeground(Color.black);
         return  menuBar;
     }
-
-    private JMenu createFinalMenu(){
-
-
-        final JMenuItem titleScreen = new JMenuItem("Title Screen");
-        titleScreen.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setVisible(true);
-            }
-        });
-
-        //fileMenu.add(titleScreen);
-        return fileMenu;
-    }
-
 
     private boolean saveGame() {
         String fileName = "Chess_" + java.time.LocalDate.now() + ".txt";
@@ -1020,7 +1005,8 @@ public class Window extends JFrame {
         Game.movesMade = 0;
         lightPlayer.getCapturedPieces().clear();
         darkPlayer.getCapturedPieces().clear();
-
+        saveGame.clear();
+        allCommands.clear();
     }
 
 
