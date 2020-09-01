@@ -51,7 +51,9 @@ public class Window extends JFrame {
     private JButton[][] tiles = new JButton[8][8];
 
     //Colors:
-    private Color colorBlack = Color.black;
+    private Color colorDark = Color.GRAY;
+    private Color colorLight = Color.WHITE;
+    private Color highlightColor = new Color(255, 230, 138);
 
     // Current position:
     private int row = 7;
@@ -121,7 +123,7 @@ public class Window extends JFrame {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 tiles[i][j] = new JButton();
-                tiles[i][j].setBackground(((i + j) % 2 != 0) ? Color.gray : Color.white);
+                tiles[i][j].setBackground(((i + j) % 2 != 0) ? colorDark : colorLight);
                 contents.add(tiles[i][j]);
                 //tiles[i][j].addActionListener(buttonHandler);
                 tiles[i][j].addMouseListener(new customMouseListener());
@@ -186,13 +188,26 @@ public class Window extends JFrame {
         final JMenuBar menuBar = new JMenuBar();
         menuBar.setLayout(new GridBagLayout());
         menuBar.setPreferredSize(new Dimension(800,25));
-        menuBar.setBackground(Color.white);
+        menuBar.setBackground(colorLight);
         menuBar.setForeground(Color.black);
         return  menuBar;
     }
 
     private boolean saveGame() {
-        String fileName = "Chess_" + java.time.LocalDate.now() + ".txt";
+        String fileName = "";
+        boolean valid = false;
+        do {
+            fileName = JOptionPane.showInputDialog(this, "Name Your Game Below", "Save Game As", JOptionPane.PLAIN_MESSAGE);
+            if(fileName != null && !fileName.trim().equals("") && fileName.length() <= 20) {
+                if(!fileName.contains(".txt")) {
+                    fileName += ".txt";
+                }
+                valid =true;
+            }else{
+                JOptionPane.showMessageDialog(this, "Come on, really?", "HUH!", 2);
+            }
+
+        }while (!valid);
         try {
 
             java.io.File myObj = new java.io.File("src/SavedGames/"+fileName);
@@ -309,6 +324,13 @@ public class Window extends JFrame {
                         tempIFirstClick = clickedi;
                         tempJFirstClick = clickedj;
                         tiles[clickedi][clickedj].setBackground(Color.PINK);
+                        // Highlight possible moves
+                        if(playingBoard.board[clickedi][clickedj].getCurrentPiece().getShortColor() == (Game.movesMade % 2 == 0? 'l' : 'd')) {
+                            List<Location> validLocations = playingBoard.board[clickedi][clickedj].getCurrentPiece().getValidMoves(playingBoard);
+                            for (Location l : validLocations) {
+                                tiles[rankToRank.getRank(l.getRank() - 1)][l.getFile().ordinal()].setBackground(highlightColor);
+                            }
+                        }
 
                     } else if (commandRight.trim().equals("")) {
                         if (!(files[clickedj].toString().toLowerCase() + "" + (Integer.parseInt(rankToRank.getRank(clickedi).toString()) + 1)).equals(commandLeft)) {
@@ -329,6 +351,7 @@ public class Window extends JFrame {
                         commandRight = "";
                         tiles[tempIFirstClick][tempJFirstClick].setBackground(tempFirstClickColor);
                         tiles[tempISecondClick][tempJSecondClick].setBackground(tempSecondClickColor);
+                        resetTileColors();
 
                     }
 
@@ -644,14 +667,6 @@ public class Window extends JFrame {
 
                         }
 
-//                        if(playingBoard.board[yCurrent][xCurrent].getCurrentPiece().getClass().getSimpleName().equals(King.class.getSimpleName())){
-//                            if(color == 'l'){
-//                                Board.lightKingMoved = true;
-//                            }else{
-//                                Board.darktKingMoved = true;
-//                            }
-//                        }
-
                         playingBoard.board[yCurrent][xCurrent].resetTile();
                         tiles[yCurrent][xCurrent].setIcon(null);
                         playingBoard.board[yMoveTo][xMoveTo].setCurrentPiece(tempCurrentPiece);
@@ -751,14 +766,6 @@ public class Window extends JFrame {
     }
 
 
-    public String getCapturedPieces(Player player){
-        String capPieces = "[";
-        for (Piece p : player.getCapturedPieces()){
-            capPieces += (p.getShortName() + " ");
-        }
-        capPieces += "]";
-        return capPieces;
-    }
 
     public Board createTempBoard(Board originalBoard){
         Board tempBoard = new Board(false);
@@ -818,11 +825,11 @@ public class Window extends JFrame {
         int queens = 0;
         menuBar.removeAll();
         if(Game.movesMade % 2 == 0){
-            menuBar.setBackground(Color.WHITE);
-            fileMenu.setForeground(Color.GRAY);
+            menuBar.setBackground(colorLight);
+            fileMenu.setForeground(colorDark);
         }else {
-            menuBar.setBackground(Color.GRAY);
-            fileMenu.setForeground(Color.WHITE);
+            menuBar.setBackground(colorDark);
+            fileMenu.setForeground(colorLight);
         }
 
         if(true) {
@@ -1001,12 +1008,21 @@ public class Window extends JFrame {
 
     }
 
+    public void resetTileColors(){
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                tiles[i][j].setBackground(((i + j) % 2 != 0) ? colorDark : colorLight);
+            }
+        }
+    }
+
     public void reset(){
         Game.movesMade = 0;
         lightPlayer.getCapturedPieces().clear();
         darkPlayer.getCapturedPieces().clear();
         saveGame.clear();
         allCommands.clear();
+        resetTileColors();
     }
 
 

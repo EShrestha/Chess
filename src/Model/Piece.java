@@ -12,7 +12,6 @@ public abstract class Piece {
     protected boolean isFirstMove = true;
     protected boolean canEnPassant = false;
     protected int enPassantEnabledOnMove;
-    //protected File enPassantFile;
     protected Tile enPassantTile;
     protected char shortColor;
     RankToRank rankToRank = new RankToRank();

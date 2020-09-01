@@ -1,5 +1,7 @@
 package GUI;
 
+import Model.*;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -26,6 +28,10 @@ public class WindowChess {
     HowToPlayHandler onClickHowToPlay = new HowToPlayHandler();
     QuitGameHandler onClickQuitGame = new QuitGameHandler();
 
+    private ImageIcon fileIcon = new ImageIcon("src/Icons/file.png");
+    Image image = fileIcon.getImage();
+    Image newImg = image.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+    ImageIcon finalFileImg = new ImageIcon(newImg);
 
 
     public static void main(String[] args) { new WindowChess(); }
@@ -109,28 +115,31 @@ public class WindowChess {
 
 
     public static class NewGameHandler implements ActionListener{
-
         public void actionPerformed(ActionEvent e) {
-
             new Window("", false);
-            //createGameScreen();
         }
-
     }
 
     public class LoadGameHandler implements ActionListener{
 
         public void actionPerformed(ActionEvent e) {
-            String loadFileName = JOptionPane.showInputDialog(window,"Enter file name.", "File Name", JOptionPane.PLAIN_MESSAGE);
-            File tmpDir = new File("src/SavedGames/"+loadFileName+".txt");
-            if(loadFileName != null && !loadFileName.trim().equals("") && tmpDir.exists()){
-                new Window(loadFileName, true);
-            }else {
-                if(loadFileName != null && !loadFileName.trim().equals("") ) {
-                    JOptionPane.showMessageDialog(window, "We looked, couldn't find " + "\"" + loadFileName + "\".", "Maybe turn it off and on?", 2);
-                }else{
-                    JOptionPane.showMessageDialog(window, "Come on, really?", "Huh!", 2);
+            File tmpDir = new File("src/SavedGames");
+
+            Object[] options = tmpDir.list();
+            if(options.length != 0) {
+                String s = (String) JOptionPane.showInputDialog(
+                        window,
+                        "",
+                        "Pick a file, any file.",
+                        JOptionPane.PLAIN_MESSAGE,
+                        finalFileImg,
+                        options, 0);
+
+                if (s != null && s.trim().length() > 0) {
+                    new Window(s.replaceAll(".txt", ""), true);
                 }
+            }else {
+                JOptionPane.showMessageDialog(window, "We looked, couldn't find any files.", "Maybe turn it off and on?", 2);
             }
         }
 
